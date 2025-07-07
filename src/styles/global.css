@@ -1,0 +1,16 @@
+.control-container {
+  display: flex;
+  gap: 1.5rem;
+}
+.edge-label {
+  padding: 4px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+  pointer-events: auto;
+  z-index: 1;
+}
+.edge-label:hover {
+  background-color: #ececec;
+}
