@@ -1,5 +1,9 @@
 # React Flow Builder
 
+## 진행 상황
+- 🔗 [Live Demo](https://codesandbox.io/s/github/kimminhyug/react-workflow-builder)
+- 🔍 [GitHub Repo](https://github.com/kimminhyug/react-workflow-builder)
+
 ## 1. 프로젝트 개요
 
 React Flow 라이브러리를 이용한 시각적 워크플로우 빌더 개발 프로젝트입니다.  
