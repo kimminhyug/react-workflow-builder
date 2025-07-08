@@ -16,13 +16,12 @@ import { NodeEditor } from './NodeEditor';
 import { useAtom } from 'jotai';
 import { selectedNodeAtom } from '../../state/selectedNode';
 import { edgesAtom, type CustomEdge } from '../../state/edges';
-import { activeNodeIdAtom, nodesAtom } from '../../state/nodes';
+import { nodesAtom } from '../../state/nodes';
 
 import DefaultEdge from './edges/DefaultEdge';
 import { defaultEdgeOptions } from './constants/workflow.constants';
 import { DefaultNode } from './nodes/DefaultNode';
-
-let id = 2;
+import { Control } from './Control/Control';
 
 export const WorkflowCanvas = () => {
   // const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>([
@@ -30,7 +29,6 @@ export const WorkflowCanvas = () => {
   // ]);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
-  const [, setActiveNodeId] = useAtom(activeNodeIdAtom);
 
   const edgeTypes = {
     default: DefaultEdge,
@@ -53,21 +51,29 @@ export const WorkflowCanvas = () => {
       )
     );
   }, [selectedNode]);
-
+  /**
+   * atom으로 node 관리하려면 change 생성 필요하여 생성함
+   */
   const onNodesChange = useCallback(
     (changes: NodeChange<CustomNode>[]) => {
       setNodes((nds) => applyNodeChanges<CustomNode>(changes, nds));
     },
     [setNodes]
   );
-
+  /**
+   * atom으로 edge 관리하려면 change 생성 필요하여 생성함
+   */
   const onEdgesChange = useCallback(
     (changes: EdgeChange<CustomEdge>[]) => {
       setEdges((eds) => applyEdgeChanges<CustomEdge>(changes, eds));
     },
     [setEdges]
   );
-
+  /**
+   * 공식 문서상으로는 엣지 연결 validation에 사용
+   * @param connection 연결된 엣지들?
+   * @returns
+   */
   const onConnect = (connection: Connection) => {
     // 순환 참조 방지
     if (connection.source === connection.target) return;
@@ -103,74 +109,25 @@ export const WorkflowCanvas = () => {
     };
     setEdges((eds) => [...eds, newDefaultEdge]);
   };
-
-  const addNode = () => {
-    const newNode: CustomNode = {
-      id: `${id++}`,
-      data: { label: `Node ${id}` },
-      type: 'input',
-      style: { background: '#ececec' },
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
-    };
-    setNodes((nds) => nds.concat(newNode));
-  };
-  const addTaskNode = () => {
-    const newTaskNode: CustomNode = {
-      id: uuid(),
-      type: 'task',
-      position: { x: 250, y: 250 }, // 원하는 위치
-      data: { label: '새로운 작업', taskName: '' },
-    };
-
-    setNodes((nds) => [...nds, newTaskNode]);
-  };
-
+  /**
+   * 노드 선택 이벤트 처리용 폼이랑 연동함
+   * @param event mouse event
+   * @param node 커스텀 녿,
+   */
   const onNodeClick = useCallback((_: React.MouseEvent, node: CustomNode) => {
     console.debug(node);
     setSelectedNode(node);
   }, []);
+  /**
+   * 엣지 클릭 이벤트 틀만 만듬
+   * @param event mouse event
+   * @param edge 커스텀 엣지
+   */
   const onEdgeClick = (event: React.MouseEvent, edge: CustomEdge) => {
     event.stopPropagation();
     console.debug(`soruce:${edge.source} target: ${edge.target} `);
   };
-  const exportWorkflowJSON = () => {
-    const dataStr = JSON.stringify({ nodes, edges }, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'workflow.json';
-    a.click();
-
-    URL.revokeObjectURL(url);
-  };
-  const simulateExecution = (startNodeId: string) => {
-    // 경로 매핑용, set은 유니크한 녀석이라 편함
-    const visited = new Set<string>();
-    // 실제 루프 함수
-    const walk = (currentId: string, delay = 0) => {
-      setTimeout(() => {
-        // active 처리하여 스타일 입힘, 실제 개발할때 폼 포커스 먹엿던 녀석이랑 똑같음
-        setActiveNodeId(currentId);
-        // 경로 저장
-        visited.add(currentId);
-
-        const nextEdges = edges.filter((e) => e.source === currentId);
-        //원랜 순서 잇는데 일단 제거 .sort((a,b=>a.priority-b.priority))
-
-        // 스케줄링 차자작 등록
-        for (const edge of nextEdges) {
-          if (!visited.has(edge.target)) {
-            // delay로 타이머처리
-            walk(edge.target, delay + 1000);
-          }
-        }
-      }, delay);
-    };
-    // 추후 unmount 처리 필요 ()=>setMount(false), !mount return
-    walk(startNodeId);
-  };
   // const importWorkflowJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const file = e.target.files?.[0];
   //   if (!file) return;
@@ -197,31 +154,7 @@ export const WorkflowCanvas = () => {
   return (
     <div style={{ display: 'flex', height: 'calc(100% - 60px)', gap: 20 }}>
       <div style={{ flex: 1 }}>
-        <div className="control-container">
-          <button onClick={addNode}>새 노드 추가</button>
-          <button onClick={addTaskNode}>작업 노드 추가</button>
-          <button
-            onClick={() => {
-              const startNode = nodes.find((node) => node.type === 'start');
-
-              if (startNode) {
-                simulateExecution(startNode.id);
-              } else {
-                alert('시작 노드가 없습니다.');
-              }
-            }}
-          >
-            시뮬레이션 시작
-          </button>
-          <button onClick={exportWorkflowJSON}>워크플로우 저장</button>
-
-          {/* <input
-            type="file"
-            accept=".json"
-            onChange={importWorkflowJSON}
-            style={{ marginLeft: 10 }}
-          /> */}
-        </div>
+        <Control />
         <ReactFlow
           proOptions={{ hideAttribution: true }}
           nodes={nodes}
