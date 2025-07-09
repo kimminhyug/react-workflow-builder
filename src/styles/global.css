@@ -1,16 +1,37 @@
+:root {
+  --z-node-container: 1;
+  --z-edge-container: 0;
+  --z-edge: 5;
+  --z-node: 6;
+  --z-label: 10;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .control-container {
   display: flex;
   gap: 1.5rem;
 }
-.edge-label {
+.edge-label-container {
   padding: 4px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 3px;
   font-size: 12px;
   pointer-events: auto;
-  z-index: 1;
+  z-index: var(--z-edge-container);
+  min-width: 50px;
+  min-height: 20px;
 }
-.edge-label:hover {
+.edge-label-container:hover {
   background-color: #ececec;
+}
+
+.edge-label {
+  position: relative;
+  z-index: var(--z-label);
+  min-width: 5px;
+  min-height: 1rem;
 }

@@ -17,8 +17,10 @@ export const DefaultNode = ({ data, id }: NodeProps<CustomNode>) => {
     <div
       style={{
         padding: 10,
-        border: `2px solid ${statusColorMap[data.status ?? 'waiting']}`,
-        borderColor: activeNodeId === id ? 'green' : '#ccc',
+        borderWidth: 2,
+        borderStyle: 'solid',
+        // border: `${statusColorMap[data.status ?? 'waiting']}`,
+        borderColor: activeNodeId === id ? 'green' : statusColorMap[data.status ?? 'waiting'],
         background: activeNodeId === id ? '#e6ffe6' : 'white',
         borderRadius: 4,
       }}

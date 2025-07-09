@@ -1,17 +1,23 @@
 import { getBezierPath, type EdgeProps, EdgeLabelRenderer } from '@xyflow/react';
+import { useState } from 'react';
+import { edgesAtom, type CustomEdge } from '../../../state/edges';
+import { useAtom } from 'jotai';
 
-const CustomEdge = ({
+const DefaultEdge = ({
   id,
   sourceX,
   sourceY,
   targetX,
   targetY,
-  label,
+  data,
   sourcePosition,
   targetPosition,
   style = {},
   markerEnd,
-}: EdgeProps) => {
+}: EdgeProps<CustomEdge>) => {
+  const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
+  const [labelInput, setLabelInput] = useState('');
+  const [, setEdges] = useAtom(edgesAtom);
   // 직선?
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -21,21 +27,60 @@ const CustomEdge = ({
     targetY,
     targetPosition,
   });
-
+  /**
+   * active 제거용
+   */
+  const handleBlur = () => {
+    setEdges((eds) =>
+      eds.map((e) => (e.id === id ? { ...e, data: { ...e.data, label: labelInput } } : e))
+    );
+    setEditingEdgeId(null);
+  };
+  /**
+   * edge label changer
+   */
+  const activeEdge = () => {
+    setEditingEdgeId(id);
+    setLabelInput(data?.label ?? '');
+  };
   return (
     <>
       <EdgeLabelRenderer>
         <div
-          onClick={() => {
-            console.debug('label 클릭');
-          }}
-          className="edge-label"
+          className="edge-label-container"
           style={{
             position: 'absolute',
             transform: `translate(${labelX}px, ${labelY}px) translate(-50%, -50%)`,
           }}
         >
-          {label}
+          {editingEdgeId === id ? (
+            <input
+              autoFocus
+              value={labelInput}
+              onChange={(e) => setLabelInput(e.target.value)}
+              onBlur={handleBlur}
+              style={{
+                fontSize: 12,
+                padding: '2px 4px',
+                borderRadius: 4,
+                border: '1px solid #666',
+              }}
+            />
+          ) : (
+            <>
+              {/* {data?.label && ( */}
+              <div
+                onClick={() => {
+                  console.debug('label 클릭');
+                }}
+                onDoubleClick={activeEdge}
+                className="edge-label"
+              >
+                {data?.label || ''}
+              </div>
+              {/* )} */}
+            </>
+          )}
         </div>
       </EdgeLabelRenderer>
       <path
@@ -49,4 +94,4 @@ const CustomEdge = ({
   );
 };
 
-export default CustomEdge;
+export default DefaultEdge;

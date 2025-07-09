@@ -90,10 +90,20 @@ export const Control = () => {
       updateNodeStatus(nodeId, 'done');
       //  정렬 추가 필요
       const nextEdges = edges.filter((e) => e.source === nodeId);
+      const currentNode = nodes.find((n) => n.id === nodeId);
 
       for (const edge of nextEdges) {
-        // 순차 처리
-        await walk(edge.target);
+        const condition = edge.data?.label?.toLowerCase();
+
+        if (typeof condition === 'string' && condition?.length > 0) {
+          const isValid = currentNode?.data?.condition === condition;
+          console.log(currentNode, condition, isValid);
+          if (isValid) {
+            await walk(edge.target);
+          }
+        } else {
+          await walk(edge.target);
+        }
       }
     };
 

@@ -5,14 +5,16 @@ import { TextField } from '@fluentui/react';
 import { edgesAtom } from '../../state/edges';
 import { nodesAtom } from '../../state/nodes';
 import type { CustomNode } from './types';
+import { ConditionEditor } from './Editor/ConditionEditor';
 
 export const NodeEditor = () => {
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
   const setNodes = useSetAtom(nodesAtom);
   const setEdges = useSetAtom(edgesAtom);
+  // 선택한 노드 편집 후 전체 노드에 반영
   useEffect(() => {
     if (!selectedNode) return;
-
+    console.log(selectedNode);
     setNodes((nds: CustomNode[]) =>
       nds.map((node) =>
         node.id === selectedNode.id ? { ...node, data: { ...selectedNode.data } } : node
@@ -64,18 +66,7 @@ export const NodeEditor = () => {
             />
           )}
 
-          {selectedNode.type === 'condition' && (
-            <TextField
-              label="조건"
-              value={selectedNode.data.expression || ''}
-              onChange={(e) =>
-                setSelectedNode({
-                  ...selectedNode,
-                  data: { ...selectedNode.data, expression: e.currentTarget.value },
-                })
-              }
-            />
-          )}
+          <ConditionEditor />
         </>
       )}
       <button

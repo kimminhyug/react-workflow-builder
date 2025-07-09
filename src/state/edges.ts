@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import type { Edge } from '@xyflow/react';
 
 interface IEdgeData {
-  label?: string;
+  label: string;
   taskName?: string;
   expression?: string;
 }

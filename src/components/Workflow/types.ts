@@ -6,9 +6,12 @@ export type NodeStatus = 'startWaiting' | 'waiting' | 'running' | 'done';
 interface INodeData {
   label?: string;
   taskName?: string;
+  // 정규식
   expression?: string;
+  // 시물레이션 분기용
+  condition?: string;
   status?: NodeStatus;
 }
 type unknownRecord = { [key: string]: unknown };
-export type NodeType = 'input' | 'task' | 'condition' | 'start' | 'end';
+export type NodeType = 'input' | 'task' | 'start' | 'end';
 export type CustomNode = Node<INodeData & unknownRecord, NodeType>;
