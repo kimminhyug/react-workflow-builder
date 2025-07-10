@@ -11,6 +11,7 @@ interface INodeData {
   // 시물레이션 분기용
   condition?: string;
   status?: NodeStatus;
+  fallback?: string[];
 }
 type unknownRecord = { [key: string]: unknown };
 export type NodeType = 'input' | 'task' | 'start' | 'end';

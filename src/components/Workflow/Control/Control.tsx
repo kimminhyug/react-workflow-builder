@@ -72,38 +72,35 @@ export const Control = () => {
      * @returns void
      */
     const walk = async (nodeId: string) => {
-      // 시물레이션 중복 체크
       if (execId !== executionId.current) return;
-      //   이미 처리한건 안함
       if (visited.has(nodeId)) return;
 
-      // 히스토리 남기고
-
       visited.add(nodeId);
-      //  테스트용 실행중 처리
       updateNodeStatus(nodeId, 'running');
-
       setActiveNodeId(nodeId);
-
       await delay(1000);
-      //  완료 처리
       updateNodeStatus(nodeId, 'done');
-      //  정렬 추가 필요
-      const nextEdges = edges.filter((e) => e.source === nodeId);
+
       const currentNode = nodes.find((n) => n.id === nodeId);
+      if (!currentNode) return;
 
-      for (const edge of nextEdges) {
-        const condition = edge.data?.label?.toLowerCase();
+      const nextEdges = edges.filter((e) => e.source === nodeId);
 
-        if (typeof condition === 'string' && condition?.length > 0) {
-          const isValid = currentNode?.data?.condition === condition;
-          console.log(currentNode, condition, isValid);
-          if (isValid) {
-            await walk(edge.target);
-          }
-        } else {
-          await walk(edge.target);
-        }
+      const condition = currentNode.data?.condition?.toLowerCase() || '';
+      const fallback: string[] =
+        currentNode.data?.fallback?.map((f: string) => f.toLowerCase()) || [];
+
+      const allConditions = [condition, ...fallback];
+
+      const matchedEdge = nextEdges.find(
+        (e) => e.data?.label && allConditions.includes(e.data.label.toLowerCase())
+      );
+
+      if (matchedEdge) {
+        await walk(matchedEdge.target);
+      } else {
+        // toast 교체 필요
+        console.warn(`조건 '${condition}' 실패 `);
       }
     };
 
