@@ -29,7 +29,6 @@ export const WorkflowCanvas = () => {
   // ]);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
-
   const edgeTypes = {
     default: DefaultEdge,
   };
@@ -42,6 +41,7 @@ export const WorkflowCanvas = () => {
   };
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges, setEdges] = useAtom(edgesAtom);
+
   useEffect(() => {
     if (!selectedNode) return;
 
@@ -107,6 +107,7 @@ export const WorkflowCanvas = () => {
       label: '기본 엣지',
       ...defaultEdgeOptions,
     };
+
     setEdges((eds) => [...eds, newDefaultEdge]);
   };
   /**

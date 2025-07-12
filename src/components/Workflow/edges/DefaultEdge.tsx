@@ -1,11 +1,16 @@
 import { getBezierPath, type EdgeProps, EdgeLabelRenderer } from '@xyflow/react';
 import { useState } from 'react';
 import { edgesAtom, type CustomEdge } from '../../../state/edges';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
+
+import { nodesAtom } from '../../../state/nodes';
+import { getEdgeColor } from '../constants/workflow.constants';
 
 const DefaultEdge = ({
   id,
+  source,
   sourceX,
+
   sourceY,
   targetX,
   targetY,
@@ -18,6 +23,10 @@ const DefaultEdge = ({
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const [labelInput, setLabelInput] = useState('');
   const [, setEdges] = useAtom(edgesAtom);
+  const nodes = useAtomValue(nodesAtom);
+
+  const sourceNode = nodes.find((n) => n.id === source);
+  const strokeColor = getEdgeColor(data, sourceNode);
   // 직선?
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -43,6 +52,7 @@ const DefaultEdge = ({
     setEditingEdgeId(id);
     setLabelInput(data?.label ?? '');
   };
+
   return (
     <>
       <EdgeLabelRenderer>
@@ -85,7 +95,7 @@ const DefaultEdge = ({
       </EdgeLabelRenderer>
       <path
         id={id}
-        style={{ ...style }}
+        style={{ ...style, stroke: strokeColor }}
         className="react-flow__edge-path"
         d={edgePath}
         markerEnd={markerEnd}

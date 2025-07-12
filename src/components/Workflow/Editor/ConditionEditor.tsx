@@ -33,6 +33,12 @@ export const ConditionEditor = () => {
     });
   };
 
+  /**
+   * fallback onchnange
+   * @param _e fleunt ui onchange event
+   * @param option  fluent ui dropdownoption
+   * @returns void
+   */
   const onChangeFallback = (_e: any, option?: IDropdownOption) => {
     if (!option) return;
     const key = option.key.toString();
