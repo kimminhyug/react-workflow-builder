@@ -22,6 +22,7 @@ import DefaultEdge from './edges/DefaultEdge';
 import { defaultEdgeOptions } from './constants/workflow.constants';
 import { DefaultNode } from './nodes/DefaultNode';
 import { Control } from './Control/Control';
+import { canConnect } from './utils/edgeConnectionValidator';
 
 export const WorkflowCanvas = () => {
   // const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>([
@@ -70,30 +71,32 @@ export const WorkflowCanvas = () => {
     [setEdges]
   );
   /**
-   * 공식 문서상으로는 엣지 연결 validation에 사용
+   * 엣지 연결 validation 추가
    * @param connection 연결된 엣지들?
    * @returns
    */
   const onConnect = (connection: Connection) => {
-    // 순환 참조 방지
-    if (connection.source === connection.target) return;
     const { source, target } = connection;
 
-    const targetNode = nodes.find((n) => n.id === target);
-    if (targetNode?.type === 'start') {
-      alert('시작 노드는 입력을 받을 수 없습니다.');
-      return;
-    }
-    if (targetNode?.type === 'end') {
-      alert('종료 노드에는 연결할 수 없습니다.');
-      return;
-    }
-
+    // 순환참조 자기 자신 금지
     if (source === target) {
-      alert('같은 노드끼리는 연결할 수 없습니다.');
+      alert('같은 노드끼리는 연결할 수 없습니다 .');
       return;
     }
 
+    // 노드 찾기 (nodes는 React 상태 배열)
+    const sourceNode = nodes.find((n) => n.id === source);
+    const targetNode = nodes.find((n) => n.id === target);
+
+    if (!sourceNode || !targetNode) return;
+
+    // 연결 허용 여부 체크
+    if (!canConnect(sourceNode.type, targetNode.type)) {
+      alert(`${sourceNode.type} 노드에서 ${targetNode.type} 노드로의 연결은 허용되지 않습니다. `);
+      return;
+    }
+
+    // 기존 연결 중복 체크
     const exists = edges.some((e) => e.source === source && e.target === target);
     if (exists) {
       alert('이미 연결되어 있는 노드입니다.');
@@ -110,6 +113,7 @@ export const WorkflowCanvas = () => {
 
     setEdges((eds) => [...eds, newDefaultEdge]);
   };
+
   /**
    * 노드 선택 이벤트 처리용 폼이랑 연동함
    * @param event mouse event

@@ -6,7 +6,6 @@ import { nodesAtom, activeNodeIdAtom } from '../../../state/nodes';
 import type { NodeStatus, CustomNode } from '../types';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 
-let id = 1;
 export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges] = useAtom(edgesAtom);
@@ -137,13 +136,13 @@ export const Control = () => {
    */
   const addNode = () => {
     const newNode: CustomNode = {
-      id: `${id++}`,
-      data: { label: `Node ${id}` },
+      id: uuid(),
+      data: { label: `Node` },
       type: 'input',
       style: { background: '#ececec' },
       position: { x: Math.random() * 400, y: Math.random() * 400 },
     };
-    setNodes((nds) => nds.concat(newNode));
+    setNodes((nds) => [...nds, newNode]);
   };
   /**
    * 작업 노드 추가
