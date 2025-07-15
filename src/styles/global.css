@@ -9,6 +9,87 @@
 * {
   box-sizing: border-box;
 }
+body {
+  margin: 0;
+  background-color: #0d0d0d;
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+}
+
+.main-intro {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #0d0d0d 0%, #1a1a1a 100%);
+}
+
+.main-intro-content {
+  text-align: center;
+}
+
+.main-intro-title {
+  font-size: 4rem;
+  color: #61a0f3;
+  text-shadow:
+    0 0 10px #61a0f3,
+    0 0 20px #38639c,
+    0 0 40px #3688f3;
+}
+
+.highlight-name {
+  color: #61a0f3;
+  font-weight: 600;
+  text-shadow: 0 0 6px #61a0f3;
+}
+
+.main-intro-subtext {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: #cccccc;
+}
+
+.main-intro-button {
+  margin-top: 2rem;
+  padding: 12px 24px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid #61a0f3;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 10px #61a0f3,
+    0 0 20px #61a0f3 inset;
+}
+
+.main-intro-button:hover {
+  background-color: #61a0f3;
+  color: #000;
+  box-shadow:
+    0 0 20px #61a0f3,
+    0 0 30px #61a0f3;
+}
+
+.typewriter {
+  color: #61a0f3;
+
+  font-size: 24px;
+  letter-spacing: 0.1em;
+  white-space: pre;
+  display: inline-block;
+  position: relative;
+}
+
+.typewriter .cursor {
+  display: inline-block;
+  color: #61a0f3;
+  animation: blink 1s step-end infinite;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 
 .control-container {
   display: flex;
@@ -34,4 +115,10 @@
   z-index: var(--z-label);
   min-width: 5px;
   min-height: 1rem;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }

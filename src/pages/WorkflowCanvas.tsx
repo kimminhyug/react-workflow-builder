@@ -11,18 +11,17 @@ import {
   type EdgeChange,
   type NodeChange,
 } from '@xyflow/react';
-import { type CustomNode } from './types';
-import { NodeEditor } from './NodeEditor';
 import { useAtom } from 'jotai';
-import { selectedNodeAtom } from '../../state/selectedNode';
-import { edgesAtom, type CustomEdge } from '../../state/edges';
-import { nodesAtom } from '../../state/nodes';
-
-import DefaultEdge from './edges/DefaultEdge';
-import { defaultEdgeOptions } from './constants/workflow.constants';
-import { DefaultNode } from './nodes/DefaultNode';
-import { Control } from './Control/Control';
-import { canConnect } from './utils/edgeConnectionValidator';
+import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
+import { Control } from '../components/Workflow/Control/Control';
+import DefaultEdge from '../components/Workflow/edges/DefaultEdge';
+import { NodeEditor } from '../components/Workflow/NodeEditor';
+import { DefaultNode } from '../components/Workflow/nodes/DefaultNode';
+import type { CustomNode } from '../components/Workflow/types';
+import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
+import { edgesAtom, type CustomEdge } from '../state/edges';
+import { nodesAtom } from '../state/nodes';
+import { selectedNodeAtom } from '../state/selectedNode';
 
 export const WorkflowCanvas = () => {
   // const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>([
