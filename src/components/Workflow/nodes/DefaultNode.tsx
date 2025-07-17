@@ -21,8 +21,11 @@ export const DefaultNode = ({ data, id }: NodeProps<CustomNode>) => {
         borderStyle: 'solid',
         // border: `${statusColorMap[data.status ?? 'waiting']}`,
         borderColor: activeNodeId === id ? 'green' : statusColorMap[data.status ?? 'waiting'],
-        background: activeNodeId === id ? '#e6ffe6' : 'white',
+        background: activeNodeId === id ? '#e6ffe6' : '#0f0f0f',
+        boxShadow: '0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 15px #39ff14, 0 0 20px #39ff14',
+        color: '#39ff14',
         borderRadius: 4,
+        transition: 'all 0.3s ease-in-out',
       }}
     >
       <Handle type="target" position={Position.Top} id="top" />
