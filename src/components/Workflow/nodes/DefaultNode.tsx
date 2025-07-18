@@ -15,6 +15,7 @@ export const DefaultNode = ({ data, id }: NodeProps<CustomNode>) => {
 
   return (
     <div
+      className="neon-node"
       style={{
         padding: 10,
         borderWidth: 2,
