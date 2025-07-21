@@ -5,6 +5,7 @@ import { edgesAtom } from '../../../state/edges';
 import { nodesAtom, activeNodeIdAtom } from '../../../state/nodes';
 import type { NodeStatus, CustomNode } from '../types';
 import { selectedNodeAtom } from '../../../state/selectedNode';
+import { ControlButton } from './ControlButton';
 
 export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
@@ -178,17 +179,11 @@ export const Control = () => {
       <div className="control-button-container">
         <div className="control-button-title">현재 flow name?</div>
         <nav className="control-button-menu">
-          <button className="control-button" onClick={addNode}>
-            새 노드 추가
-          </button>
-          <button className="control-button" onClick={addTaskNode}>
-            작업 노드 추가
-          </button>
-          <button
-            className="control-button"
+          <ControlButton onClick={addNode}>새 노드 추가</ControlButton>
+          <ControlButton onClick={addTaskNode}>작업 노드 추가</ControlButton>
+          <ControlButton
             onClick={() => {
               const startNode = nodes.find((node) => node.type === 'start');
-
               if (startNode) {
                 simulateExecution(startNode.id);
               } else {
@@ -197,34 +192,23 @@ export const Control = () => {
             }}
           >
             시뮬레이션 시작
-          </button>
-          <button
-            className="control-button"
+          </ControlButton>
+          <ControlButton
             onClick={() => simulateExecution(selectedNode?.id ?? '')}
             disabled={executionState === 'running'}
           >
-            시작({selectedNode?.data?.label})
-          </button>
-          <button
-            className="control-button"
-            onClick={pauseExecution}
-            disabled={executionState !== 'running'}
-          >
+            {`시작(${selectedNode?.data?.label})`}
+          </ControlButton>
+          <ControlButton onClick={pauseExecution} disabled={executionState !== 'running'}>
             일시정지
-          </button>
-          <button
-            className="control-button"
-            onClick={resumeExecution}
-            disabled={executionState !== 'paused'}
-          >
+          </ControlButton>
+          <ControlButton onClick={resumeExecution} disabled={executionState !== 'paused'}>
             재개
-          </button>
-          <button onClick={stopExecution} disabled={executionState !== 'running'}>
+          </ControlButton>
+          <ControlButton onClick={stopExecution} disabled={executionState !== 'running'}>
             정지
-          </button>
-          <button className="control-button" onClick={exportWorkflowJSON}>
-            워크플로우 저장
-          </button>
+          </ControlButton>
+          <ControlButton onClick={exportWorkflowJSON}>워크플로우 저장</ControlButton>
         </nav>
       </div>
 
