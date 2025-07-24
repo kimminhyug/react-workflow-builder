@@ -2,6 +2,11 @@ import { ComboBox, Dropdown, type IDropdownOption } from '@fluentui/react';
 import { useAtom } from 'jotai';
 import { edgesAtom } from '../../../state/edges';
 import { selectedNodeAtom } from '../../../state/selectedNode';
+import {
+  neonCaretDownButtonStyles,
+  neonComboBoxStyles,
+  neonDropdownStyles,
+} from '../../common/styles';
 
 export const ConditionEditor = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
@@ -69,6 +74,8 @@ export const ConditionEditor = () => {
         label={'분기'}
         allowFreeform
         options={options}
+        styles={{ ...neonComboBoxStyles }}
+        caretDownButtonStyles={neonCaretDownButtonStyles}
         disabled={options.length === 0}
         selectedKey={node?.data.condition || ''}
         onChange={(_e, option) => onChange(option?.key?.toString() || '')}
@@ -77,6 +84,7 @@ export const ConditionEditor = () => {
       <Dropdown
         label="fallback"
         multiSelect
+        styles={neonDropdownStyles}
         options={fallbackOptions}
         selectedKeys={node?.data.fallback || []}
         onChange={onChangeFallback}

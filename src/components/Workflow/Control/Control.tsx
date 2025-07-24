@@ -6,6 +6,7 @@ import { nodesAtom, activeNodeIdAtom } from '../../../state/nodes';
 import type { NodeStatus, CustomNode } from '../types';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import { ControlButton } from './ControlButton';
+import { AppendSubText } from '../../common/AppendSubText';
 
 export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
@@ -197,7 +198,9 @@ export const Control = () => {
             onClick={() => simulateExecution(selectedNode?.id ?? '')}
             disabled={executionState === 'running'}
           >
-            {`시작(${selectedNode?.data?.label})`}
+            <>
+              <AppendSubText label={'시작'} subText={selectedNode?.data?.label ?? ''} />
+            </>
           </ControlButton>
           <ControlButton onClick={pauseExecution} disabled={executionState !== 'running'}>
             일시정지

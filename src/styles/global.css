@@ -44,7 +44,7 @@ body {
 }
 
 .main-intro-subtext {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #cccccc;
 }
 .main-page .react-flow__handle {
@@ -58,11 +58,12 @@ body {
   top: -8px;
   position: relative;
   padding: 2px 1px;
-  width: 50px;
-  height: 16px;
+  width: 100px;
+  height: 32px;
   text-align: center;
   align-items: center;
-  font-size: 0.45rem;
+  align-content: center;
+  font-size: 0.8em;
   color: #fff;
   background-color: transparent;
   border: 2px solid #61a0f3;
@@ -76,7 +77,8 @@ body {
 
 .main-intro-button:hover {
   background-color: #61a0f3;
-  color: #000;
+
+  color: rgba(255, 255, 255, 0.8);
   box-shadow:
     0 0 20px #61a0f3,
     0 0 30px #61a0f3;
@@ -85,8 +87,8 @@ body {
 .typewriter {
   color: #61a0f3;
 
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
+  font-size: 1em;
+  letter-spacing: 0.2em;
   white-space: pre;
   display: inline-block;
   position: relative;
@@ -97,7 +99,7 @@ body {
   color: #61a0f3;
   animation: blink 1s step-end infinite;
   position: absolute;
-  right: 0;
+  right: -0.5em;
   top: 0;
 }
 

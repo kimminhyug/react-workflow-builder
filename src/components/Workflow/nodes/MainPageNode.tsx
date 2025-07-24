@@ -1,4 +1,4 @@
-import { Handle, Position } from '@xyflow/react';
+// import { Handle, Position } from '@xyflow/react';
 
 import { useNavigate } from 'react-router-dom';
 import { TypeWriter } from '../../common/TypeWriter';
@@ -24,7 +24,7 @@ export const MainPageNode = () => {
       <div
         className=""
         style={{
-          marginTop: 50,
+          // marginTop: 50,
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
@@ -43,8 +43,8 @@ export const MainPageNode = () => {
           시작
         </div>
       </div>
-      <Handle type="target" position={Position.Top} id="top" />
-      <Handle type="source" position={Position.Bottom} id="bottom" />
+      {/* <Handle type="target" position={Position.Top} id="top" />
+      <Handle type="source" position={Position.Bottom} id="bottom" /> */}
     </div>
   );
 };

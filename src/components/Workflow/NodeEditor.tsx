@@ -6,37 +6,8 @@ import { edgesAtom } from '../../state/edges';
 import { nodesAtom } from '../../state/nodes';
 import type { CustomNode } from './types';
 import { ConditionEditor } from './Editor/ConditionEditor';
+import { neonTextFieldStyles, neonButtonStyles } from '../common/styles';
 // 스타일즈 하나 만들어야함
-const neonTextFieldStyles = {
-  fieldGroup: {
-    border: '1px solid #61a0f3',
-    backgroundColor: '#0f2a48',
-    color: '#ffffff',
-    boxShadow: '0 0 5px #2381fc',
-  },
-  field: {
-    color: '#ffffff',
-  },
-  label: {
-    color: '#61a0f3',
-    textShadow: '0 0 3px #61a0f3',
-  },
-};
-
-const neonButtonStyles = {
-  root: {
-    marginTop: 20,
-    backgroundColor: '#ff3434',
-    color: '#ffffff',
-    boxShadow: '0 0 10px #ff3434',
-    borderRadius: '6px',
-    fontWeight: 'bold',
-  },
-  rootHovered: {
-    backgroundColor: '#e62828',
-    boxShadow: '0 0 12px #ff3434',
-  },
-};
 
 export const NodeEditor = () => {
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);

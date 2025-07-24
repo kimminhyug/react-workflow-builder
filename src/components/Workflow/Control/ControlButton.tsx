@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { type ReactElement } from 'react';
 interface ControlButtonProps {
   onClick: () => void;
   disabled?: boolean;
-  children?: string;
+  children?: string | ReactElement;
 }
 
 export const ControlButton: React.FC<ControlButtonProps> = ({ children, onClick, disabled }) => {
