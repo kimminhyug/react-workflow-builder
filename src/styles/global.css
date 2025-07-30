@@ -4,6 +4,7 @@
   --z-edge: 5;
   --z-node: 6;
   --z-label: 10;
+  --neon-shadow: 0 0 5px #61a0f3, 0 0 10px #61a0f3, 0 0 15px #61a0f3, 0 0 20px #61a0f3;
 }
 
 * {
@@ -108,9 +109,8 @@ body {
   gap: 1.5rem;
 }
 .edge-label-container {
-  padding: 4px;
-  background: white;
   border: 1px solid #ddd;
+  box-shadow: var(--neon-shadow);
   border-radius: 3px;
   font-size: 12px;
   pointer-events: auto;
@@ -136,11 +136,7 @@ body {
 }
 
 .neon-node {
-  box-shadow:
-    0 0 5px #61a0f3,
-    0 0 10px #61a0f3,
-    0 0 15px #61a0f3,
-    0 0 20px #61a0f3;
+  box-shadow: var(--neon-shadow);
   color: #2381fc;
   border-radius: 4;
   transition: all 0.3s ease-in-out;

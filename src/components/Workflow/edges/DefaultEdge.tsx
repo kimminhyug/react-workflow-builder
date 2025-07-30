@@ -5,6 +5,8 @@ import { useAtom, useAtomValue } from 'jotai';
 
 import { nodesAtom } from '../../../state/nodes';
 import { getEdgeColor } from '../constants/workflow.constants';
+import { Stack, TextField } from '@fluentui/react';
+import { edgeStyles, neonTextFieldStyles } from '../../common/styles';
 
 const DefaultEdge = ({
   id,
@@ -56,7 +58,7 @@ const DefaultEdge = ({
   return (
     <>
       <EdgeLabelRenderer>
-        <div
+        <Stack
           className="edge-label-container"
           style={{
             position: 'absolute',
@@ -64,10 +66,11 @@ const DefaultEdge = ({
           }}
         >
           {editingEdgeId === id ? (
-            <input
+            <TextField
               autoFocus
               value={labelInput}
-              onChange={(e) => setLabelInput(e.target.value)}
+              styles={neonTextFieldStyles}
+              onChange={(e) => setLabelInput(e.currentTarget.value)}
               onBlur={handleBlur}
               style={{
                 fontSize: 12,
@@ -77,21 +80,11 @@ const DefaultEdge = ({
               }}
             />
           ) : (
-            <>
-              {/* {data?.label && ( */}
-              <div
-                onClick={() => {
-                  console.debug('label 클릭');
-                }}
-                onDoubleClick={activeEdge}
-                className="edge-label"
-              >
-                {data?.label || ''}
-              </div>
-              {/* )} */}
-            </>
+            <div onDoubleClick={activeEdge} className={edgeStyles}>
+              {data?.label || ''}
+            </div>
           )}
-        </div>
+        </Stack>
       </EdgeLabelRenderer>
       <path
         id={id}

@@ -1,4 +1,9 @@
-import type { IButtonStyles, IComboBoxStyles } from '@fluentui/react';
+import {
+  mergeStyles,
+  // mergeStyleSets,
+  type IButtonStyles,
+  type IComboBoxStyles,
+} from '@fluentui/react';
 
 /** 공통 색상 */
 const neon_colors = {
@@ -201,3 +206,19 @@ export const neonCaretDownButtonStyles: Partial<IButtonStyles> = {
     borderRadius: 0,
   },
 };
+
+export const edgeStyles = mergeStyles({
+  fontSize: 12,
+  backgroundColor: neon_colors.hoverBg,
+  cursor: 'pointer',
+  padding: '2px 4px',
+  borderRadius: 4,
+  border: 'none',
+  selectors: {
+    ':hover': {
+      backgroundColor: neon_colors.hoverBg,
+      color: neon_colors.labelText,
+      boxShadow: `0 0 4px ${neon_colors.shadow}`,
+    },
+  },
+});
