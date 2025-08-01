@@ -4,6 +4,7 @@ import { edgesAtom } from '../../../state/edges';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import {
   neonCaretDownButtonStyles,
+  neonComboBoxOptionStyles,
   neonComboBoxStyles,
   neonDropdownStyles,
 } from '../../common/styles';
@@ -73,6 +74,8 @@ export const ConditionEditor = () => {
       <ComboBox
         label={'분기'}
         allowFreeform
+        // disabled작업 필요
+        comboBoxOptionStyles={neonComboBoxOptionStyles}
         options={options}
         styles={{ ...neonComboBoxStyles }}
         caretDownButtonStyles={neonCaretDownButtonStyles}

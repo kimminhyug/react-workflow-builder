@@ -2,6 +2,7 @@ import {
   mergeStyles,
   // mergeStyleSets,
   type IButtonStyles,
+  type IComboBoxOptionStyles,
   type IComboBoxStyles,
 } from '@fluentui/react';
 
@@ -18,7 +19,7 @@ const neon_colors = {
 };
 
 /** 공통 필드 */
-const neonFieldGroupBase = {
+export const neonFieldGroupBase = {
   border: `1px solid ${neon_colors.border}`,
   backgroundColor: neon_colors.background,
   color: neon_colors.text,
@@ -138,7 +139,12 @@ export const neonDropdownStyles = {
 
 /** 콤보박스 */
 export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
-  root: { marginTop: 10 },
+  root: {
+    marginTop: 10,
+
+    ...neonFieldGroupBase,
+  },
+
   rootDisabled: {
     backgroundColor: neon_colors.background,
     border: 'none',
@@ -159,13 +165,20 @@ export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
       },
     },
   },
+
   optionsContainer: {
-    backgroundColor: neon_colors.background,
-    border: `1px solid ${neon_colors.border}`,
-    boxShadow: `0 0 8px ${neon_colors.shadow}`,
+    ...neonFieldGroupBase,
+    color: neon_colors.text,
   },
 };
-
+/** 콤보 박스 옵션  */
+export const neonComboBoxOptionStyles: Partial<IComboBoxOptionStyles> = {
+  root: { ...neonFieldGroupBase, color: neon_colors.text, selectors: hoverFocusActiveMixin },
+  splitButtonContainerChecked: { color: neon_colors.text },
+  rootDisabled: { color: neon_colors.text },
+  rootChecked: { color: neon_colors.text },
+  iconChecked: { color: neon_colors.text },
+};
 /** 캐럿 버튼 */
 export const neonCaretDownButtonStyles: Partial<IButtonStyles> = {
   root: {
