@@ -4,6 +4,7 @@ import {
   type IButtonStyles,
   type IComboBoxOptionStyles,
   type IComboBoxStyles,
+  type IDropdownStyles,
 } from '@fluentui/react';
 
 /** 공통 색상 */
@@ -37,14 +38,17 @@ const hoverFocusActiveMixin = {
   ':hover': {
     backgroundColor: neon_colors.hoverBg,
     boxShadow: `0 0 8px ${neon_colors.labelText}`,
+    color: '#cbe6ff !important',
   },
   ':focus': {
     border: `1px solid #91c6ff`,
     boxShadow: `0 0 10px #91c6ff`,
+    color: '#cbe6ff',
   },
   ':active': {
     backgroundColor: neon_colors.activeBg,
     boxShadow: `0 0 6px #3d9df2 inset`,
+    color: '#cbe6ff',
   },
 };
 
@@ -72,14 +76,30 @@ export const neonButtonStyles = {
 };
 
 /** 드롭다운 */
-export const neonDropdownStyles = {
+export const neonDropdownStyles: Partial<IDropdownStyles> = {
   root: { marginTop: 10 },
+
   label: neonLabelBase,
   title: {
     ...neonFieldGroupBase,
     selectors: hoverFocusActiveMixin,
   },
-  dropdown: neonFieldGroupBase,
+
+  dropdown: {
+    ...neonFieldGroupBase,
+    selectors: {
+      ...hoverFocusActiveMixin,
+      ':focus > .ms-Dropdown-title': {
+        ...hoverFocusActiveMixin[':hover'],
+      },
+      ':hover > .ms-Dropdown-title': {
+        ...hoverFocusActiveMixin[':hover'],
+      },
+      ':active > .ms-Dropdown-title': {
+        ...hoverFocusActiveMixin[':active'],
+      },
+    },
+  },
   dropdownItem: {
     backgroundColor: neon_colors.background,
     color: neon_colors.text,
@@ -112,6 +132,7 @@ export const neonDropdownStyles = {
       },
     },
   },
+
   dropdownItemSelected: {
     backgroundColor: '#1a3e6c',
     color: '#91c6ff',
@@ -122,6 +143,7 @@ export const neonDropdownStyles = {
         color: '#cbe6ff',
         boxShadow: `0 0 6px ${neon_colors.border}`,
       },
+
       ':active': {
         backgroundColor: neon_colors.activeBg,
         color: '#252525',
@@ -143,6 +165,9 @@ export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
     marginTop: 10,
 
     ...neonFieldGroupBase,
+    selectors: {
+      '.ms-ComboBox-Input': { color: hoverFocusActiveMixin[':hover'].color },
+    },
   },
 
   rootDisabled: {
@@ -150,6 +175,10 @@ export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
     border: 'none',
     selectors: { '::after': { border: 'none' } },
   },
+  rootHovered: {
+    ...hoverFocusActiveMixin[':hover'],
+  },
+
   inputDisabled: {
     backgroundColor: neon_colors.background,
     border: 'none',
@@ -163,6 +192,7 @@ export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
       '::placeholder': {
         color: neon_colors.placeholder,
       },
+      ':hover': { color: hoverFocusActiveMixin[':hover'].color },
     },
   },
 
