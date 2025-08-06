@@ -2,8 +2,18 @@ import type { Node } from '@xyflow/react';
 
 // 시작준비중 | 대기중 | 실행중 | 완료
 export type NodeStatus = 'startWaiting' | 'waiting' | 'running' | 'done';
+export interface ICondition {
+  label: string;
+  type: 'primary' | 'fallback';
+  conditionType: 'static' | 'regex' | 'expression';
+  dataAccessKey?: string;
+  // 정규식
+  pattern?: string;
+  // 함수용인데 음 사전등록제로 해야하나
+  expression?: string;
+}
 
-interface INodeData {
+export interface INodeData {
   label?: string;
   taskName?: string;
   inputSource?: string;
@@ -14,7 +24,7 @@ interface INodeData {
   // 정규식
   expression?: string;
   // 시물레이션 분기용
-  condition?: string;
+  condition?: ICondition[];
 }
 type unknownRecord = { [key: string]: unknown };
 export type NodeType = 'input' | 'task' | 'start' | 'end';

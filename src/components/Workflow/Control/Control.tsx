@@ -3,10 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { useAtom, useAtomValue } from 'jotai';
 import { edgesAtom } from '../../../state/edges';
 import { nodesAtom, activeNodeIdAtom } from '../../../state/nodes';
-import type { NodeStatus, CustomNode } from '../types';
+import type { NodeStatus, CustomNode, ICondition } from '../types';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import { ControlButton } from './ControlButton';
 import { AppendSubText } from '../../common/AppendSubText';
+import { get } from 'lodash';
 
 export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
@@ -62,10 +63,8 @@ export const Control = () => {
    */
   const simulateExecution = async (startId = 'start') => {
     setExecutionState('running');
-    // 일시 중지 상태 리셋
     pauseRef.current = false;
     const visited = new Set<string>();
-    // 인덱싱
     const execId = ++executionId.current;
     /**
      *  시물레이션 실제 진행
@@ -86,28 +85,46 @@ export const Control = () => {
       if (!currentNode) return;
 
       const nextEdges = edges.filter((e) => e.source === nodeId);
+      const conditionList = (currentNode.data?.conditionList as ICondition[]) || [];
 
-      const condition = currentNode.data?.condition?.toLowerCase() || '';
-      const fallback: string[] =
-        currentNode.data?.fallback?.map((f: string) => f.toLowerCase()) || [];
+      const matchedEdge = nextEdges.find((edge) => {
+        const edgeLabel = edge.data?.label?.toLowerCase();
+        if (!edgeLabel) return false;
 
-      const allConditions = [condition, ...fallback];
+        return conditionList.some((condition) => {
+          if (!condition.label) return false;
 
-      const matchedEdge = nextEdges.find(
-        (e) => e.data?.label && allConditions.includes(e.data.label.toLowerCase())
-      );
+          const condLabel = condition.label.toLowerCase();
+
+          switch (condition.conditionType) {
+            case 'regex': {
+              if (!condition.pattern || !condition.dataAccessKey) return false;
+              const value = get(currentNode.data, condition.dataAccessKey);
+              return new RegExp(condition.pattern).test(String(value));
+            }
+
+            case 'expression': {
+              if (!condition.expression) return false;
+              // const context = { node: currentNode.data }; // 확장 가능
+              // 등록제? eval? 일단 개발 보류
+              return;
+            }
+            case 'static':
+            default:
+              return edgeLabel === condLabel;
+          }
+        });
+      });
 
       if (matchedEdge) {
         await walk(matchedEdge.target);
       } else {
-        // toast 교체 필요
-        console.warn(`조건 '${condition}' 실패 `);
+        console.warn(`조건 실패: 노드 ${currentNode.id}`);
       }
     };
 
     nodes.forEach((n) => updateNodeStatus(n.id, 'waiting'));
     await walk(startId);
-
     setExecutionState('idle');
   };
   /**

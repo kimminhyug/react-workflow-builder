@@ -8,61 +8,74 @@ import {
   neonComboBoxStyles,
   neonDropdownStyles,
 } from '../../common/styles';
+import type { ICondition } from '../types';
+
+// 타입 정의
 
 export const ConditionEditor = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
   const [edges] = useAtom(edgesAtom);
 
-  //중복 제거
-  const edgeLabels = Array.from(new Set(edges.map((e) => e?.data?.label).filter(Boolean)));
-  const options = edgeLabels
-    .filter((label): label is string => typeof label === 'string' && label?.length > 0)
-    .map((label) => ({ key: label, text: label }));
+  const edgeLabels: string[] = Array.from(
+    new Set(edges.map((e) => e?.data?.label).filter(Boolean))
+  ) as string[];
 
-  const fallbackOptions = edgeLabels
-    .filter(
-      (label): label is string =>
-        typeof label === 'string' && label?.length > 0 && label !== node?.data.condition
-    )
-    .map((label) => ({ key: label, text: label }));
+  const options: IDropdownOption<{ key: string; text: string }>[] = edgeLabels.map((label) => ({
+    key: label,
+    text: label,
+  }));
 
-  const onChange = (value: string) => {
+  const conditionList: ICondition[] = (node?.data?.conditionList as ICondition[]) || [];
+
+  const selectedPrimary = conditionList.find((c) => c.type === 'primary')?.label;
+
+  const selectedFallback = conditionList.filter((c) => c.type === 'fallback').map((c) => c.label);
+
+  const onPrimaryChange = (_e: any, option?: IDropdownOption) => {
+    const label = option?.key?.toString() || '';
     setNode((prev) => {
       if (!prev) return prev;
+      const fallbackItems = ((prev.data.conditionList as ICondition[]) || []).filter(
+        (c: ICondition) => c.type === 'fallback'
+      );
       return {
         ...prev,
         data: {
           ...prev.data,
-          condition: value,
+          conditionList: [{ label, type: 'primary', conditionType: 'static' }, ...fallbackItems],
         },
       };
     });
   };
 
-  /**
-   * fallback onchnange
-   * @param _e fleunt ui onchange event
-   * @param option  fluent ui dropdownoption
-   * @returns void
-   */
-  const onChangeFallback = (_e: any, option?: IDropdownOption) => {
+  const onFallbackChange = (_e: any, option?: IDropdownOption) => {
     if (!option) return;
     const key = option.key.toString();
     const isSelected = option.selected;
 
     setNode((prev) => {
       if (!prev) return prev;
-      const currentFallback = prev.data.fallback || [];
+      const prevList = (prev.data.conditionList as ICondition[]) || [];
+      const primary = prevList.find((c: ICondition) => c.type === 'primary');
+      let fallbackList = prevList.filter((c: ICondition) => c.type === 'fallback');
 
-      const nextFallback = isSelected
-        ? [...new Set([...currentFallback, key])]
-        : currentFallback.filter((item) => item !== key);
+      if (isSelected) {
+        const exists = fallbackList.some((f) => f.label === key);
+        if (!exists) {
+          fallbackList = [
+            ...fallbackList,
+            { label: key, type: 'fallback', conditionType: 'static' },
+          ];
+        }
+      } else {
+        fallbackList = fallbackList.filter((f) => f.label !== key);
+      }
 
       return {
         ...prev,
         data: {
           ...prev.data,
-          fallback: nextFallback,
+          conditionList: [primary, ...fallbackList].filter(Boolean),
         },
       };
     });
@@ -70,27 +83,24 @@ export const ConditionEditor = () => {
 
   return (
     <>
-      {/* 추후 컴포넌트 관리하기 편하게 한번 감싸야함 */}
       <ComboBox
-        label={'분기'}
+        label="분기"
         allowFreeform
-        // disabled작업 필요
         comboBoxOptionStyles={neonComboBoxOptionStyles}
         options={options}
-        styles={{ ...neonComboBoxStyles }}
+        styles={neonComboBoxStyles}
         caretDownButtonStyles={neonCaretDownButtonStyles}
-        disabled={options.length === 0}
-        selectedKey={node?.data.condition || ''}
-        onChange={(_e, option) => onChange(option?.key?.toString() || '')}
-        text={node?.data.condition || ''}
+        selectedKey={selectedPrimary || ''}
+        onChange={onPrimaryChange}
+        text={selectedPrimary || ''}
       />
       <Dropdown
         label="fallback"
         multiSelect
         styles={neonDropdownStyles}
-        options={fallbackOptions}
-        selectedKeys={node?.data.fallback || []}
-        onChange={onChangeFallback}
+        options={options.filter((o) => o.key !== selectedPrimary)}
+        selectedKeys={selectedFallback}
+        onChange={onFallbackChange}
       />
     </>
   );
