@@ -5,6 +5,7 @@ import {
   type IComboBoxOptionStyles,
   type IComboBoxStyles,
   type IDropdownStyles,
+  type ITextFieldStyles,
 } from '@fluentui/react';
 
 /** 공통 색상 */
@@ -53,10 +54,13 @@ const hoverFocusActiveMixin = {
 };
 
 /** 텍스트 필드 */
-export const neonTextFieldStyles = {
+export const neonTextFieldStyles: Partial<ITextFieldStyles> = {
   fieldGroup: neonFieldGroupBase,
+
   field: { color: neon_colors.text },
-  label: neonLabelBase,
+  root: { color: neon_colors.text },
+  wrapper: { color: neon_colors.text },
+  subComponentStyles: { label: { root: neonLabelBase } },
 };
 
 /** 버튼 */
