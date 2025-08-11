@@ -13,7 +13,7 @@ export const nodesAtom = atom<CustomNode[]>([
         { label: '1_fallback', type: 'fallback', conditionType: 'static' },
         { label: '예비 서버', type: 'fallback', conditionType: 'static' },
       ],
-      status: 'done',
+      status: 'startWaiting',
     },
     measured: { width: 72, height: 48 },
     selected: false,
@@ -26,7 +26,7 @@ export const nodesAtom = atom<CustomNode[]>([
     data: {
       label: '세션 종료',
       taskName: '서비스 불러오기',
-      status: 'done',
+      status: 'startWaiting',
     },
     measured: { width: 102, height: 48 },
     selected: false,
@@ -39,7 +39,7 @@ export const nodesAtom = atom<CustomNode[]>([
     data: {
       label: '데이터 조회',
       taskName: '',
-      status: 'done',
+      status: 'startWaiting',
       conditionList: [
         {
           label: '데이터 조회 시간: 00:00:00',
@@ -61,7 +61,7 @@ export const nodesAtom = atom<CustomNode[]>([
     data: {
       label: '데이터 업데이트',
       taskName: '',
-      status: 'done',
+      status: 'startWaiting',
       conditionList: [
         {
           label: 'commit;',
@@ -77,12 +77,11 @@ export const nodesAtom = atom<CustomNode[]>([
   },
   {
     id: '48c4d0c5-b3ff-4e75-94df-1fa1ef517639',
-    type: 'input',
-    style: { background: '#ececec' },
+    type: 'object',
     position: { x: -55.496083228744084, y: 95.28410021876725 },
     data: {
       label: '서버 1-2',
-      status: 'waiting',
+      status: 'startWaiting',
       conditionList: [
         {
           label: '1-2서버 조회 완료',
@@ -97,12 +96,11 @@ export const nodesAtom = atom<CustomNode[]>([
   },
   {
     id: '88d2a946-90a4-4eed-b103-a3c000164844',
-    type: 'input',
-    style: { background: '#ececec' },
+    type: 'object',
     position: { x: 205.83800288866183, y: 95.51715507342183 },
     data: {
       label: '서버 1',
-      status: 'done',
+      status: 'startWaiting',
       conditionList: [
         {
           label: '1서버 조회 완료',

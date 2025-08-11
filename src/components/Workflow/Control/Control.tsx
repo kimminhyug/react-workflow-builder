@@ -157,8 +157,7 @@ export const Control = () => {
     const newNode: CustomNode = {
       id: uuid(),
       data: { label: `Node` },
-      type: 'input',
-      style: { background: '#ececec' },
+      type: 'object',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
     };
     setNodes((nds) => [...nds, newNode]);

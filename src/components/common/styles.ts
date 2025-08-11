@@ -269,3 +269,36 @@ export const edgeStyles = mergeStyles({
     },
   },
 });
+
+/** 모달  */
+export const neonModalStyles = {
+  main: {
+    maxWidth: 600,
+    padding: 20,
+    backgroundColor: neon_colors.background,
+    border: `1px solid ${neon_colors.border}`,
+    boxShadow: `0 0 15px ${neon_colors.shadow}`,
+    color: neon_colors.text,
+  },
+};
+
+/** 모달 제목*/
+export const neonModalTitle = {
+  color: neon_colors.labelText,
+  textShadow: `0 0 3px ${neon_colors.labelText}`,
+  margin: 0,
+};
+
+/**모달닫기 버튼  */
+export const neonModalCloseButtonStyles = {
+  root: {
+    color: neon_colors.labelText,
+    background: 'transparent',
+    selectors: {
+      ':hover': {
+        color: '#cbe6ff',
+        background: neon_colors.hoverBg,
+      },
+    },
+  },
+};

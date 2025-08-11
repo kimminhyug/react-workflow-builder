@@ -4,9 +4,8 @@ import {
   applyEdgeChanges,
   applyNodeChanges,
   Background,
-  Controls,
-  MiniMap,
   ReactFlow,
+  useReactFlow,
   type Connection,
   type EdgeChange,
   type NodeChange,
@@ -29,13 +28,25 @@ export const WorkflowCanvas = () => {
   // ]);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
+  const { fitView } = useReactFlow();
+
+  useEffect(() => {
+    const handleResize = () => {
+      fitView({ padding: 0.3 });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [fitView]);
+
   const edgeTypes = {
     default: DefaultEdge,
   };
   const nodeTypes = {
     default: DefaultNode,
     task: DefaultNode,
-    input: DefaultNode,
+    object: DefaultNode,
     start: DefaultNode,
     end: DefaultNode,
   };
@@ -172,8 +183,8 @@ export const WorkflowCanvas = () => {
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
         >
-          <MiniMap />
-          <Controls />
+          {/* <MiniMap /> */}
+          {/* <Controls /> */}
           <Background />
         </ReactFlow>
       </div>

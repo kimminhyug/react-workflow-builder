@@ -1,4 +1,13 @@
-import { ComboBox, Dropdown, type IDropdownOption } from '@fluentui/react';
+import {
+  ComboBox,
+  Dropdown,
+  IconButton,
+  Modal,
+  PrimaryButton,
+  Stack,
+  TextField,
+  type IDropdownOption,
+} from '@fluentui/react';
 import { useAtom } from 'jotai';
 import { edgesAtom } from '../../../state/edges';
 import { selectedNodeAtom } from '../../../state/selectedNode';
@@ -7,10 +16,14 @@ import {
   neonComboBoxOptionStyles,
   neonComboBoxStyles,
   neonDropdownStyles,
+  neonModalCloseButtonStyles,
+  neonModalStyles,
+  neonModalTitle,
 } from '../../common/styles';
 import type { ICondition } from '../types';
-
-// 타입 정의
+import { typeOptions, conditionTypeOptions } from './Editor.constants';
+import { useState } from 'react';
+import { neonTextFieldStyles } from '../../common/styles';
 
 export const ConditionEditor = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
@@ -81,6 +94,42 @@ export const ConditionEditor = () => {
     });
   };
 
+  const [label, setLabel] = useState('');
+  const [type, setType] = useState<string>('primary');
+  const [conditionType, setConditionType] = useState<string>('static');
+
+  const addCondition = () => {
+    if (!label.trim()) return;
+    setNode((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          conditionList: [...conditionList, { label, type, conditionType }],
+        },
+      };
+    });
+    setLabel('');
+    setType('primary');
+    setConditionType('static');
+  };
+
+  const removeCondition = (index: number) => {
+    setNode((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          conditionList: conditionList.filter((_, i) => i !== index),
+        },
+      };
+    });
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <ComboBox
@@ -102,6 +151,68 @@ export const ConditionEditor = () => {
         selectedKeys={selectedFallback}
         onChange={onFallbackChange}
       />
+
+      <Stack tokens={{ childrenGap: 8 }}>
+        <h4>{node?.data.label} 조건 관리</h4>
+        <PrimaryButton text="조건 편집" onClick={() => setIsOpen(true)} />
+        <Modal
+          isOpen={isOpen}
+          onDismiss={() => setIsOpen(false)}
+          isBlocking={false}
+          styles={neonModalStyles}
+        >
+          <Stack horizontal horizontalAlign="space-between">
+            <h3 style={neonModalTitle}>{node?.data.label} 조건 편집</h3>
+            <IconButton
+              styles={neonModalCloseButtonStyles}
+              iconProps={{ iconName: 'Cancel' }}
+              onClick={() => setIsOpen(false)}
+            />
+          </Stack>
+
+          <Stack tokens={{ childrenGap: 12 }}>
+            <h4>현재 조건</h4>
+            {conditionList.length === 0 ? (
+              <div>조건이 없어요.</div>
+            ) : (
+              conditionList.map((c, idx) => (
+                <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
+                  <span style={{ flex: 1 }}>
+                    {c.label} ({c.type} / {c.conditionType})
+                  </span>
+                  <IconButton
+                    iconProps={{ iconName: 'Delete' }}
+                    onClick={() => removeCondition(idx)}
+                  />
+                </Stack>
+              ))
+            )}
+
+            <h4>조건 추가</h4>
+            <TextField
+              label="Label"
+              value={label}
+              styles={neonTextFieldStyles}
+              onChange={(_, v) => setLabel(v || '')}
+            />
+            <Dropdown
+              label="Type"
+              options={typeOptions}
+              selectedKey={type}
+              styles={neonDropdownStyles}
+              onChange={(_, o) => setType(o?.key as string)}
+            />
+            <Dropdown
+              label="Condition Type"
+              options={conditionTypeOptions}
+              selectedKey={conditionType}
+              styles={neonDropdownStyles}
+              onChange={(_, o) => setConditionType(o?.key as string)}
+            />
+            <PrimaryButton text="추가" onClick={addCondition} />
+          </Stack>
+        </Modal>
+      </Stack>
     </>
   );
 };
