@@ -16,7 +16,7 @@ import {
   neonComboBoxOptionStyles,
   neonComboBoxStyles,
   neonDropdownStyles,
-  neonModalCloseButtonStyles,
+  neonModalButtonStyles,
   neonModalStyles,
   neonModalTitle,
 } from '../../common/styles';
@@ -164,7 +164,7 @@ export const ConditionEditor = () => {
           <Stack horizontal horizontalAlign="space-between">
             <h3 style={neonModalTitle}>{node?.data.label} 조건 편집</h3>
             <IconButton
-              styles={neonModalCloseButtonStyles}
+              styles={neonModalButtonStyles}
               iconProps={{ iconName: 'Cancel' }}
               onClick={() => setIsOpen(false)}
             />
@@ -182,6 +182,7 @@ export const ConditionEditor = () => {
                   </span>
                   <IconButton
                     iconProps={{ iconName: 'Delete' }}
+                    styles={neonModalButtonStyles}
                     onClick={() => removeCondition(idx)}
                   />
                 </Stack>

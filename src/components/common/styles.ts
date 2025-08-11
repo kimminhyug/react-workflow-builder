@@ -42,8 +42,9 @@ const hoverFocusActiveMixin = {
     color: '#cbe6ff !important',
   },
   ':focus': {
-    border: `1px solid #91c6ff`,
+    border: `px solid #91c6ff`,
     boxShadow: `0 0 10px #91c6ff`,
+    outline: 'none',
     color: '#cbe6ff',
   },
   ':active': {
@@ -289,16 +290,19 @@ export const neonModalTitle = {
   margin: 0,
 };
 
-/**모달닫기 버튼  */
-export const neonModalCloseButtonStyles = {
+/** 버튼 공용  */
+export const neonModalButtonStyles: Partial<IButtonStyles> = {
+  rootHovered: {
+    ...hoverFocusActiveMixin[':hover'],
+    boxShadow: 'none',
+  },
+  rootFocused: { ...hoverFocusActiveMixin[':focus'], boxShadow: 'none' },
+  rootPressed: { ...hoverFocusActiveMixin[':active'], boxShadow: 'none' },
   root: {
     color: neon_colors.labelText,
     background: 'transparent',
     selectors: {
-      ':hover': {
-        color: '#cbe6ff',
-        background: neon_colors.hoverBg,
-      },
+      ...hoverFocusActiveMixin,
     },
   },
 };

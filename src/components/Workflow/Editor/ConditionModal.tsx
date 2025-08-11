@@ -3,10 +3,10 @@ import { Modal, Stack, TextField, Dropdown, PrimaryButton } from '@fluentui/reac
 import {
   neonModalStyles,
   neonModalTitle,
-  neonModalCloseButtonStyles,
   neonTextFieldStyles,
   neonDropdownStyles,
   neonButtonStyles,
+  neonModalButtonStyles,
 } from '../../common/styles';
 import { conditionTypeOptions } from './Editor.constants';
 import type { ICondition } from '../types';
@@ -46,7 +46,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave }: IConditionModalPro
           <PrimaryButton
             iconProps={{ iconName: 'Cancel' }}
             onClick={onDismiss}
-            styles={neonModalCloseButtonStyles}
+            styles={neonModalButtonStyles}
           />
         </Stack>
 
