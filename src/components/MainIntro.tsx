@@ -1,5 +1,5 @@
 import React from 'react';
-import { MainPageNode } from './Workflow/nodes/MainPageNode';
+import { MainPageNode } from './Workflow/Nodes/MainPageNode';
 
 // import { MainBackground } from './MainBackground';
 

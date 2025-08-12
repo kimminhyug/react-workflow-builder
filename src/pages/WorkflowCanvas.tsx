@@ -13,9 +13,9 @@ import {
 import { useAtom } from 'jotai';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
 import { Control } from '../components/Workflow/Control/Control';
-import DefaultEdge from '../components/Workflow/edges/DefaultEdge';
+import DefaultEdge from '../components/Workflow/Edges/DefaultEdge';
 import { NodeEditor } from '../components/Workflow/NodeEditor';
-import { DefaultNode } from '../components/Workflow/nodes/DefaultNode';
+import { DefaultNode } from '../components/Workflow/Nodes/DefaultNode';
 import type { CustomNode } from '../components/Workflow/types';
 import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
 import { edgesAtom, type CustomEdge } from '../state/edges';

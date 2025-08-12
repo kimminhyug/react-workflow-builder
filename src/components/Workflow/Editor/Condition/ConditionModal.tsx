@@ -7,9 +7,9 @@ import {
   neonDropdownStyles,
   neonButtonStyles,
   neonModalButtonStyles,
-} from '../../common/styles';
-import { conditionTypeOptions } from './Editor.constants';
-import type { ICondition } from '../types';
+} from '../../../common/styles';
+import { conditionTypeOptions } from '../Editor.constants';
+import type { ICondition } from '../../types';
 interface IConditionModalProps {
   isOpen: boolean; // 모달 열림
   onDismiss: () => void; // 모달 닫기

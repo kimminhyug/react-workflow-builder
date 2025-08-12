@@ -9,8 +9,8 @@ import {
   type IDropdownOption,
 } from '@fluentui/react';
 import { useAtom } from 'jotai';
-import { edgesAtom } from '../../../state/edges';
-import { selectedNodeAtom } from '../../../state/selectedNode';
+import { edgesAtom } from '../../../../state/edges';
+import { selectedNodeAtom } from '../../../../state/selectedNode';
 import {
   neonCaretDownButtonStyles,
   neonComboBoxOptionStyles,
@@ -19,11 +19,12 @@ import {
   neonModalButtonStyles,
   neonModalStyles,
   neonModalTitle,
-} from '../../common/styles';
-import type { ICondition } from '../types';
-import { typeOptions, conditionTypeOptions } from './Editor.constants';
+} from '../../../common/styles';
+import type { ICondition } from '../../types';
+import { typeOptions, conditionTypeOptions } from '../Editor.constants';
 import { useState } from 'react';
-import { neonTextFieldStyles } from '../../common/styles';
+import { neonTextFieldStyles } from '../../../common/styles';
+import { ConditionList } from './ConditionList';
 
 export const ConditionEditor = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
@@ -175,21 +176,9 @@ export const ConditionEditor = () => {
             {conditionList.length === 0 ? (
               <div>조건이 없어요.</div>
             ) : (
-              conditionList.map((c, idx) => (
-                <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
-                  <span style={{ flex: 1 }}>
-                    {c.label} ({c.type} / {c.conditionType})
-                  </span>
-                  <IconButton
-                    iconProps={{ iconName: 'Delete' }}
-                    styles={neonModalButtonStyles}
-                    onClick={() => removeCondition(idx)}
-                  />
-                </Stack>
-              ))
+              <ConditionList conditions={conditionList} onDelete={removeCondition} />
             )}
 
-            <h4>조건 추가</h4>
             <TextField
               label="Label"
               value={label}

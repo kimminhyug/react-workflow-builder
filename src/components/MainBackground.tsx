@@ -1,6 +1,6 @@
 // import { type Edge, type Node } from '@xyflow/react';
 import React from 'react';
-import { MainPageNode } from './Workflow/nodes/MainPageNode';
+import { MainPageNode } from './Workflow/Nodes/MainPageNode';
 // import { MainPageNode } from './Workflow/nodes/MainPageNode';
 
 export const MainBackground: React.FC = () => {

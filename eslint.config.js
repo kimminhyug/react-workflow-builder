@@ -12,6 +12,14 @@ export default [
   js.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
+    overrides: [
+      {
+        files: ['**/*.d.ts', '**/*/types.ts'],
+        rules: {
+          '@typescript-eslint/no-unused-vars': 'off',
+        },
+      },
+    ],
     languageOptions: {
       parser: tsParser,
       parserOptions: {

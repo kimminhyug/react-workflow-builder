@@ -5,7 +5,7 @@ import { PrimaryButton, TextField } from '@fluentui/react';
 import { edgesAtom } from '../../state/edges';
 import { nodesAtom } from '../../state/nodes';
 import type { CustomNode } from './types';
-import { ConditionEditor } from './Editor/ConditionEditor';
+import { ConditionEditor } from './Editor/Condition/ConditionEditor';
 import { neonTextFieldStyles, neonButtonStyles } from '../common/styles';
 // 스타일즈 하나 만들어야함
 
