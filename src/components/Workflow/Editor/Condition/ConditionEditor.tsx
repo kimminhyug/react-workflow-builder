@@ -25,6 +25,7 @@ import { typeOptions, conditionTypeOptions } from '../Editor.constants';
 import { useState } from 'react';
 import { neonTextFieldStyles } from '../../../common/styles';
 import { ConditionList } from './ConditionList';
+import { ConditionModal } from './ConditionModal';
 
 export const ConditionEditor = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
@@ -133,75 +134,15 @@ export const ConditionEditor = () => {
 
   return (
     <>
-      <ComboBox
-        label="분기"
-        allowFreeform
-        comboBoxOptionStyles={neonComboBoxOptionStyles}
-        options={options}
-        styles={neonComboBoxStyles}
-        caretDownButtonStyles={neonCaretDownButtonStyles}
-        selectedKey={selectedPrimary || ''}
-        onChange={onPrimaryChange}
-        text={selectedPrimary || ''}
-      />
-      <Dropdown
-        label="fallback"
-        multiSelect
-        styles={neonDropdownStyles}
-        options={options.filter((o) => o.key !== selectedPrimary)}
-        selectedKeys={selectedFallback}
-        onChange={onFallbackChange}
-      />
-
       <Stack tokens={{ childrenGap: 8 }}>
         <h4>{node?.data.label} 조건 관리</h4>
         <PrimaryButton text="조건 편집" onClick={() => setIsOpen(true)} />
-        <Modal
+
+        <ConditionModal
           isOpen={isOpen}
           onDismiss={() => setIsOpen(false)}
-          isBlocking={false}
-          styles={neonModalStyles}
-        >
-          <Stack horizontal horizontalAlign="space-between">
-            <h3 style={neonModalTitle}>{node?.data.label} 조건 편집</h3>
-            <IconButton
-              styles={neonModalButtonStyles}
-              iconProps={{ iconName: 'Cancel' }}
-              onClick={() => setIsOpen(false)}
-            />
-          </Stack>
-
-          <Stack tokens={{ childrenGap: 12 }}>
-            <h4>현재 조건</h4>
-            {conditionList.length === 0 ? (
-              <div>조건이 없어요.</div>
-            ) : (
-              <ConditionList conditions={conditionList} onDelete={removeCondition} />
-            )}
-
-            <TextField
-              label="Label"
-              value={label}
-              styles={neonTextFieldStyles}
-              onChange={(_, v) => setLabel(v || '')}
-            />
-            <Dropdown
-              label="Type"
-              options={typeOptions}
-              selectedKey={type}
-              styles={neonDropdownStyles}
-              onChange={(_, o) => setType(o?.key as string)}
-            />
-            <Dropdown
-              label="Condition Type"
-              options={conditionTypeOptions}
-              selectedKey={conditionType}
-              styles={neonDropdownStyles}
-              onChange={(_, o) => setConditionType(o?.key as string)}
-            />
-            <PrimaryButton text="추가" onClick={addCondition} />
-          </Stack>
-        </Modal>
+          onSave={addCondition}
+        ></ConditionModal>
       </Stack>
     </>
   );
