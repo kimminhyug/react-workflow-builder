@@ -35,7 +35,7 @@ const neonLabelBase = {
 };
 
 /** 공통 호버 스타일 */
-const hoverFocusActiveMixin = {
+export const hoverFocusActiveMixin = {
   ':hover': {
     backgroundColor: neon_colors.hoverBg,
     boxShadow: `0 0 8px ${neon_colors.labelText}`,
