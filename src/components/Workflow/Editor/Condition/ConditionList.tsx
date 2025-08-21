@@ -46,7 +46,12 @@ export const ConditionList = ({ conditions, onDelete }: IConditionListProps) => 
               styles={neonModalButtonStyles}
             />
           </Stack>
-          <Table columns={columns} data={conditions} />
+          <Table
+            columns={columns}
+            data={conditions}
+            onClickRow={(e, status) => null}
+            enableRowCheckbox
+          />
         </Stack>
       </Modal>
     </Stack>
