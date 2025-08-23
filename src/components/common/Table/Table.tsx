@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
+import { useTableController } from './hook/useTableController';
 
 interface ITableProps<T extends object> {
   data: T[];

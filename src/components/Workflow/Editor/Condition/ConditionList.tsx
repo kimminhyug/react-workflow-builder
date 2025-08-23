@@ -6,9 +6,12 @@ import { Table } from '../../../common/Table/Table';
 import type { ICondition } from '../../types';
 import { neonModalButtonStyles, neonModalStyles, neonModalTitle } from '../../../common/styles';
 import { useState } from 'react';
+import { useTableController } from '../../../common/Table/hook/useTableController';
 
+// conditions props 변경 필요 싱크 불일치
 export const ConditionList = ({ conditions, onDelete }: IConditionListProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const onDismiss = () => {
     setIsOpen(false);
   };
@@ -18,8 +21,22 @@ export const ConditionList = ({ conditions, onDelete }: IConditionListProps) => 
     { accessorKey: 'conditionType', header: '조건 타입' },
     { accessorKey: 'dataAccessKey', header: 'dataAccessKey' },
     { accessorKey: 'pattern', header: '패턴' },
+    {
+      id: 'actions',
+      header: '액션',
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          <button onClick={() => update(row.original.label, { label: '새 라벨' })}>수정</button>
+          <button onClick={() => remove(row.original.label)}>삭제</button>
+        </div>
+      ),
+    },
     // { accessorKey: 'expression', header: 'expression',  },
   ];
+  const { data, add, update, remove } = useTableController<ICondition>({
+    api: {},
+    data: conditions,
+  });
 
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
@@ -46,12 +63,7 @@ export const ConditionList = ({ conditions, onDelete }: IConditionListProps) => 
               styles={neonModalButtonStyles}
             />
           </Stack>
-          <Table
-            columns={columns}
-            data={conditions}
-            onClickRow={(e, status) => null}
-            enableRowCheckbox
-          />
+          <Table columns={columns} data={data} onClickRow={(e, status) => null} enableRowCheckbox />
         </Stack>
       </Modal>
     </Stack>
