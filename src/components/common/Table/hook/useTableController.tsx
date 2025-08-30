@@ -9,35 +9,50 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (id: string) => {
+    console.log(api);
     setLoading(true);
     // const response  = await api.get
+    let response = [];
+    if (Array.isArray(api.data)) {
+      response = [...api.data];
+    } else {
+      response = [api.data];
+    }
+
+    setData(response);
+    setLoading(false);
+    return response;
+  };
+
+  const add = async (item: T) => {
+    // await api.post(item);
+    const id = Date.now().toString();
+    const response = await fetchData(id);
+    localStorage.setItem(id ?? Date.now().toString(), JSON.stringify(response));
+  };
+
+  const update = async (id: string, item: Partial<T>) => {
+    // await api.put(id, item);
+    const response = await fetchData(id);
+    localStorage.setItem(id ?? Date.now().toString(), JSON.stringify(response));
+  };
+
+  const remove = async (id: string) => {
+    // await api.delete(id);
+    const response = await fetchData(id);
+    // if(statusCode===200)
+    localStorage.removeItem(id ?? Date.now().toString());
+  };
+
+  useEffect(() => {
+    // fetchData();
     if (Array.isArray(api.data)) {
       setData([...api.data]);
     } else {
       setData([api.data]);
     }
-    setLoading(false);
-  };
-
-  const add = async (item: T) => {
-    // await api.post(item);
-    fetchData();
-  };
-
-  const update = async (id: string, item: Partial<T>) => {
-    // await api.put(id, item);
-    fetchData();
-  };
-
-  const remove = async (id: string) => {
-    // await api.delete(id);
-    fetchData();
-  };
-
-  useEffect(() => {
-    // fetchData();
-  }, []);
+  }, [api.data]);
 
   return { data, loading, add, update, remove };
 };

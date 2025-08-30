@@ -274,7 +274,7 @@ export const edgeStyles = mergeStyles({
 /** 모달  */
 export const neonModalStyles = {
   main: {
-    maxWidth: 600,
+    maxWidth: 800,
     padding: 20,
     backgroundColor: neon_colors.background,
     border: `1px solid ${neon_colors.border}`,

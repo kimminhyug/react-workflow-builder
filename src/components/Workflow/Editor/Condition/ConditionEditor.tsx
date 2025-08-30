@@ -16,15 +16,15 @@ export const ConditionEditor = () => {
   const [type, setType] = useState<string>('primary');
   const [conditionType, setConditionType] = useState<string>('static');
 
-  const addCondition = () => {
-    if (!label.trim()) return;
+  const addCondition = (condition: ICondition) => {
+    if (!condition.label.trim()) return;
     setNode((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
         data: {
           ...prev.data,
-          conditionList: [...conditionList, { label, type, conditionType }],
+          conditionList: [...conditionList, condition],
         },
       };
     });
@@ -41,7 +41,7 @@ export const ConditionEditor = () => {
         <h4>{node?.data.label} 조건 관리</h4>
         <PrimaryButton text="조건 편집" onClick={() => setIsOpen(true)} />
         <ConditionList
-          conditions={conditionList}
+          // conditions={conditionList}
           onDelete={function (idx: number): void {
             throw new Error('Function not implemented.');
           }}

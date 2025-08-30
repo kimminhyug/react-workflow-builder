@@ -1,6 +1,6 @@
 import type { ICondition } from '../../types';
 
 export interface IConditionListProps {
-  conditions: ICondition[];
+  conditions?: ICondition[];
   onDelete: (idx: number) => void;
 }

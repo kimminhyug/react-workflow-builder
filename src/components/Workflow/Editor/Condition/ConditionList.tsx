@@ -5,11 +5,20 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Table } from '../../../common/Table/Table';
 import type { ICondition } from '../../types';
 import { neonModalButtonStyles, neonModalStyles, neonModalTitle } from '../../../common/styles';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTableController } from '../../../common/Table/hook/useTableController';
+import { useAtom } from 'jotai';
+import { selectedNodeAtom } from '../../../../state/selectedNode';
 
 // conditions props 변경 필요 싱크 불일치
-export const ConditionList = ({ conditions, onDelete }: IConditionListProps) => {
+
+export const ConditionList = ({ onDelete }: IConditionListProps) => {
+  const [node, setNode] = useAtom(selectedNodeAtom);
+  const conditions: ICondition[] = useMemo(
+    () => (node?.data?.conditionList as ICondition[]) || [],
+    [node?.data?.conditionList]
+  );
+  console.log(node);
   const [isOpen, setIsOpen] = useState(false);
 
   const onDismiss = () => {
