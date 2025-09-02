@@ -10,7 +10,6 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = async (id: string) => {
-    console.log(api);
     setLoading(true);
     // const response  = await api.get
     let response = [];

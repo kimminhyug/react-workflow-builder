@@ -2,10 +2,12 @@ import type { Node } from '@xyflow/react';
 
 // 시작준비중 | 대기중 | 실행중 | 완료
 export type NodeStatus = 'startWaiting' | 'waiting' | 'running' | 'done';
+export type ConditionType = 'static' | 'regex' | 'expression';
+
 export interface ICondition {
   label: string;
   type: 'primary' | 'fallback';
-  conditionType: 'static' | 'regex' | 'expression';
+  conditionType: ConditionType;
   dataAccessKey?: string;
   // 정규식
   pattern?: string;
