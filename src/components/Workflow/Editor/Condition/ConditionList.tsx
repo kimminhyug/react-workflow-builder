@@ -55,10 +55,11 @@ export const ConditionList = ({ onDelete }: IConditionListProps) => {
     data: conditions,
   });
 
+  console.log(data);
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
       <PrimaryButton onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
-      {conditions.map((condition, idx) => (
+      {data.map((condition, idx) => (
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
           <span style={{ flex: 1 }}>
             {condition.label} ({condition.type} / {condition.conditionType})
@@ -66,7 +67,7 @@ export const ConditionList = ({ onDelete }: IConditionListProps) => {
           <IconButton
             iconProps={{ iconName: 'Delete' }}
             styles={neonModalButtonStyles}
-            onClick={() => onDelete(idx)}
+            onClick={() => remove(condition.label)}
           />
         </Stack>
       ))}

@@ -9,14 +9,17 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (id: string) => {
+  //test fn
+  const fetchData = async (id: string, isRemove = false) => {
     setLoading(true);
     // const response  = await api.get
-    let response = [];
-    if (Array.isArray(api.data)) {
-      response = [...api.data];
-    } else {
-      response = [api.data];
+    let response: T[] = [];
+    if (!isRemove) {
+      if (Array.isArray(api.data)) {
+        response = [...api.data];
+      } else {
+        response = [api.data];
+      }
     }
 
     setData(response);
@@ -39,7 +42,7 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
 
   const remove = async (id: string) => {
     // await api.delete(id);
-    const response = await fetchData(id);
+    const response = await fetchData(id, true);
     // if(statusCode===200)
     localStorage.removeItem(id ?? Date.now().toString());
   };
