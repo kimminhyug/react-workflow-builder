@@ -1,5 +1,3 @@
-import { Stack, IconButton, Modal, PrimaryButton } from '@fluentui/react';
-
 import type { IConditionListProps } from './types';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Table } from '../../../common/Table/Table';
@@ -11,6 +9,7 @@ import { useAtom } from 'jotai';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
 import { ConditionModal } from './ConditionModal';
 import { TableActionButtons } from '../../../common/Table/TableActionButtons';
+import { IconButton, Button, Modal, Stack } from '../../../common/UI';
 
 // conditions props 변경 필요 싱크 불일치
 
@@ -58,14 +57,14 @@ export const ConditionList = ({ onDelete }: IConditionListProps) => {
   console.log(data);
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
-      <PrimaryButton onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
+      <Button onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
       {data.map((condition, idx) => (
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
           <span style={{ flex: 1 }}>
             {condition.label} ({condition.type} / {condition.conditionType})
           </span>
           <IconButton
-            iconProps={{ iconName: 'Delete' }}
+            icon="Delete"
             styles={neonModalButtonStyles}
             onClick={() => remove(condition.label)}
           />
@@ -80,7 +79,7 @@ export const ConditionList = ({ onDelete }: IConditionListProps) => {
         <Stack tokens={{ childrenGap: 15, padding: 5 }}>
           <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
             <h3 style={neonModalTitle}>조건 상세 보기</h3>
-            <PrimaryButton
+            <Button
               iconProps={{ iconName: 'Cancel' }}
               onClick={onDismiss}
               styles={neonModalButtonStyles}

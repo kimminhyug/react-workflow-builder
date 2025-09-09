@@ -5,8 +5,10 @@ import { useAtom, useAtomValue } from 'jotai';
 
 import { nodesAtom } from '../../../state/nodes';
 import { getEdgeColor } from '../constants/workflow.constants';
-import { Stack, TextField } from '@fluentui/react';
+
 import { edgeStyles, neonTextFieldStyles } from '../../common/styles';
+import { Stack } from '../../common/UI/Layout/Stack';
+import { TextField } from '../../common/UI/Forms/TextField';
 
 const DefaultEdge = ({
   id,

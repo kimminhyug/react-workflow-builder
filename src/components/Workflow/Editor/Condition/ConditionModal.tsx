@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Modal, Stack, TextField, Dropdown, PrimaryButton } from '@fluentui/react';
 import {
   neonModalStyles,
   neonModalTitle,
@@ -12,6 +11,7 @@ import { conditionTypeOptions } from '../Editor.constants';
 import type { ConditionType, ICondition } from '../../types';
 import { useAtom } from 'jotai';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
+import { Button, Dropdown, Modal, Stack, TextField } from '../../../common/UI';
 interface IConditionModalProps {
   isOpen: boolean; // 모달 열림
   onDismiss: () => void; // 모달 닫기
@@ -108,7 +108,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
           <h3 style={neonModalTitle}>조건 추가</h3>
-          <PrimaryButton
+          <Button
             iconProps={{ iconName: 'Cancel' }}
             onClick={onDismiss}
             styles={neonModalButtonStyles}
@@ -156,7 +156,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
           />
         )}
 
-        <PrimaryButton text="저장" onClick={handleSave} styles={neonButtonStyles} />
+        <Button text="저장" onClick={handleSave} styles={neonButtonStyles} />
       </Stack>
     </Modal>
   );

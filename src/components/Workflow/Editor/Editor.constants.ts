@@ -1,4 +1,4 @@
-import type { IDropdownOption } from '@fluentui/react';
+import type { IDropdownOption } from '../../common/UI';
 
 export const typeOptions: IDropdownOption[] = [
   { key: 'primary', text: 'Primary' },

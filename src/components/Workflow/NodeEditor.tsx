@@ -1,12 +1,14 @@
 import { selectedNodeAtom } from '../../state/selectedNode';
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { PrimaryButton, TextField } from '@fluentui/react';
+
 import { edgesAtom } from '../../state/edges';
 import { nodesAtom } from '../../state/nodes';
 import type { CustomNode } from './types';
 import { ConditionEditor } from './Editor/Condition/ConditionEditor';
 import { neonTextFieldStyles, neonButtonStyles } from '../common/styles';
+import { TextField } from '../common/UI/Forms/TextField';
+import { Button } from '../common/UI';
 // 스타일즈 하나 만들어야함
 
 export const NodeEditor = () => {
@@ -75,7 +77,7 @@ export const NodeEditor = () => {
         </>
       )}
 
-      <PrimaryButton text="노드 삭제" onClick={deleteSelectedNode} styles={neonButtonStyles} />
+      <Button text="노드 삭제" onClick={deleteSelectedNode} styles={neonButtonStyles} />
     </div>
   );
 };
