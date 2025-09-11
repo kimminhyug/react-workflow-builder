@@ -13,7 +13,7 @@ import { IconButton, Button, Modal, Stack } from '../../../common/UI';
 
 // conditions props 변경 필요 싱크 불일치
 
-export const ConditionList = ({ onDelete }: IConditionListProps) => {
+export const ConditionList = () => {
   const [node, setNode] = useAtom(selectedNodeAtom);
   const [selectedConditionId, setSelectedConditionId] = useState('');
   const conditions: ICondition[] = useMemo(
@@ -54,7 +54,6 @@ export const ConditionList = ({ onDelete }: IConditionListProps) => {
     data: conditions,
   });
 
-  console.log(data);
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
       <Button onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />

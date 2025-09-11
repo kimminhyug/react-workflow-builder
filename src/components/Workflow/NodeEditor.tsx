@@ -43,7 +43,7 @@ export const NodeEditor = () => {
 
   return (
     <div className="neon-panel">
-      <h3 className="neon-title">노드 편집기</h3>
+      <h3 className="neon-title">설정 편집기</h3>
 
       {selectedNode && (
         <>

@@ -14,7 +14,6 @@ const DefaultEdge = ({
   id,
   source,
   sourceX,
-
   sourceY,
   targetX,
   targetY,
@@ -56,6 +55,7 @@ const DefaultEdge = ({
     setEditingEdgeId(id);
     setLabelInput(data?.label ?? '');
   };
+  const isEditing = editingEdgeId === id;
 
   return (
     <>
@@ -63,11 +63,12 @@ const DefaultEdge = ({
         <Stack
           className="edge-label-container"
           style={{
+            zIndex: isEditing ? 1000000 : 10,
             position: 'absolute',
             transform: `translate(${labelX}px, ${labelY}px) translate(-50%, -50%)`,
           }}
         >
-          {editingEdgeId === id ? (
+          {isEditing ? (
             <TextField
               autoFocus
               value={labelInput}
