@@ -5,6 +5,7 @@ export const allowedConnections: Record<NodeType, NodeType[]> = {
   input: ['task'],
   task: ['task', 'end'],
   end: [],
+  object: [],
 };
 
 // <-> 엣지 연결 가능한지 확인

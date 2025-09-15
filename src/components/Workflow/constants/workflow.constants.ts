@@ -16,7 +16,8 @@ export const defaultEdgeOptions = {
 export const getEdgeColor = (data?: IEdgeData, sourceNode?: CustomNode): string => {
   if (!data || !sourceNode) return 'auto';
 
-  const condition = sourceNode.data?.condition?.toLowerCase();
+  // 배열 형태로 변경되어 수정필요
+  const condition = sourceNode.data?.condition?.[0]?.label.toLowerCase();
   const fallback = (sourceNode.data?.fallback || []).map((f) => f.toLowerCase());
   const label = data?.label?.toLowerCase();
 

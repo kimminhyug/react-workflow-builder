@@ -29,6 +29,6 @@ export interface INodeData {
   condition?: ICondition[];
 }
 type unknownRecord = { [key: string]: unknown };
-export type NodeType = 'object' | 'task' | 'start' | 'end';
+export type NodeType = 'object' | 'task' | 'start' | 'end' | 'input';
 
 export type CustomNode = Node<INodeData & unknownRecord, NodeType>;
