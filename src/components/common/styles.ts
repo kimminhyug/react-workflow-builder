@@ -29,7 +29,7 @@ export const neonFieldGroupBase = {
 };
 
 /** 공통 텍스트 색상  */
-const neonLabelBase = {
+export const neonLabelBase = {
   color: neon_colors.labelText,
   textShadow: `0 0 3px ${neon_colors.labelText}`,
 };

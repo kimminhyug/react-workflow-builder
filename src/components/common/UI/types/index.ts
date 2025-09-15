@@ -6,6 +6,8 @@ import type {
   IStackProps as IFluentStackProps,
   IModalProps as IFluentModalProps,
   IIconProps as IFluentIconProps,
+  IPivotProps as IFluentPivotProps,
+  IPivotItemProps as IFluentPivotItemProps,
 } from '@fluentui/react';
 
 export interface IButtonProps extends IFluentButtonProps {
@@ -27,6 +29,13 @@ export interface IModalProps extends IFluentModalProps {
   'data-testid'?: string;
 }
 export interface IIconProps extends IFluentIconProps {
+  'data-testid'?: string;
+}
+
+export interface IPivotProps extends IFluentPivotProps {
+  'data-testid'?: string;
+}
+export interface IPivotItemProps extends IFluentPivotItemProps {
   'data-testid'?: string;
 }
 
