@@ -35,6 +35,12 @@ export interface IIconProps extends IFluentIconProps {
 export interface IPivotProps extends IFluentPivotProps {
   'data-testid'?: string;
 }
+export interface ISidePanelTabItem {
+  key: string;
+  headerText: string;
+  content: React.ReactNode;
+}
+
 export interface IPivotItemProps extends IFluentPivotItemProps {
   'data-testid'?: string;
 }

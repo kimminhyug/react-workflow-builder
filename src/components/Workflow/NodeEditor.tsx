@@ -9,7 +9,7 @@ import { ConditionEditor } from './Editor/Condition/ConditionEditor';
 import { neonTextFieldStyles, neonButtonStyles } from '../common/styles';
 import { TextField } from '../common/UI/Forms/TextField';
 import { Button } from '../common/UI';
-import { TestPanel } from './Editor/Panel';
+import { Tabs } from './Editor/Tabs';
 // 스타일즈 하나 만들어야함
 
 export const NodeEditor = () => {
@@ -45,7 +45,7 @@ export const NodeEditor = () => {
   return (
     <div className="neon-panel">
       <h3 className="neon-title">설정 편집기</h3>
-      <TestPanel />
+      <Tabs />
       {selectedNode && (
         <>
           <TextField
