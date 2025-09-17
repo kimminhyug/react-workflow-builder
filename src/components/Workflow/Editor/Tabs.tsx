@@ -2,17 +2,30 @@ import { useAtomValue } from 'jotai';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 
 import { Pivot, PivotItem, SidePanelTabs, type ISidePanelTabItem } from '../../common/UI';
-import { Label } from '@fluentui/react';
+import { Icon, Label } from '@fluentui/react';
 import { ConditionEditor } from './Condition/ConditionEditor';
 import { NodeContentWrapper } from './NodeContentWrapper';
+import { useState } from 'react';
+import { WidgetGrid, type IWidget } from '../../common/WidgetGrid/WidgetGrid';
 
 export const Tabs = () => {
   const node = useAtomValue(selectedNodeAtom);
+
+  const [widgets, setWidgets] = useState<IWidget[]>([
+    { id: 1, label: '이미지' },
+    { id: 2, label: '아이콘', icon: <Icon iconName="Emoji2" /> },
+    { id: 3, label: '커스텀', icon: <div style={{ width: 24, height: 24, background: 'red' }} /> },
+  ]);
+
   const items: ISidePanelTabItem[] = [
     {
       key: 'tab1',
       headerText: '항목 추가',
-      content: <NodeContentWrapper requireNode={false}>항목 추가 필요</NodeContentWrapper>,
+      content: (
+        <NodeContentWrapper requireNode={false}>
+          <WidgetGrid widgets={widgets}></WidgetGrid>
+        </NodeContentWrapper>
+      ),
     },
     {
       key: 'tab2',
