@@ -1,6 +1,5 @@
 {
-	"name": "Node.js & TypeScript",
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye-node22",
-    "postCreateCommand": "yarn install"
-	
-  }
+  "name": "Node.js & TypeScript",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bullseye",
+  "postCreateCommand": "yarn install"
+}
