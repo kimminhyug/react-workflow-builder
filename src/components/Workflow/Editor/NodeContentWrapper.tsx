@@ -21,5 +21,5 @@ export const NodeContentWrapper: React.FC<INodeContentWrapperProps> = ({
     return <Label styles={{ root: neonLabelBase }}>노드를 선택해주세요</Label>;
   }
 
-  return <Stack tokens={{ childrenGap: 8 }}>{children}</Stack>;
+  return <Stack tokens={{ childrenGap: 8, padding: '15px 0px' }}>{children}</Stack>;
 };
