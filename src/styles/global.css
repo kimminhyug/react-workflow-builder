@@ -356,7 +356,7 @@ body {
 .widget-grid {
   display: grid;
   /* 일단 부모 사이즈 따라 조정하고, 최소 48로 */
-  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
   gap: 8px;
 }
 
@@ -365,6 +365,7 @@ body {
   text-align: center;
   align-content: center;
 
+  aspect-ratio: 1 / 1;
   cursor: pointer;
   background: var(--neon-background);
   border: 1px solid var(--neon-border);
@@ -387,8 +388,8 @@ body {
   background: var(--neon-active-bg);
 }
 
-.widget-icon.neon img,
-.widget-icon.neon svg {
+.widget-icon.neon {
+  font-size: 1.5rem;
   justify-items: center;
   filter: drop-shadow(0 0 6px var(--neon-border));
 }
