@@ -232,12 +232,23 @@ body {
 /*폼? 영역*/
 .neon-panel {
   padding: 20px;
+  width: 410px;
   background-color: #0a192f;
   border: 1px solid #2381fc;
   box-shadow: 0 0 15px #2381fc;
   border-radius: 8px;
   color: #ffffff;
+  transition: all 0.2s;
   font-family: 'Pretendard', sans-serif;
+}
+
+.neon-panel.closed {
+  /* padding + contents */
+  transform: translateX(calc(100% - 80px));
+}
+
+.neon-panel.open {
+  transform: translateX(0);
 }
 
 .neon-panel-side {

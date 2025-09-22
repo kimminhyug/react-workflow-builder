@@ -47,7 +47,7 @@ export const NodeEditor = () => {
   };
 
   return (
-    <div className="neon-panel">
+    <div className={`neon-panel ${isOpen ? 'open' : 'closed'}`}>
       <div className="neon-panel-side" onClick={togglePanel}>
         <div className="neon-panel-side-button">
           {isOpen ? (
