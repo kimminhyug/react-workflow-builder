@@ -36,7 +36,7 @@ export const Tabs = () => {
     {
       id: 4,
       label: '조건 노드 추가',
-      icon: <Icon iconName="Branch" />,
+      icon: <Icon iconName="BranchFork" />,
     },
 
     {

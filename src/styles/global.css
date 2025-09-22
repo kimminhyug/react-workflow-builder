@@ -240,6 +240,22 @@ body {
   font-family: 'Pretendard', sans-serif;
 }
 
+.neon-panel-side {
+  position: relative;
+  top: calc(50% - 1em);
+  /* padding - half font-size */
+  left: calc(-20px + -0.7rem);
+  width: fit-content;
+  height: 1rem;
+}
+.neon-panel-side-button {
+  cursor: pointer;
+  background: #2571d4;
+  box-shadow: 0 0 2px 1px #2571d4;
+  border-radius: 3px;
+  padding: 0.2rem 0.25rem;
+  /* aspect-ratio: 1/1; */
+}
 .neon-title {
   font-size: 18px;
   font-weight: bold;
