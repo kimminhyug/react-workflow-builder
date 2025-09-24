@@ -11,7 +11,8 @@ import { NodeContentWrapper } from './NodeContentWrapper';
 
 export const Tabs = () => {
   const node = useAtomValue(selectedNodeAtom);
-  const { addTaskNode } = useWorkflow();
+  const { addTaskNode, addSwitchNode, addMergeNode, addDecisionNode, addEndNode, addStartNode } =
+    useWorkflow();
   const [widgets] = useState<IWidget[]>([
     // 기존 작업 노드
     {
@@ -25,36 +26,53 @@ export const Tabs = () => {
       id: 2,
       label: 'Start 노드 추가',
       icon: <Icon iconName="Play" />,
+      onClick: addStartNode,
     },
 
     {
       id: 3,
       label: 'End 노드 추가',
       icon: <Icon iconName="Stop" />,
+      onClick: addEndNode,
     },
 
     {
       id: 4,
       label: '조건 노드 추가',
       icon: <Icon iconName="BranchFork" />,
+      onClick: addDecisionNode,
     },
-
     {
       id: 5,
-      label: 'Delay 노드 추가',
-      icon: <Icon iconName="Clock" />,
+      label: '병합 노드 추가',
+      icon: <Icon iconName="MergeDuplicate" />,
+      onClick: addMergeNode,
+    },
+    {
+      id: 6,
+      label: '스위치 노드 추가',
+      icon: <Icon iconName="DOM" />,
+      onClick: addSwitchNode,
     },
 
     {
-      id: 6,
+      id: 7,
+      label: 'Delay 노드 추가',
+      icon: <Icon iconName="Clock" />,
+      onClick: () => alert('준비중'),
+    },
+
+    {
+      id: 8,
       label: 'API 노드 추가',
+      onClick: () => alert('준비중'),
     },
   ]);
 
   const items: ISidePanelTabItem[] = useMemo(
     () => [
       {
-        key: 'tab1',
+        key: 'widgetGrid',
         headerText: '항목 추가',
         content: (
           <NodeContentWrapper requireNode={false}>
@@ -63,7 +81,7 @@ export const Tabs = () => {
         ),
       },
       {
-        key: 'tab2',
+        key: 'properties',
         headerText: '속성 / 설정',
         content: (
           <NodeContentWrapper>
@@ -78,7 +96,7 @@ export const Tabs = () => {
         ),
       },
       {
-        key: 'tab3',
+        key: 'style',
         headerText: '스타일',
         content: (
           <NodeContentWrapper>
@@ -87,7 +105,7 @@ export const Tabs = () => {
         ),
       },
       {
-        key: 'tab3',
+        key: 'logs',
         headerText: '임시(노드 동작 로그?)',
         content: (
           <NodeContentWrapper>
@@ -99,7 +117,7 @@ export const Tabs = () => {
     []
   );
   return (
-    <SidePanelTabs items={items} defaultSelectedKey="props" />
+    <SidePanelTabs items={items} defaultSelectedKey="properties" />
     // <Pivot aria-label="" linkFormat="tabs">
     //   <PivotItem headerText="항목 추가">
     //     <NodeContentWrapper requireNode={false}>항목 추가 필요</NodeContentWrapper>

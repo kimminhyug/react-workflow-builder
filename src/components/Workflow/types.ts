@@ -27,8 +27,20 @@ export interface INodeData {
   expression?: string;
   // 시물레이션 분기용
   condition?: ICondition[];
+  // switch case node용
+  cases?: string[];
+  // merge node용
+  inputs?: string[];
 }
 type unknownRecord = { [key: string]: unknown };
-export type NodeType = 'object' | 'task' | 'start' | 'end' | 'input';
+export type NodeType =
+  | 'object'
+  | 'task'
+  | 'start'
+  | 'end'
+  | 'input'
+  | 'switch'
+  | 'merge'
+  | 'decision';
 
 export type CustomNode = Node<INodeData & unknownRecord, NodeType>;

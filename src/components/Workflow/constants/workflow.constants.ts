@@ -1,5 +1,5 @@
 import type { IEdgeData } from '../../../state/edges';
-import type { CustomNode } from '../types';
+import type { CustomNode, INodeData } from '../types';
 
 export const defaultEdgeOptions = {
   animated: true,
@@ -29,4 +29,9 @@ export const getEdgeColor = (data?: IEdgeData, sourceNode?: CustomNode): string 
   if (fallback.includes(label)) return '#facc15';
   // 예상치못한경우
   return '#aaa';
+};
+
+export const nodeInitializeProperties: INodeData = {
+  taskName: '',
+  status: 'startWaiting',
 };

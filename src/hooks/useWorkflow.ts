@@ -2,8 +2,15 @@ import { useAtom, useAtomValue } from 'jotai';
 import { cloneDeep, get } from 'lodash';
 import { useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { nodeInitializeProperties } from '../components/Workflow/constants/workflow.constants';
 import type { CustomNode, ICondition, NodeStatus } from '../components/Workflow/types';
-import { edgesAtom } from '../state/edges';
+import {
+  createEdgeId,
+  createHandleId,
+  createNodeId,
+  nodeCounterAtom,
+} from '../components/Workflow/utils/workflowIdUtils';
+import { edgesAtom, type CustomEdge } from '../state/edges';
 import { activeNodeIdAtom, nodesAtom } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
 
@@ -13,6 +20,8 @@ export const useWorkflow = () => {
   //  애니메이션색칠용
   const [, setActiveNodeId] = useAtom(activeNodeIdAtom);
   const selectedNode = useAtomValue(selectedNodeAtom);
+
+  const [counter, setCounter] = useAtom(nodeCounterAtom);
 
   // 시물레이션 상태관리용
   const [executionState, setExecutionState] = useState<'idle' | 'running' | 'paused'>('idle');
@@ -161,6 +170,8 @@ export const useWorkflow = () => {
    * input 노드 추가
    */
   const addNode = () => {
+    // 보류
+    return;
     const newNode: CustomNode = {
       id: uuid(),
       data: { label: `Node` },
@@ -177,11 +188,82 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'task',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { label: '새로운 작업', taskName: '', status: 'startWaiting' },
+      data: { ...nodeInitializeProperties, label: '새로운 작업' },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
   };
+
+  /**
+   * 시작 노드 추가
+   */
+  const addStartNode = () => {
+    const newTaskNode: CustomNode = {
+      id: uuid(),
+      type: 'start',
+      position: { x: 250, y: 250 }, // 원하는 위치
+      data: { ...nodeInitializeProperties, label: 'Start' },
+    };
+
+    setNodes((nds) => [...nds, newTaskNode]);
+  };
+
+  /**
+   * 종료 노드 추가
+   */
+  const addEndNode = () => {
+    const newTaskNode: CustomNode = {
+      id: uuid(),
+      type: 'end',
+      position: { x: 250, y: 250 }, // 원하는 위치
+      data: { ...nodeInitializeProperties, label: 'End' },
+    };
+
+    setNodes((nds) => [...nds, newTaskNode]);
+  };
+
+  /**
+   * 스위치  노드 추가
+   */
+  const addSwitchNode = () => {
+    const newTaskNode: CustomNode = {
+      id: uuid(),
+      type: 'switch',
+      position: { x: 250, y: 250 }, // 원하는 위치
+      data: { ...nodeInitializeProperties, label: 'Switch' },
+    };
+
+    setNodes((nds) => [...nds, newTaskNode]);
+  };
+
+  /**
+   * 병합 노드 추가
+   */
+  const addMergeNode = () => {
+    const newTaskNode: CustomNode = {
+      id: uuid(),
+      type: 'merge',
+      position: { x: 250, y: 250 }, // 원하는 위치
+      data: { ...nodeInitializeProperties, label: 'Merge' },
+    };
+
+    setNodes((nds) => [...nds, newTaskNode]);
+  };
+
+  /**
+   * 의사결정 노드 추가
+   */
+  const addDecisionNode = () => {
+    const newTaskNode: CustomNode = {
+      id: uuid(),
+      type: 'decision',
+      position: { x: 250, y: 250 }, // 원하는 위치
+      data: { ...nodeInitializeProperties, label: 'Decision' },
+    };
+
+    setNodes((nds) => [...nds, newTaskNode]);
+  };
+
   /**
    * JSON EXPORTER
    */
@@ -208,6 +290,49 @@ export const useWorkflow = () => {
     setNodes((prev) => [...prev.filter((node) => node.data.label === id)]);
   };
 
+  const reassignNodeIds = (nodes: CustomNode[]) => {
+    const oldToNew: Record<string, string> = {};
+
+    const newNodes = nodes.map((node) => {
+      const newId = createNodeId(
+        node.type,
+        () => counter,
+        (_, val) => setCounter(val)
+      );
+      oldToNew[node.id] = newId;
+
+      return { ...node, id: newId, data: { ...node.data } };
+    });
+
+    return { newNodes, oldToNew };
+  };
+
+  const reassignEdgeIds = (edges: CustomEdge[], oldToNew: Record<string, string>) => {
+    return edges.map((edge) => {
+      const newSource = oldToNew[edge.source] || edge.source;
+      const newTarget = oldToNew[edge.target] || edge.target;
+
+      // 핸들을 createHandleId로 안전하게 생성
+      const newSourceHandle = createHandleId(
+        newSource,
+        edge.sourceHandle?.endsWith('source') ? 'out' : 'out'
+      );
+      const newTargetHandle = createHandleId(
+        newTarget,
+        edge.targetHandle?.endsWith('top') ? 'in' : 'in'
+      );
+
+      return {
+        ...edge,
+        id: createEdgeId(newSource, newSourceHandle, newTarget, newTargetHandle),
+        source: newSource,
+        sourceHandle: newSourceHandle,
+        target: newTarget,
+        targetHandle: newTargetHandle,
+      };
+    });
+  };
+
   return {
     executionState,
     simulateExecution,
@@ -216,8 +341,15 @@ export const useWorkflow = () => {
     resumeExecution,
     stopExecution,
     addNode,
+    addStartNode,
+    addEndNode,
+    addSwitchNode,
+    addMergeNode,
+    addDecisionNode,
     addTaskNode,
     exportWorkflowJSON,
+    reassignNodeIds,
+    reassignEdgeIds,
   };
 };
 

@@ -257,6 +257,7 @@ export const neonCaretDownButtonStyles: Partial<IButtonStyles> = {
 
 export const edgeStyles = mergeStyles({
   fontSize: 12,
+  minHeight: '100%',
   backgroundColor: neon_colors.hoverBg,
   cursor: 'pointer',
   padding: '2px 4px',

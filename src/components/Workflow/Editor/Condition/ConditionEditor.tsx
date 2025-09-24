@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai';
-import { selectedNodeAtom } from '../../../../state/selectedNode';
 import { useState } from 'react';
-import { ConditionModal } from './ConditionModal';
+import { selectedNodeAtom } from '../../../../state/selectedNode';
+import { Stack } from '../../../common/UI';
 import { ConditionList } from './ConditionList';
-import { Button, Stack } from '../../../common/UI';
+import { ConditionModal } from './ConditionModal';
 
 export const ConditionEditor = () => {
   const node = useAtomValue(selectedNodeAtom);
@@ -13,8 +13,6 @@ export const ConditionEditor = () => {
   return (
     <>
       <Stack tokens={{ childrenGap: 8 }}>
-        <h4>{node?.data.label} 조건 관리</h4>
-        <Button text="조건 추가" onClick={() => setIsOpen(true)} />
         <ConditionList />
         <ConditionModal isOpen={isOpen} onDismiss={() => setIsOpen(false)} />
       </Stack>

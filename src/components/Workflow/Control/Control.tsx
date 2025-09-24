@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { useWorkflow } from '../../../hooks/useWorkflow';
+import { edgesAtom } from '../../../state/edges';
 import { nodesAtom } from '../../../state/nodes';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import { AppendSubText } from '../../common/AppendSubText';
@@ -7,6 +8,7 @@ import { ControlButton } from './ControlButton';
 
 export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
+  const [edges, setEdges] = useAtom(edgesAtom);
   const {
     addNode,
     addTaskNode,
@@ -16,9 +18,20 @@ export const Control = () => {
     resumeExecution,
     stopExecution,
     exportWorkflowJSON,
+    reassignNodeIds,
+    reassignEdgeIds,
   } = useWorkflow();
 
   const selectedNode = useAtomValue(selectedNodeAtom);
+
+  const reassignWorkflowIds = () => {
+    const { newNodes, oldToNew } = reassignNodeIds(nodes);
+    console.log(oldToNew, newNodes);
+    const newEdges = reassignEdgeIds(edges, oldToNew);
+    console.log(newEdges);
+    setNodes(newNodes);
+    setEdges(newEdges);
+  };
 
   return (
     <div className="control-container">
@@ -39,12 +52,17 @@ export const Control = () => {
           >
             시뮬레이션 시작
           </ControlButton> */}
+          <ControlButton onClick={() => reassignWorkflowIds()}>workflow id 재할당</ControlButton>
+
           <ControlButton
             onClick={() => simulateExecution()}
             disabled={executionState === 'running'}
           >
             <>
-              <AppendSubText label={'시작'} subText={selectedNode?.data?.label ?? ''} />
+              <AppendSubText
+                label={'시작'}
+                subText={selectedNode?.data?.label ?? '시작 노드 선택'}
+              />
             </>
           </ControlButton>
           <ControlButton onClick={pauseExecution} disabled={executionState !== 'running'}>

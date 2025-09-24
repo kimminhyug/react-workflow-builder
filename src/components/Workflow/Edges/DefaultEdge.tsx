@@ -1,14 +1,14 @@
-import { getBezierPath, type EdgeProps, EdgeLabelRenderer } from '@xyflow/react';
+import { EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react';
+import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { edgesAtom, type CustomEdge } from '../../../state/edges';
-import { useAtom, useAtomValue } from 'jotai';
 
 import { nodesAtom } from '../../../state/nodes';
 import { getEdgeColor } from '../constants/workflow.constants';
 
 import { edgeStyles, neonTextFieldStyles } from '../../common/styles';
-import { Stack } from '../../common/UI/Layout/Stack';
 import { TextField } from '../../common/UI/Forms/TextField';
+import { Stack } from '../../common/UI/Layout/Stack';
 
 const DefaultEdge = ({
   id,
@@ -54,6 +54,7 @@ const DefaultEdge = ({
   const activeEdge = () => {
     setEditingEdgeId(id);
     setLabelInput(data?.label ?? '');
+    console.log(isEditing, editingEdgeId, id);
   };
   const isEditing = editingEdgeId === id;
 
@@ -65,6 +66,7 @@ const DefaultEdge = ({
           style={{
             zIndex: isEditing ? 1000000 : 10,
             position: 'absolute',
+            height: '1rem',
             transform: `translate(${labelX}px, ${labelY}px) translate(-50%, -50%)`,
           }}
         >
