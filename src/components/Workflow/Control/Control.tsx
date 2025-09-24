@@ -10,8 +10,6 @@ export const Control = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges, setEdges] = useAtom(edgesAtom);
   const {
-    addNode,
-    addTaskNode,
     simulateExecution,
     pauseExecution,
     executionState,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ITableApi<T> {
   //reactquery?등
@@ -10,7 +10,7 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
   const [loading, setLoading] = useState(false);
 
   //test fn
-  const fetchData = async (id: string, isRemove = false) => {
+  const fetchData = async (_id: string, isRemove = false) => {
     setLoading(true);
     // const response  = await api.get
     let response: T[] = [];
@@ -27,14 +27,14 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
     return response;
   };
 
-  const add = async (item: T) => {
+  const add = async (_item: T) => {
     // await api.post(item);
     const id = Date.now().toString();
     const response = await fetchData(id);
     localStorage.setItem(id ?? Date.now().toString(), JSON.stringify(response));
   };
 
-  const update = async (id: string, item: Partial<T>) => {
+  const update = async (id: string, _item: Partial<T>) => {
     // await api.put(id, item);
     const response = await fetchData(id);
     localStorage.setItem(id ?? Date.now().toString(), JSON.stringify(response));
@@ -42,7 +42,7 @@ export const useTableController = <T,>(api: ITableApi<T>) => {
 
   const remove = async (id: string) => {
     // await api.delete(id);
-    const response = await fetchData(id, true);
+    // const response = await fetchData(id, true);
     // if(statusCode===200)
     localStorage.removeItem(id ?? Date.now().toString());
   };

@@ -1,6 +1,3 @@
-import { useAtomValue } from 'jotai';
-import { selectedNodeAtom } from '../../../state/selectedNode';
-
 import { Icon, Label } from '@fluentui/react';
 import { useMemo, useState } from 'react';
 import { useWorkflow } from '../../../hooks/useWorkflow';
@@ -10,7 +7,6 @@ import { ConditionEditor } from './Condition/ConditionEditor';
 import { NodeContentWrapper } from './NodeContentWrapper';
 
 export const Tabs = () => {
-  const node = useAtomValue(selectedNodeAtom);
   const { addTaskNode, addSwitchNode, addMergeNode, addDecisionNode, addEndNode, addStartNode } =
     useWorkflow();
   const [widgets] = useState<IWidget[]>([

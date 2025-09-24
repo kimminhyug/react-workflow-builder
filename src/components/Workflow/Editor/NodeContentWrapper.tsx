@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import { Label, Stack } from '../../common/UI';
-import { neonButtonStyles, neonLabelBase } from '../../common/styles';
+import { neonLabelBase } from '../../common/styles';
 
 interface INodeContentWrapperProps {
   children: React.ReactNode;

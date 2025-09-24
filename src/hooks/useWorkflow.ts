@@ -334,6 +334,8 @@ export const useWorkflow = () => {
   };
 
   return {
+    copyNode,
+    deleteNode,
     executionState,
     simulateExecution,
     resetSimulation,

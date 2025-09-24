@@ -54,7 +54,7 @@ export const ConditionList = () => {
     },
     // { accessorKey: 'expression', header: 'expression',  },
   ];
-  const { data, add, update, remove } = useTableController<ICondition>({
+  const { data, update, remove } = useTableController<ICondition>({
     api: {},
     data: conditions,
   });
@@ -67,7 +67,7 @@ export const ConditionList = () => {
         label="이름"
         styles={neonTextFieldStyles}
         value={selectedNode.data.label || ''}
-        onChange={(e, newValue) =>
+        onChange={(_e, newValue) =>
           setSelectedNode({
             ...selectedNode,
             data: { ...selectedNode.data, label: newValue || '' },
@@ -80,7 +80,7 @@ export const ConditionList = () => {
           label="작업 이름"
           styles={neonTextFieldStyles}
           value={selectedNode.data.taskName || ''}
-          onChange={(e, newValue) =>
+          onChange={(_e, newValue) =>
             setSelectedNode({
               ...selectedNode,
               data: { ...selectedNode.data, taskName: newValue || '' },
@@ -118,7 +118,7 @@ export const ConditionList = () => {
               styles={neonModalButtonStyles}
             />
           </Stack>
-          <Table columns={columns} data={data} onClickRow={(e, status) => null} enableRowCheckbox />
+          <Table columns={columns} data={data} onClickRow={() => null} enableRowCheckbox />
         </Stack>
       </Modal>
     </Stack>
