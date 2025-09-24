@@ -1,7 +1,7 @@
 # React Flow Builder
 
 ## 진행 상황
-- 🔗 [Live Demo]([https://kimminhyug.github.io/react-workflow-builder/)
+- 🔗 [Live Demo](https://kimminhyug.github.io/react-workflow-builder/)
 - 🔍 [GitHub Repo](https://github.com/kimminhyug/react-workflow-builder)
 
 ## 1. 프로젝트 개요
