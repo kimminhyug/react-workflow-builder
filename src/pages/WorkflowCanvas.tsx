@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
 import {
   applyEdgeChanges,
   applyNodeChanges,
@@ -11,11 +9,18 @@ import {
   type NodeChange,
 } from '@xyflow/react';
 import { useAtom } from 'jotai';
+import React, { useCallback, useEffect } from 'react';
+import { v4 as uuid } from 'uuid';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
 import { Control } from '../components/Workflow/Control/Control';
 import DefaultEdge from '../components/Workflow/Edges/DefaultEdge';
 import { NodeEditor } from '../components/Workflow/NodeEditor';
-import { DefaultNode } from '../components/Workflow/Nodes/DefaultNode';
+import { DecisionNode } from '../components/Workflow/Nodes/DecisionNode';
+import { EndNode } from '../components/Workflow/Nodes/EndNode';
+import { MergeNode } from '../components/Workflow/Nodes/MergeNode';
+import { StartNode } from '../components/Workflow/Nodes/StartNode';
+import { SwitchNode } from '../components/Workflow/Nodes/SwitchNode';
+import { TaskNode } from '../components/Workflow/Nodes/TaskNode';
 import type { CustomNode } from '../components/Workflow/types';
 import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
 import { edgesAtom, type CustomEdge } from '../state/edges';
@@ -44,11 +49,12 @@ export const WorkflowCanvas = () => {
     default: DefaultEdge,
   };
   const nodeTypes = {
-    default: DefaultNode,
-    task: DefaultNode,
-    object: DefaultNode,
-    start: DefaultNode,
-    end: DefaultNode,
+    task: TaskNode,
+    start: StartNode,
+    end: EndNode,
+    decision: DecisionNode,
+    merge: MergeNode,
+    switch: SwitchNode,
   };
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges, setEdges] = useAtom(edgesAtom);
@@ -106,12 +112,13 @@ export const WorkflowCanvas = () => {
       return;
     }
 
-    // 기존 연결 중복 체크
-    const exists = edges.some((e) => e.source === source && e.target === target);
-    if (exists) {
-      alert('이미 연결되어 있는 노드입니다.');
-      return;
-    }
+    //n개가 연결 될수 있게 변경되었으므로 단일 선택 체크 삭제
+    // // 기존 연결 중복 체크
+    // const exists = edges.some((e) => e.source === source && e.target === target);
+    // if (exists) {
+    //   alert('이미 연결되어 있는 노드입니다.');
+    //   return;
+    // }
 
     const newDefaultEdge: CustomEdge = {
       ...connection,
@@ -127,10 +134,9 @@ export const WorkflowCanvas = () => {
   /**
    * 노드 선택 이벤트 처리용 폼이랑 연동함
    * @param event mouse event
-   * @param node 커스텀 녿,
+   * @param node 커스텀 노드,
    */
   const onNodeClick = useCallback((_: React.MouseEvent, node: CustomNode) => {
-    console.debug(node);
     setSelectedNode(node);
   }, []);
   /**

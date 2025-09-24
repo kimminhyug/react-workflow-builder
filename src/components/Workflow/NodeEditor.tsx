@@ -5,9 +5,8 @@ import { selectedNodeAtom } from '../../state/selectedNode';
 import { Icon } from '@fluentui/react';
 import { edgesAtom } from '../../state/edges';
 import { nodesAtom } from '../../state/nodes';
-import { neonButtonStyles, neonTextFieldStyles } from '../common/styles';
+import { neonButtonStyles } from '../common/styles';
 import { Button } from '../common/UI';
-import { TextField } from '../common/UI/Forms/TextField';
 import { Tabs } from './Editor/Tabs';
 import type { CustomNode } from './types';
 // 스타일즈 하나 만들어야함
@@ -63,7 +62,7 @@ export const NodeEditor = () => {
           <Tabs />
           {selectedNode && (
             <>
-              <TextField
+              {/* <TextField
                 label="이름"
                 styles={neonTextFieldStyles}
                 value={selectedNode.data.label || ''}
@@ -87,7 +86,7 @@ export const NodeEditor = () => {
                     })
                   }
                 />
-              )}
+              )} */}
 
               {/* <ConditionEditor /> */}
             </>

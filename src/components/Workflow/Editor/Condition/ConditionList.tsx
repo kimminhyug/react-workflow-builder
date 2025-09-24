@@ -1,26 +1,31 @@
-import type { IConditionListProps } from './types';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Table } from '../../../common/Table/Table';
-import type { ICondition } from '../../types';
-import { neonModalButtonStyles, neonModalStyles, neonModalTitle } from '../../../common/styles';
-import { useMemo, useState } from 'react';
-import { useTableController } from '../../../common/Table/hook/useTableController';
 import { useAtom } from 'jotai';
+import { useMemo, useState } from 'react';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
-import { ConditionModal } from './ConditionModal';
+import {
+  neonModalButtonStyles,
+  neonModalStyles,
+  neonModalTitle,
+  neonTextFieldStyles,
+} from '../../../common/styles';
+import { useTableController } from '../../../common/Table/hook/useTableController';
+import { Table } from '../../../common/Table/Table';
 import { TableActionButtons } from '../../../common/Table/TableActionButtons';
-import { IconButton, Button, Modal, Stack } from '../../../common/UI';
+import { Button, IconButton, Modal, Stack, TextField } from '../../../common/UI';
+import type { ICondition } from '../../types';
+import { ConditionModal } from './ConditionModal';
 
 // conditions props 변경 필요 싱크 불일치
 
 export const ConditionList = () => {
-  const [node, setNode] = useAtom(selectedNodeAtom);
+  const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
+
   const [selectedConditionId, setSelectedConditionId] = useState('');
   const conditions: ICondition[] = useMemo(
-    () => (node?.data?.conditionList as ICondition[]) || [],
-    [node?.data?.conditionList]
+    () => (selectedNode?.data?.conditionList as ICondition[]) || [],
+    [selectedNode?.data?.conditionList]
   );
-  console.log(node);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isConditionModalOpen, setIsConditionModalOpen] = useState(false);
 
@@ -54,8 +59,36 @@ export const ConditionList = () => {
     data: conditions,
   });
 
+  if (!selectedNode) return <></>;
+
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
+      <TextField
+        label="이름"
+        styles={neonTextFieldStyles}
+        value={selectedNode.data.label || ''}
+        onChange={(e, newValue) =>
+          setSelectedNode({
+            ...selectedNode,
+            data: { ...selectedNode.data, label: newValue || '' },
+          })
+        }
+      />
+
+      {selectedNode.type === 'task' && (
+        <TextField
+          label="작업 이름"
+          styles={neonTextFieldStyles}
+          value={selectedNode.data.taskName || ''}
+          onChange={(e, newValue) =>
+            setSelectedNode({
+              ...selectedNode,
+              data: { ...selectedNode.data, taskName: newValue || '' },
+            })
+          }
+        />
+      )}
+      <Button text="조건 추가" onClick={() => setIsOpen(true)} />
       <Button onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
       {data.map((condition, idx) => (
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
@@ -69,6 +102,7 @@ export const ConditionList = () => {
           />
         </Stack>
       ))}
+
       <ConditionModal
         isOpen={isConditionModalOpen}
         onDismiss={() => setIsConditionModalOpen(false)}
