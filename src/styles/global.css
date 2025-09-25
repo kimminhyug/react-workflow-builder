@@ -1,9 +1,12 @@
 :root {
+  --z-controls: 10000;
+  --z-flow-panel: 10001;
   --z-node-container: 1;
   --z-edge-container: 0;
   --z-edge: 5;
   --z-node: 6;
   --z-label: 10;
+  --body-background: #0d0d0d;
   --neon-shadow: 0 0 0.5vw #61a0f3, 0 0 1vw #61a0f3, 0 0 1.5vw #61a0f3, 0 0 2vw #61a0f3;
   --neon-border: #61a0f3;
   --neon-background: #0f2a48;
@@ -18,12 +21,21 @@
 * {
   box-sizing: border-box;
 }
-
+html {
+  width: 100%;
+  height: 100%;
+}
 body {
   margin: 0;
-  background-color: #0d0d0d;
+  width: 100%;
+  height: 100%;
+  background-color: var(--body-background);
   font-family: 'Courier New', Courier, monospace;
   color: white;
+}
+#root {
+  width: 100%;
+  height: 100%;
 }
 
 .main-intro {
@@ -108,10 +120,6 @@ body {
   top: 0;
 }
 
-.control-container {
-  display: flex;
-  gap: 1.5rem;
-}
 .edge-label-container {
   border: 1px solid #ddd;
   box-shadow: var(--neon-shadow);
@@ -187,12 +195,24 @@ body {
 }
 
 /*컨트롤 버튼들 영역*/
+.control-container {
+  display: flex;
+  position: absolute;
+  z-index: var(--z-controls);
+  background-color: var(--body-background);
+  border-bottom: 1px solid #2381fc;
+  width: 100%;
+  gap: 1.5rem;
+}
+
 .control-button-container {
   width: 100%;
   min-height: 8vh;
-  padding: 2vh 3vw;
+  padding: 10px;
+  display: flex;
   flex-wrap: wrap;
   gap: 2vw;
+  align-items: center;
 }
 
 .control-button-menu {
@@ -227,88 +247,6 @@ body {
   box-shadow:
     0 0 8px #61a0f3,
     0 0 12px #61a0f3;
-}
-
-/*폼? 영역*/
-.neon-panel {
-  padding: 20px;
-  width: 410px;
-  background-color: #0a192f;
-  border: 1px solid #2381fc;
-  box-shadow: 0 0 15px #2381fc;
-  border-radius: 8px;
-  color: #ffffff;
-  transition: all 0.2s;
-  font-family: 'Pretendard', sans-serif;
-}
-
-.neon-panel.closed {
-  /* padding + contents */
-  transform: translateX(calc(100% - 80px));
-}
-
-.neon-panel.open {
-  transform: translateX(0);
-}
-
-.neon-panel-side {
-  position: relative;
-  top: calc(50% - 1em);
-  /* padding - half font-size */
-  left: calc(-20px + -0.7rem);
-  width: fit-content;
-  height: 1rem;
-}
-.neon-panel-side-button {
-  cursor: pointer;
-  background: #2571d4;
-  box-shadow: 0 0 2px 1px #2571d4;
-  border-radius: 3px;
-  padding: 0.2rem 0.25rem;
-  /* aspect-ratio: 1/1; */
-}
-.neon-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 16px;
-  color: #61a0f3;
-  text-shadow: 0 0 5px #61a0f3;
-}
-
-.neon-form-group {
-  margin-bottom: 16px;
-}
-
-.neon-label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #61a0f3;
-}
-
-.neon-input {
-  width: 100%;
-  padding: 8px;
-
-  border-radius: 4px;
-
-  color: #ffffff;
-
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.neon-delete-button {
-  margin-top: 20px;
-  width: 100%;
-
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-
-  transition: background-color 0.2s ease;
 }
 
 /**table**/

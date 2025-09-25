@@ -9,7 +9,7 @@ import {
   type NodeChange,
 } from '@xyflow/react';
 import { useAtom } from 'jotai';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
 import { Control } from '../components/Workflow/Control/Control';
@@ -34,15 +34,14 @@ export const WorkflowCanvas = () => {
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
   const { fitView } = useReactFlow();
+  const flowWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleResize = () => {
+    const resizeObserver = new ResizeObserver(() => {
       fitView({ padding: 0.3 });
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
+    });
+    if (flowWrapperRef.current) resizeObserver.observe(flowWrapperRef.current);
+    return () => resizeObserver.disconnect();
   }, [fitView]);
 
   const edgeTypes = {
@@ -173,26 +172,28 @@ export const WorkflowCanvas = () => {
   // };
 
   return (
-    <div style={{ display: 'flex', height: 'calc(100% - 60px)', gap: 20 }}>
-      <div style={{ flex: 1 }}>
+    <div className={'flow-container'}>
+      <div className={'flow-wrapper'}>
         <Control />
-        <ReactFlow
-          proOptions={{ hideAttribution: true }}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onNodeClick={onNodeClick}
-          onEdgeClick={onEdgeClick}
-          fitView
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-        >
-          {/* <MiniMap /> */}
-          {/* <Controls /> */}
-          <Background />
-        </ReactFlow>
+        <div className={'reactflow-wrapper'} ref={flowWrapperRef}>
+          <ReactFlow
+            proOptions={{ hideAttribution: true }}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onNodeClick={onNodeClick}
+            onEdgeClick={onEdgeClick}
+            fitView
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+          >
+            {/* <MiniMap /> */}
+            {/* <Controls /> */}
+            <Background />
+          </ReactFlow>
+        </div>
       </div>
       <NodeEditor />
     </div>

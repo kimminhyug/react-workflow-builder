@@ -1,14 +1,14 @@
-import { ReactFlowProvider } from '@xyflow/react';
-import { WorkflowCanvas } from './pages/WorkflowCanvas';
-import '@xyflow/react/dist/style.css';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
-import { Routes, Route } from 'react-router-dom';
+import { ReactFlowProvider } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { Route, Routes } from 'react-router-dom';
 import { Home } from './pages/Home';
+import { WorkflowCanvas } from './pages/WorkflowCanvas';
 
 initializeIcons();
 function App() {
   return (
-    <div style={{ height: '100vh', width: '100vw', padding: 5, boxSizing: 'border-box' }}>
+    <div style={{ height: '100%', width: '100%', padding: 5, boxSizing: 'border-box' }}>
       <ReactFlowProvider>
         <Routes>
           <Route path="/" element={<Home />} />

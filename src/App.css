@@ -1,1 +1,3 @@
 @import url('./styles/global.css');
+@import url('./styles/nodeEditor.css');
+@import url('./styles/workflowCanvas.css');

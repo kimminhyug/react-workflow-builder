@@ -113,7 +113,7 @@ export const Tabs = () => {
     []
   );
   return (
-    <SidePanelTabs items={items} defaultSelectedKey="properties" />
+    <SidePanelTabs items={items} defaultSelectedKey="properties" overflowBehavior="menu" />
     // <Pivot aria-label="" linkFormat="tabs">
     //   <PivotItem headerText="항목 추가">
     //     <NodeContentWrapper requireNode={false}>항목 추가 필요</NodeContentWrapper>
