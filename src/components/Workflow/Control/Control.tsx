@@ -1,14 +1,8 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { FontIcon } from '@fluentui/react';
+import { useState } from 'react';
 import { useWorkflow } from '../../../hooks/useWorkflow';
-import { edgesAtom } from '../../../state/edges';
-import { nodesAtom } from '../../../state/nodes';
-import { selectedNodeAtom } from '../../../state/selectedNode';
-import { AppendSubText } from '../../common/AppendSubText';
-import { ControlButton } from './ControlButton';
 
-export const Control = () => {
-  const [nodes, setNodes] = useAtom(nodesAtom);
-  const [edges, setEdges] = useAtom(edgesAtom);
+export const WorkflowFAB = () => {
   const {
     simulateExecution,
     pauseExecution,
@@ -16,72 +10,50 @@ export const Control = () => {
     resumeExecution,
     stopExecution,
     exportWorkflowJSON,
-    reassignNodeIds,
-    reassignEdgeIds,
   } = useWorkflow();
 
-  const selectedNode = useAtomValue(selectedNodeAtom);
+  const [open, setOpen] = useState(false);
 
-  const reassignWorkflowIds = () => {
-    const { newNodes, oldToNew } = reassignNodeIds(nodes);
-    console.log(oldToNew, newNodes);
-    const newEdges = reassignEdgeIds(edges, oldToNew);
-    console.log(newEdges);
-    setNodes(newNodes);
-    setEdges(newEdges);
-  };
+  // const _reassignWorkflowIds = () => {
+  //   const { newNodes, oldToNew } = reassignNodeIds(nodes);
+  //   console.log(oldToNew, newNodes);
+  //   const newEdges = reassignEdgeIds(edges, oldToNew);
+  //   console.log(newEdges);
+  //   setNodes(newNodes);
+  //   setEdges(newEdges);
+  // };
+
+  const isRunning = executionState === 'running';
+  const isPause = executionState === 'paused';
 
   return (
-    <div className="control-container">
-      <div className="control-button-container">
-        <div className="control-button-title">현재 flow name?</div>
-        <nav className="control-button-menu">
-          {/* <ControlButton onClick={addNode}>새 노드 추가</ControlButton>
-          <ControlButton onClick={addTaskNode}>작업 노드 추가</ControlButton> */}
-          {/* <ControlButton
-            onClick={() => {
-              const startNode = nodes.find((node) => node.type === 'start');
-              if (startNode) {
-                simulateExecution(startNode.id);
-              } else {
-                alert('시작 노드가 없습니다.');
-              }
-            }}
-          >
-            시뮬레이션 시작
-          </ControlButton> */}
-          <ControlButton onClick={() => reassignWorkflowIds()}>workflow id 재할당</ControlButton>
-
-          <ControlButton
-            onClick={() => simulateExecution()}
-            disabled={executionState === 'running'}
-          >
-            <>
-              <AppendSubText
-                label={'시작'}
-                subText={selectedNode?.data?.label ?? '시작 노드 선택'}
-              />
-            </>
-          </ControlButton>
-          <ControlButton onClick={pauseExecution} disabled={executionState !== 'running'}>
-            일시정지
-          </ControlButton>
-          <ControlButton onClick={resumeExecution} disabled={executionState !== 'paused'}>
-            재개
-          </ControlButton>
-          <ControlButton onClick={stopExecution} disabled={executionState !== 'running'}>
-            정지
-          </ControlButton>
-          <ControlButton onClick={exportWorkflowJSON}>워크플로우 저장</ControlButton>
-        </nav>
+    <div className="fab-container">
+      {/* 메인 버튼 */}
+      <div className="fab-main" onClick={() => setOpen(!open)}>
+        <FontIcon iconName={`${open ? 'SkypeCircleMinus' : 'CircleAdditionSolid'}`}></FontIcon>
       </div>
+      {/* 서브 버튼들 */}
+      <div className={`fab-menu ${open ? 'open' : ''}`}>
+        <div
+          className="fab-sub"
+          // 함수화 필요
+          onClick={() =>
+            isRunning ? stopExecution() : isPause ? stopExecution : simulateExecution()
+          }
+        >
+          {/* <AppendSubText label="시작" subText={selectedNode?.data?.label ?? '시작 노드 선택'} /> */}
+          <FontIcon
+            iconName={`${isRunning ? 'CircleStopSolid' : isPause ? 'CircleStopSolid' : 'Play'}`}
+          ></FontIcon>
+        </div>
+        <div className="fab-sub" onClick={() => (isRunning ? pauseExecution() : resumeExecution())}>
+          <FontIcon iconName={`${isRunning ? 'CirclePauseSolid' : 'PlayResume'}`}></FontIcon>
+        </div>
 
-      {/* <input
-            type="file"
-            accept=".json"
-            onChange={importWorkflowJSON}
-            style={{ marginLeft: 10 }}
-          /> */}
+        <div className="fab-sub" onClick={exportWorkflowJSON}>
+          <FontIcon iconName="DownloadDocument"></FontIcon>
+        </div>
+      </div>
     </div>
   );
 };

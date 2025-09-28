@@ -12,7 +12,7 @@ import { useAtom } from 'jotai';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
-import { Control } from '../components/Workflow/Control/Control';
+import { WorkflowFAB } from '../components/Workflow/Control/Control';
 import DefaultEdge from '../components/Workflow/Edges/DefaultEdge';
 import { NodeEditor } from '../components/Workflow/NodeEditor';
 import { DecisionNode } from '../components/Workflow/Nodes/DecisionNode';
@@ -174,7 +174,7 @@ export const WorkflowCanvas = () => {
   return (
     <div className={'flow-container'}>
       <div className={'flow-wrapper'}>
-        <Control />
+        <WorkflowFAB />
         <div className={'reactflow-wrapper'} ref={flowWrapperRef}>
           <ReactFlow
             proOptions={{ hideAttribution: true }}
