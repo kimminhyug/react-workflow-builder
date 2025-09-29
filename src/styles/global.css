@@ -16,6 +16,14 @@
   --neon-shadow: #2381fc;
   --neon-label-text: #61a0f3;
   --neon-placeholder: #b0cfff;
+
+  --neon-fab-color: #61a0f3;
+  --neon-fab-border: #2381fc;
+  --neon-fab-bg: var(--body-background);
+  --neon-fab-hover-bg: rgba(35, 129, 252, 0.1);
+  --neon-fab-box-shadow: 0 0 0.5rem var(--neon-fab-border);
+  --neon-fab-hover-shadow: 0 0 1rem var(--neon-fab-color);
+  --neon-fab-sub-hover-shadow: 0 0 0.6rem var(--neon-fab-color);
 }
 
 * {
