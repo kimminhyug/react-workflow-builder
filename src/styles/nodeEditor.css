@@ -2,7 +2,7 @@
 .neon-panel {
   padding: 20px;
   z-index: var(--z-flow-panel);
-  width: 410px;
+
   background-color: #0a192f;
   border: 1px solid #2381fc;
   box-shadow: 0 0 15px #2381fc;
@@ -12,7 +12,7 @@
 }
 
 .neon-panel.closed {
-  transform: translateX(330px);
+  transform: translateX(calc(80% - 50px));
 }
 
 .neon-panel.open {
@@ -33,6 +33,9 @@
   box-shadow: 0 0 2px 1px #2571d4;
   border-radius: 3px;
   padding: 0.2rem 0.25rem;
+  i {
+    vertical-align: middle;
+  }
   /* aspect-ratio: 1/1; */
 }
 .neon-title {
@@ -88,7 +91,7 @@
   }
 
   .neon-panel.closed {
-    transform: translateX(calc(80% - 50px));
+    transform: translateX(calc(80% - 20px));
   }
 }
 @media (max-width: 768px) {
