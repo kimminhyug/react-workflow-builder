@@ -1,13 +1,13 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import type { DecisionNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 
 /**
  * DecisionNode
  * 조건 분기 (if / else)
  */
-export const DecisionNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const DecisionNode = ({ data, id }: NodeProps<DecisionNodeType>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (
