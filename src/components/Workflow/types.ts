@@ -2,37 +2,47 @@ import type { Node } from '@xyflow/react';
 
 // 시작준비중 | 대기중 | 실행중 | 완료
 export type NodeStatus = 'startWaiting' | 'waiting' | 'running' | 'done';
+export type EdgeStatus = 'startWaiting' | 'waiting' | 'running' | 'done';
+
 export type ConditionType = 'static' | 'regex' | 'expression';
 
 export interface ICondition {
+  id: string;
   label: string;
+
   type: 'primary' | 'fallback';
   conditionType: ConditionType;
   dataAccessKey?: string;
-  // 정규식
   pattern?: string;
-  // 함수용인데 음 사전등록제로 해야하나
   expression?: string;
 }
 
-export interface INodeData {
+type unknownRecord = { [key: string]: unknown };
+export interface IBaseNodeData extends unknownRecord {
   label?: string;
-  taskName?: string;
-  inputSource?: string;
-  taskType?: 'http' | 'db' | 'script';
   description?: string;
   status?: NodeStatus;
-  fallback?: string[];
-  // 정규식
-  expression?: string;
-  // 시물레이션 분기용
-  condition?: ICondition[];
-  // switch case node용
+  edgeStatus?: EdgeStatus;
+}
+
+export interface ITaskNodeData extends IBaseNodeData {
+  taskName?: string;
+  taskType?: 'http' | 'db' | 'script';
+  inputSource?: string;
+}
+
+export interface ISwitchNodeData extends IBaseNodeData {
   cases?: string[];
-  // merge node용
+}
+
+export interface IMergeNodeData extends IBaseNodeData {
   inputs?: string[];
 }
-type unknownRecord = { [key: string]: unknown };
+
+export interface IDecisionNodeData extends IBaseNodeData {
+  condition?: ICondition[];
+}
+
 export type NodeType =
   | 'object'
   | 'task'
@@ -43,4 +53,21 @@ export type NodeType =
   | 'merge'
   | 'decision';
 
-export type CustomNode = Node<INodeData & unknownRecord, NodeType>;
+export type TaskNodeType = Node<ITaskNodeData, 'task'>;
+export type StartNodeType = Node<IBaseNodeData, 'start'>;
+export type EndNodeType = Node<IBaseNodeData, 'end'>;
+export type InputNodeType = Node<IBaseNodeData, 'input'>;
+export type ObjectNodeType = Node<IBaseNodeData, 'object'>;
+export type SwitchNodeType = Node<ISwitchNodeData, 'switch'>;
+export type MergeNodeType = Node<IMergeNodeData, 'merge'>;
+export type DecisionNodeType = Node<IDecisionNodeData, 'decision'>;
+
+export type CustomNode =
+  | TaskNodeType
+  | StartNodeType
+  | EndNodeType
+  | InputNodeType
+  | ObjectNodeType
+  | SwitchNodeType
+  | MergeNodeType
+  | DecisionNodeType;

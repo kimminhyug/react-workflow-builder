@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import type { TaskNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 
 // const statusColorMap: Record<NodeStatus, string> = {
@@ -10,7 +10,7 @@ import { createHandleId } from '../utils/workflowIdUtils';
 //   startWaiting: '#e7e7e7',
 // };
 
-export const TaskNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const TaskNode = ({ data, id }: NodeProps<TaskNodeType>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (

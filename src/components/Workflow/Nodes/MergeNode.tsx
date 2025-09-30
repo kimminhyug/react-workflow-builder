@@ -1,12 +1,12 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import type { MergeNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 
 /**
  * MergeNode 모두 true면 통과(and)
  */
-export const MergeNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const MergeNode = ({ data, id }: NodeProps<MergeNodeType>) => {
   const inputs = data.inputs ?? ['in1', 'in2'];
   const { nodeClass } = useNodeStatus(id, data.status);
   return (

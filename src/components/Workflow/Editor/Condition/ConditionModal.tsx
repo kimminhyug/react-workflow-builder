@@ -1,17 +1,18 @@
+import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { selectedNodeAtom } from '../../../../state/selectedNode';
 import {
+  neonButtonStyles,
+  neonDropdownStyles,
+  neonModalButtonStyles,
   neonModalStyles,
   neonModalTitle,
   neonTextFieldStyles,
-  neonDropdownStyles,
-  neonButtonStyles,
-  neonModalButtonStyles,
 } from '../../../common/styles';
-import { conditionTypeOptions } from '../Editor.constants';
-import type { ConditionType, ICondition } from '../../types';
-import { useAtom } from 'jotai';
-import { selectedNodeAtom } from '../../../../state/selectedNode';
 import { Button, Dropdown, Modal, Stack, TextField } from '../../../common/UI';
+import type { ConditionType, ICondition } from '../../types';
+import { conditionTypeOptions } from '../Editor.constants';
 interface IConditionModalProps {
   isOpen: boolean; // 모달 열림
   onDismiss: () => void; // 모달 닫기
@@ -27,6 +28,7 @@ const initData: ICondition = {
   pattern: '',
   expression: '',
   dataAccessKey: '',
+  id: uuidv4(),
 };
 
 export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModalProps) => {
@@ -34,7 +36,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
   const conditionList: ICondition[] = (node?.data?.conditionList as ICondition[]) || [];
   // const item = conditionList.find((condition) => condition.label === id);
   const [item, setItem] = useState(initData);
-  const { conditionType, label, dataAccessKey, pattern, expression } = item;
+  const { conditionType, label, dataAccessKey, pattern, expression, id: originId } = item;
 
   useEffect(() => {
     if (conditionList.length >= 1 && id) {
@@ -87,7 +89,13 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
   };
 
   const handleSave = () => {
-    const base: ICondition = { label, type: 'primary', conditionType, dataAccessKey };
+    const base: ICondition = {
+      label,
+      type: 'primary',
+      conditionType,
+      dataAccessKey,
+      id: id || originId,
+    };
     //정규식
     if (conditionType === 'regex') {
       addCondition({ ...base, pattern });
