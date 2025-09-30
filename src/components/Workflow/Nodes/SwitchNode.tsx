@@ -1,13 +1,13 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import type { SwitchNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 
 /**
  * SwitchNode
  * 여러 분기 (switch-case)
  */
-export const SwitchNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const SwitchNode = ({ data, id }: NodeProps<SwitchNodeType>) => {
   const cases = data.cases ?? ['case1', 'case2', 'case33', 'default'];
   const { nodeClass } = useNodeStatus(id, data.status);
   return (

@@ -1,12 +1,12 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import type { EndNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 
 /**
  * 끝 노드 (순서도 도착점 시각화)
  */
-export const EndNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const EndNode = ({ data, id }: NodeProps<EndNodeType>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
   return (
     <div

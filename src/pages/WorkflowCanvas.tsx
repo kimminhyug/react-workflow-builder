@@ -23,8 +23,8 @@ import { TaskNode } from '../components/Workflow/Nodes/TaskNode';
 import type { CustomNode } from '../components/Workflow/types';
 import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
 import { WorkflowFAB } from '../components/Workflow/WorkflowFAB/WorkflowFAB';
+import { useUpdateNode } from '../hooks/useNodeUpdater';
 import { edgesAtom, type CustomEdge } from '../state/edges';
-import { nodesAtom } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
 
 export const WorkflowCanvas = () => {
@@ -32,7 +32,11 @@ export const WorkflowCanvas = () => {
   //   { id: '1', type: 'input',position: { x: 250, y: 5 } },
   // ]);
   // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
+  const [, setSelectedNode] = useAtom(selectedNodeAtom);
+
+  const [edges, setEdges] = useAtom(edgesAtom);
+  const { nodes, setNodes } = useUpdateNode();
+
   const { fitView } = useReactFlow();
   const flowWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -55,18 +59,7 @@ export const WorkflowCanvas = () => {
     merge: MergeNode,
     switch: SwitchNode,
   };
-  const [nodes, setNodes] = useAtom(nodesAtom);
-  const [edges, setEdges] = useAtom(edgesAtom);
 
-  useEffect(() => {
-    if (!selectedNode) return;
-
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === selectedNode.id ? { ...node, data: { ...selectedNode.data } } : node
-      )
-    );
-  }, [selectedNode]);
   /**
    * atom으로 node 관리하려면 change 생성 필요하여 생성함
    */

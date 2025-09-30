@@ -1,5 +1,5 @@
 import type { IEdgeData } from '../../../state/edges';
-import type { CustomNode, INodeData } from '../types';
+import type { CustomNode } from '../types';
 
 export const defaultEdgeOptions = {
   animated: true,
@@ -17,21 +17,24 @@ export const getEdgeColor = (data?: IEdgeData, sourceNode?: CustomNode): string 
   if (!data || !sourceNode) return 'auto';
 
   // 배열 형태로 변경되어 수정필요
-  const condition = sourceNode.data?.condition?.[0]?.label.toLowerCase();
-  const fallback = (sourceNode.data?.fallback || []).map((f) => f.toLowerCase());
+  // 노드처럼 엣지에 대한 상태값 필요
+  // const condition = sourceNode.data?.condition?.[0]?.label.toLowerCase();
+  const isDone = sourceNode.data.status === 'done';
+
+  // const fallback = (sourceNode.data?.fallback || []).map((f) => f.toLowerCase());
   const label = data?.label?.toLowerCase();
 
   // 라벨 입력필요 상황
   if (!label) return '#aaa';
   // 조건 성공
-  if (label === condition) return '#3fb950';
-  //  폴백타면
-  if (fallback.includes(label)) return '#facc15';
+  if (isDone) return '#3fb950';
+  //  폴백타면(조건 수정 필요)
+  // if (fallback.includes(label)) return '#facc15';
   // 예상치못한경우
   return '#aaa';
 };
 
-export const nodeInitializeProperties: INodeData = {
+export const nodeInitializeProperties: CustomNode['data'] = {
   taskName: '',
   status: 'startWaiting',
 };

@@ -13,6 +13,7 @@ import {
 import { edgesAtom, type CustomEdge } from '../state/edges';
 import { activeNodeIdAtom, nodesAtom } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
+import { useUpdateNode } from './useNodeUpdater';
 
 export const useWorkflow = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
@@ -51,16 +52,18 @@ export const useWorkflow = () => {
   // 리렌더링 필요없으므로 useref로 처리함
   const executionId = useRef(0);
   const pauseRef = useRef(false);
+  const { updateNode } = useUpdateNode();
 
   /**
    * 애니메이션에서 사용하는 상태값 변경
    * @param nodeId
    * @param status NodeStatus
    */
+
   const updateNodeStatus = (nodeId: string, status: NodeStatus) => {
-    setNodes((prev) =>
-      prev.map((node) => (node.id === nodeId ? { ...node, data: { ...node.data, status } } : node))
-    );
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    updateNode(node.id, { ...node.data, status });
   };
 
   /**
