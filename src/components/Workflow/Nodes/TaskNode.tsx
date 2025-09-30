@@ -11,6 +11,7 @@ import { createHandleId } from '../utils/workflowIdUtils';
 // };
 
 export const TaskNode = ({ data, id }: NodeProps<TaskNodeType>) => {
+  // console.log(data.label, data.status);
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (
