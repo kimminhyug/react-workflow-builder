@@ -10,6 +10,8 @@ import {
   FaRegStopCircle,
 } from 'react-icons/fa';
 import { RxResume } from 'react-icons/rx';
+import { useAtomValue } from 'jotai';
+import { selectedNodeAtom } from '../../../state/selectedNode';
 export const WorkflowFAB = () => {
   const {
     simulateExecution,
@@ -21,7 +23,7 @@ export const WorkflowFAB = () => {
   } = useWorkflow();
 
   const [open, setOpen] = useState(false);
-
+  const selectedNode = useAtomValue(selectedNodeAtom);
   const isRunning = executionState === 'running';
   const isPaused = executionState === 'paused';
 
@@ -30,7 +32,13 @@ export const WorkflowFAB = () => {
     if (isRunning || isPaused) {
       stopExecution();
     } else {
-      simulateExecution();
+      // toast.warning
+
+      if (selectedNode) {
+        simulateExecution(selectedNode.id);
+      } else {
+        console.warn('시작할 노드를 선택 해야합니다.');
+      }
     }
   };
 

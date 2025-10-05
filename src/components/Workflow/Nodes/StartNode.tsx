@@ -8,7 +8,6 @@ import { createHandleId } from '../utils/workflowIdUtils';
  */
 export const StartNode = ({ data, id }: NodeProps<CustomNode>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
-  console.log(data);
 
   return (
     <div className={`${nodeClass} start-node`} style={{ padding: 10, borderWidth: 2 }}>

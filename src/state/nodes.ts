@@ -8,6 +8,7 @@ import type {
   EndNodeType,
   IBaseNodeData,
   ICondition,
+  IDecisionNodeData,
   InputNodeType,
   ITaskNodeData,
   MergeNodeType,
@@ -83,6 +84,7 @@ export const createTaskNode = (options: {
     status: data.status || DEFAULT_STATUS,
     taskName: data.taskName || '',
     taskType: data.taskType || DEFAULT_TASK_TYPE,
+    execute: data.execute,
     condition: data.condition || [],
     fallback: data.fallback || [],
     cases: data.cases || [],
@@ -97,6 +99,34 @@ export const createTaskNode = (options: {
     type: 'task',
     position,
     data: nodeData,
+    measured: DEFAULT_MEASURED,
+    selected: false,
+    dragging: false,
+  };
+};
+
+export const createDecisionNode = (options: {
+  id: string;
+  position: { x: number; y: number };
+  data?: Partial<IDecisionNodeData>;
+}): DecisionNodeType => {
+  const { id, position, data = {} } = options;
+
+  return {
+    id,
+    type: 'decision',
+    position,
+    data: {
+      condition: [
+        {
+          id: 'c1',
+          label: 'adult',
+          conditionType: 'expression',
+          expression: 'context.nodeResults["task-1"].age >= 18',
+          type: 'primary',
+        },
+      ],
+    },
     measured: DEFAULT_MEASURED,
     selected: false,
     dragging: false,
@@ -121,9 +151,20 @@ export const nodesAtom = atom<CustomNode[]>([
   createTaskNode({
     id: 'task-1-4b6daa',
     position: { x: 205, y: 95 },
+    // data: {
+    //   label: '서버 1',
+    //   condition: [createCondition('1서버 조회 완료', 'primary', 'static')],
+    // },
     data: {
-      label: '서버 1',
-      condition: [createCondition('1서버 조회 완료', 'primary', 'static')],
+      label: 'API 호출',
+      taskName: 'Fetch User',
+      execute: async (context) => {
+        const res = await fetch('https://jsonplaceholder.typicode.com/users/1');
+        console.log(res);
+        const data = await res.json();
+        context.nodeResults['task-1'] = data;
+        context.globals['user'] = data;
+      },
     },
   }),
 
@@ -136,7 +177,7 @@ export const nodesAtom = atom<CustomNode[]>([
     },
   }),
 
-  createTaskNode({
+  createDecisionNode({
     id: 'task-1-89e470',
     position: { x: 110, y: 252 },
     data: {
