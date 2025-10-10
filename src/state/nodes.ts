@@ -30,7 +30,7 @@ export const DEFAULT_TASK_TYPE: 'http' | 'db' | 'script' = 'http';
  */
 export const createCondition = (
   label: string,
-  type: 'primary' | 'fallback',
+
   conditionType: ConditionType,
   options?: Omit<Partial<ICondition>, 'id'>
 ): ICondition => {
@@ -38,7 +38,7 @@ export const createCondition = (
     //내부용 id
     id: uuidv4(),
     label,
-    type,
+
     conditionType,
     //기타
     ...options,
@@ -110,7 +110,7 @@ export const createDecisionNode = (options: {
   position: { x: number; y: number };
   data?: Partial<IDecisionNodeData>;
 }): DecisionNodeType => {
-  const { id, position, data = {} } = options;
+  const { id, position } = options;
 
   return {
     id,
@@ -123,7 +123,6 @@ export const createDecisionNode = (options: {
           label: 'adult',
           conditionType: 'expression',
           expression: 'context.nodeResults["task-1"].age >= 18',
-          type: 'primary',
         },
       ],
     },
@@ -141,9 +140,9 @@ export const nodesAtom = atom<CustomNode[]>([
     data: {
       label: 'Start',
       condition: [
-        createCondition('서버 1 상태 체크', 'primary', 'static'),
-        createCondition('1_fallback', 'fallback', 'static'),
-        createCondition('예비 서버', 'fallback', 'static'),
+        createCondition('서버 1 상태 체크', 'static'),
+        createCondition('1_fallback', 'static'),
+        createCondition('예비 서버', 'static'),
       ],
     },
   }),
@@ -153,7 +152,7 @@ export const nodesAtom = atom<CustomNode[]>([
     position: { x: 205, y: 95 },
     // data: {
     //   label: '서버 1',
-    //   condition: [createCondition('1서버 조회 완료', 'primary', 'static')],
+    //   condition: [createCondition('1서버 조회 완료',  'static')],
     // },
     data: {
       label: 'API 호출',
@@ -173,7 +172,7 @@ export const nodesAtom = atom<CustomNode[]>([
     position: { x: -55, y: 95 },
     data: {
       label: '서버 1-2',
-      condition: [createCondition('1-2서버 조회 완료', 'primary', 'static')],
+      condition: [createCondition('1-2서버 조회 완료', 'static')],
     },
   }),
 
@@ -184,7 +183,7 @@ export const nodesAtom = atom<CustomNode[]>([
       label: '데이터 조회',
       taskType: 'db',
       condition: [
-        createCondition('데이터 조회 시간: 00:00:00', 'primary', 'regex', {
+        createCondition('데이터 조회 시간: 00:00:00', 'regex', {
           dataAccessKey: 'data.timestamp',
           pattern: '^00:00:00$',
         }),
@@ -199,7 +198,7 @@ export const nodesAtom = atom<CustomNode[]>([
       label: '데이터 업데이트',
       taskType: 'script',
       condition: [
-        createCondition('commit;', 'primary', 'expression', {
+        createCondition('commit;', 'expression', {
           expression: 'response.lastCommit === true',
         }),
       ],
@@ -232,6 +231,7 @@ export const updateStartNode = (
   node: StartNodeType,
   data: Partial<StartNodeType['data']>
 ): StartNodeType => {
+  console.log(node.data.status, data.status, { ...node, data: { ...node.data, ...data } });
   return { ...node, data: { ...node.data, ...data } };
 };
 

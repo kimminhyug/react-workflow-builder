@@ -24,7 +24,6 @@ interface IConditionModalProps {
 const initData: ICondition = {
   conditionType: 'static',
   label: '',
-  type: 'primary',
   pattern: '',
   expression: '',
   dataAccessKey: '',
@@ -91,7 +90,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
   const handleSave = () => {
     const base: ICondition = {
       label,
-      type: 'primary',
+
       conditionType,
       dataAccessKey,
       id: id || originId,

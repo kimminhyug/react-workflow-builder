@@ -3,6 +3,7 @@ import { activeNodeIdAtom } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
 
 export const useNodeStatus = (id: string, status?: string) => {
+  // active 시물레이션 실행중
   const [activeNodeId] = useAtom(activeNodeIdAtom);
   const [selectedNode] = useAtom(selectedNodeAtom);
 

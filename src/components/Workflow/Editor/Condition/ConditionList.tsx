@@ -88,12 +88,12 @@ export const ConditionList = () => {
           }
         />
       )}
-      <Button text="조건 추가" onClick={() => setIsOpen(true)} />
+      <Button text="조건 추가" onClick={() => setIsConditionModalOpen(true)} />
       <Button onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
       {data.map((condition, idx) => (
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
           <span style={{ flex: 1 }}>
-            {condition.label} ({condition.type} / {condition.conditionType})
+            {condition.label} ({condition.conditionType})
           </span>
           <IconButton
             icon="Delete"

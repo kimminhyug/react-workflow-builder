@@ -10,28 +10,26 @@ export const defaultEdgeOptions = {
 /**
  * 시물레이션 진행하면서 엣지상태에 따라 색상업데이트
  * @param data edge data
- * @param sourceNode 이미 시물레이션 완료된 엣지?
  * @returns stroke-color
  */
-export const getEdgeColor = (data?: IEdgeData, sourceNode?: CustomNode): string => {
-  if (!data || !sourceNode) return 'auto';
+export const getEdgeColor = (data?: IEdgeData): string => {
+  if (!data) return '#aaa';
 
-  // 배열 형태로 변경되어 수정필요
-  // 노드처럼 엣지에 대한 상태값 필요
-  // const condition = sourceNode.data?.condition?.[0]?.label.toLowerCase();
-  const isDone = sourceNode.data.status === 'done';
+  // edge에 직접 status를 넣었다면
+  const status = data.status ?? 'waiting';
 
-  // const fallback = (sourceNode.data?.fallback || []).map((f) => f.toLowerCase());
-  const label = data?.label?.toLowerCase();
-
-  // 라벨 입력필요 상황
-  if (!label) return '#aaa';
-  // 조건 성공
-  if (isDone) return '#3fb950';
-  //  폴백타면(조건 수정 필요)
-  // if (fallback.includes(label)) return '#facc15';
-  // 예상치못한경우
-  return '#aaa';
+  switch (status) {
+    case 'running':
+      return '#facc15'; // 진행 중: 노란색
+    case 'done':
+      '';
+      return '#3fb950'; // 완료: 초록색
+    case 'waiting':
+    case 'startWaiting':
+      return '#aaa'; // 대기: 회색
+    default:
+      return '#aaa';
+  }
 };
 
 export const nodeInitializeProperties: CustomNode['data'] = {

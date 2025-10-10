@@ -14,8 +14,14 @@ export const useUpdateNode = () => {
     const _node = nodes.find((n) => n.id === nodeId);
     if (!_node) return;
     const newNode = { ..._node, data: { ..._node.data, ...newData } } as CustomNode;
-    applyNodeUpdate(_node, newNode);
+    updateNodeById(applyNodeUpdate(_node, newNode));
   };
 
-  return { nodes, setNodes, updateNode };
+  const updateNodeById = (updatedNode: CustomNode): void => {
+    setNodes((prevNodes) =>
+      prevNodes.map((n) => (n.id === updatedNode.id ? applyNodeUpdate(n, updatedNode) : n))
+    );
+  };
+
+  return { nodes, setNodes, updateNode, updateNodeById };
 };

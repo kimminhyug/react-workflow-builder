@@ -1,9 +1,19 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { nodeInitializeProperties } from '../components/Workflow/constants/workflow.constants';
-import type { CustomNode, IFlowContext, NodeStatus } from '../components/Workflow/types';
+import type {
+  CustomNode,
+  EdgeStatus,
+  IFlowContext,
+  NodeStatus,
+} from '../components/Workflow/types';
+import { executeDecisionNode } from '../components/Workflow/utils/simulations/decisionExecutor';
+import { executeDefaultNode } from '../components/Workflow/utils/simulations/defaultExecutor';
+import { executeMergeNode } from '../components/Workflow/utils/simulations/mergeExecutor';
+import { executeSwitchNode } from '../components/Workflow/utils/simulations/switchExecutor';
+import { executeTaskNode } from '../components/Workflow/utils/simulations/taskExecutor';
 import {
   createEdgeId,
   createHandleId,
@@ -11,13 +21,20 @@ import {
   nodeCounterAtom,
 } from '../components/Workflow/utils/workflowIdUtils';
 import { edgesAtom, type CustomEdge } from '../state/edges';
-import { activeNodeIdAtom, nodesAtom } from '../state/nodes';
+import {
+  activeNodeIdAtom,
+  isDecisionNode,
+  isMergeNode,
+  isSwitchNode,
+  isTaskNode,
+  nodesAtom,
+} from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
 import { useUpdateNode } from './useNodeUpdater';
 
 export const useWorkflow = () => {
   const [nodes, setNodes] = useAtom(nodesAtom);
-  const [edges] = useAtom(edgesAtom);
+  const [edges, setEdges] = useAtom(edgesAtom);
   //  애니메이션색칠용
   const [, setActiveNodeId] = useAtom(activeNodeIdAtom);
   const selectedNode = useAtomValue(selectedNodeAtom);
@@ -66,135 +83,106 @@ export const useWorkflow = () => {
     updateNode(node.id, { ...node.data, status });
   };
 
-  /**
-   *  시물레이션 실행기
-   * @param startId 시물레이션 시작 할 노드 ID
-   * @returns void
-   */
   const simulateExecution = async (startId: string, context?: IFlowContext) => {
     const visited = new Set<string>();
     const execId = ++executionId.current;
-    if (!context) {
-      context = {
-        nodeResults: {},
-        globals: {},
-      };
-    }
+
+    context ??= { nodeResults: {}, globals: {}, edgeStatusMap: {} };
+    nodes.forEach((n) => (n.data.status = 'waiting'));
+    setEdges((eds) =>
+      eds.map((e) => ({
+        ...e,
+        data: { ...e.data, status: 'waiting', label: e?.data?.label ?? '' },
+      }))
+    );
+
+    const updateEdgeStatus = (edgeId: string, status: EdgeStatus) => {
+      setEdges((eds) =>
+        eds.map((e) =>
+          e.id === edgeId ? { ...e, data: { ...e.data, status, label: e?.data?.label ?? '' } } : e
+        )
+      );
+    };
+
+    const getOutgoingEdges = (nodeId: string) => edges.filter((e) => e.source === nodeId); // 최신 edgesAtom 상태 사용
 
     const walk = async (nodeId: string) => {
       if (execId !== executionId.current) return;
       if (visited.has(nodeId)) return;
-
       visited.add(nodeId);
 
-      const currentNode = nodes.find((n) => n.id === nodeId);
-      if (!currentNode) return;
+      const node = nodes.find((n) => n.id === nodeId);
+      if (!node) return;
 
-      // Node 상태 업데이트
-      currentNode.data.status = 'running';
+      node.data.status = 'running';
       setActiveNodeId(nodeId);
+
+      let outgoingEdges = getOutgoingEdges(node.id);
+
+      // DecisionNode: 선택된 edge만
+      if (isDecisionNode(node)) {
+        const conditionList = node.data.condition || [];
+        const matchedCondition = conditionList.find((cond) => {
+          if (!cond.expression) return false;
+          try {
+            return new Function('context', `return ${cond.expression}`)(context);
+          } catch {
+            return false;
+          }
+        });
+        const selectedEdgeId = matchedCondition
+          ? outgoingEdges.find((e) => e.data?.label === matchedCondition.label)?.id
+          : node.data.fallbackTarget;
+        outgoingEdges = outgoingEdges.filter((e) => e.id === selectedEdgeId);
+      }
+
+      // SwitchNode: 선택된 edge만
+      if (isSwitchNode(node) && node.data.expression) {
+        let value: any;
+        try {
+          value = new Function('context', `return ${node.data.expression}`)(context);
+        } catch {
+          value = undefined;
+        }
+        const selectedEdgeId = outgoingEdges.find(
+          (e) => e.data?.label?.toLowerCase() === String(value)?.toLowerCase()
+        )?.id;
+        outgoingEdges = outgoingEdges.filter((e) => e.id === (selectedEdgeId || ''));
+        // fallbackTarget edge 포함 가능
+        if (outgoingEdges.length === 0 && node.data.fallbackTarget) {
+          outgoingEdges = outgoingEdges.filter((e) => e.target === node.data.fallbackTarget);
+        }
+      }
+
+      // edge running 처리
+      outgoingEdges.forEach((e) => updateEdgeStatus(e.id, 'running'));
+
       await delay(500);
 
-      // execute 호출
-      if (currentNode.data.execute) {
-        try {
-          await currentNode.data.execute(context);
-        } catch (err) {
-          console.error(`Node execute error: ${err}`);
+      try {
+        if (isTaskNode(node)) {
+          await executeTaskNode(node, context, edges, walk);
+        } else if (isDecisionNode(node)) {
+          await executeDecisionNode(node, context, edges, walk);
+        } else if (isSwitchNode(node)) {
+          await executeSwitchNode(node, context, edges, walk);
+        } else if (isMergeNode(node)) {
+          await executeMergeNode(node, context, edges, walk, nodes);
+        } else {
+          await executeDefaultNode(node, edges, walk);
         }
+      } catch (err) {
+        console.error(`Execution error on ${node.id}:`, err);
       }
+      //음 이거 바꿔야하나
+      node.data.status = 'done';
 
-      currentNode.data.status = 'done';
+      // edge done 처리
+      await Promise.all(outgoingEdges.map((e) => updateEdgeStatus(e.id, 'done')));
 
-      const nextEdges = edges.filter((e) => e.source === nodeId);
-
-      switch (currentNode.type) {
-        case 'task': {
-          // TaskNode: 다음 Edge 무조건 이동
-          if (nextEdges.length > 0) await walk(nextEdges[0].target);
-          return;
-        }
-
-        case 'decision': {
-          const conditionList = currentNode.data.condition || [];
-          let matchedEdge = null;
-
-          for (const cond of conditionList) {
-            if (!cond.expression) continue;
-            let condResult = false;
-            try {
-              condResult = new Function('context', `return ${cond.expression}`)(context);
-            } catch (err) {
-              console.error(`DecisionNode expression error: ${err}`);
-            }
-            if (condResult) {
-              matchedEdge = nextEdges.find((e) => e.data?.label === cond.label);
-              break;
-            }
-          }
-
-          if (matchedEdge) {
-            await walk(matchedEdge.target);
-          } else if (conditionList.some((c) => c.fallbackTarget)) {
-            const fallbackNodeId = conditionList.find((c) => c.fallbackTarget)?.fallbackTarget!;
-            await walk(fallbackNodeId);
-          } else {
-            console.warn(`DecisionNode 조건 불일치 + fallback 없음: ${nodeId}`);
-          }
-          return;
-        }
-
-        case 'switch': {
-          const expr = currentNode.data.expression;
-          if (!expr) return;
-
-          let value: any;
-          try {
-            value = new Function('context', `return ${expr}`)(context);
-          } catch (err) {
-            console.error(`SwitchNode expression error: ${err}`);
-            return;
-          }
-
-          const edge = nextEdges.find(
-            (e) => e.data?.label?.toLowerCase() === String(value).toLowerCase()
-          );
-          if (edge) {
-            await walk(edge.target);
-          } else if (currentNode.data.fallbackTarget) {
-            await walk(currentNode.data.fallbackTarget);
-          } else {
-            console.warn(`SwitchNode 조건 불일치 + fallback 없음: ${nodeId}`);
-          }
-          return;
-        }
-
-        case 'merge': {
-          const inputIds = currentNode.data.inputs || [];
-          const allDone = inputIds.every(
-            (id) => nodes.find((n) => n.id === id)?.data.status === 'done'
-          );
-
-          if (!allDone) {
-            console.log(`MergeNode 대기 중: ${nodeId}`);
-            return;
-          }
-
-          if (nextEdges.length > 0) await walk(nextEdges[0].target);
-          return;
-        }
-
-        case 'start':
-        case 'end':
-        case 'input':
-        case 'object': {
-          if (nextEdges.length > 0) await walk(nextEdges[0].target);
-          return;
-        }
-      }
+      // 병렬로 다음 node 처리 (StartNode, MergeNode 등)
+      await Promise.all(outgoingEdges.map((e) => walk(e.target)));
     };
-
-    nodes.forEach((n) => (n.data.status = 'waiting'));
 
     await walk(startId);
   };
