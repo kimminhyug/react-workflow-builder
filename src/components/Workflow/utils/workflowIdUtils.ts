@@ -50,3 +50,14 @@ export const createEdgeId = (
   targetNodeId: string,
   targetHandleId: string
 ) => `${sourceNodeId}__${sourceHandleId}__${targetNodeId}__${targetHandleId}`;
+
+/**
+ * 전체 배열에서 특정 배열 데이터를 제외하여 반환(불변성 유지)
+ * @property {T[]} [all] - 전체 배열
+ * @property {T[]} [excludes] - 제외할 배열
+ */
+export const excludeFromArray = <T>(all: T[], excludes: T[]): T[] => {
+  const excludeSet = new Set(excludes);
+  const result = all.filter((item) => !excludeSet.has(item));
+  return result;
+};

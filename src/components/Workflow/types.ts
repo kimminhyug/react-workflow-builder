@@ -153,6 +153,7 @@ export type NodeType =
   | 'input'
   | 'switch'
   | 'merge'
+  | 'delay'
   | 'decision';
 
 export type TaskNodeType = Node<ITaskNodeData, 'task'>;

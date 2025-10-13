@@ -1,7 +1,9 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
+import { nodeIconMap } from '../constants/workflow.constants';
 import type { MergeNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
+import { NodeLabel } from './NodeLabel';
 
 /**
  * MergeNode 모두 true면 통과(and)
@@ -23,7 +25,8 @@ export const MergeNode = ({ data, id }: NodeProps<MergeNodeType>) => {
           style={{ left: `${((i + 1) / (inputs.length + 1)) * 100}%` }}
         />
       ))}
-      <div>🔗 {data.label ?? 'Merge'}</div>
+
+      <NodeLabel label={data.label ?? '병합'} iconName={nodeIconMap.merge} />
       <Handle type="source" position={Position.Bottom} id={createHandleId(id, 'out')} />
     </div>
   );

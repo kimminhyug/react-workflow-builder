@@ -310,7 +310,7 @@ export const isDecisionNode = (node: CustomNode): node is DecisionNodeType => {
   return node.type === 'decision';
 };
 
-/** 모든 Node 공토 업데이트 함수 */
+/** 모든 Node 공통 업데이트 함수 */
 export const applyNodeUpdate = (node: CustomNode, updatedNode: CustomNode): CustomNode => {
   if (isTaskNode(node) && isTaskNode(updatedNode)) {
     return updateTaskNode(node, updatedNode.data);

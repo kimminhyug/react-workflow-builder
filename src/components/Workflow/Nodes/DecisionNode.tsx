@@ -1,7 +1,9 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
+import { nodeIconMap } from '../constants/workflow.constants';
 import type { DecisionNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
+import { NodeLabel } from './NodeLabel';
 
 /**
  * DecisionNode
@@ -16,7 +18,8 @@ export const DecisionNode = ({ data, id }: NodeProps<DecisionNodeType>) => {
       style={{ padding: 10, borderWidth: 2, background: '#2a2a40' }}
     >
       <Handle type="target" position={Position.Top} id={createHandleId(id, 'in')} />
-      <div>🔀 {data.label ?? 'Decision'}</div>
+      <NodeLabel label={data.label ?? '조건'} iconName={nodeIconMap.decision} />
+
       <Handle
         type="source"
         position={Position.Bottom}

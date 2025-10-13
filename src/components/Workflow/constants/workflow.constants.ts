@@ -1,5 +1,5 @@
 import type { IEdgeData } from '../../../state/edges';
-import type { CustomNode } from '../types';
+import type { CustomNode, NodeType } from '../types';
 
 export const defaultEdgeOptions = {
   animated: true,
@@ -35,4 +35,16 @@ export const getEdgeColor = (data?: IEdgeData): string => {
 export const nodeInitializeProperties: CustomNode['data'] = {
   taskName: '',
   status: 'startWaiting',
+};
+
+export const nodeIconMap: Record<NodeType, string> = {
+  task: 'ProcessMetaTask',
+  start: 'Play',
+  end: 'Stop',
+  decision: 'BranchFork',
+  merge: 'MergeDuplicate',
+  switch: 'DOM',
+  delay: 'Clock',
+  object: '',
+  input: '',
 };

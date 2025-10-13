@@ -1,16 +1,29 @@
 import type { NodeType } from '../types';
+import { excludeFromArray } from './workflowIdUtils';
 
-//inout 고려필요
-//  start: { out: ['task', 'decision', 'merge', 'switch'], in: [] },
+const fullConnections: NodeType[] = [
+  'start',
+  'input',
+  'task',
+  'end',
+  'merge',
+  'switch',
+  'decision',
+  'delay',
+  'object',
+  'input',
+];
+
 export const allowedConnections: Record<NodeType, NodeType[]> = {
-  start: ['input', 'task', 'end', 'decision', 'merge', 'switch'],
-  input: ['task', 'start', 'end', 'decision', 'merge', 'switch'],
-  task: ['input', 'start', 'end', 'decision', 'merge', 'switch'],
-  end: [],
-  object: [],
-  switch: ['start', 'input', 'task', 'end', 'decision', 'merge'],
-  merge: ['start', 'input', 'task', 'end', 'decision', 'switch'],
-  decision: ['start', 'input', 'task', 'end', 'merge', 'switch'],
+  start: excludeFromArray(fullConnections, ['start']),
+  input: excludeFromArray(fullConnections, ['input']),
+  task: excludeFromArray(fullConnections, ['task']),
+  end: excludeFromArray(fullConnections, ['end']),
+  object: excludeFromArray(fullConnections, ['object']),
+  switch: excludeFromArray(fullConnections, ['switch']),
+  merge: excludeFromArray(fullConnections, ['merge']),
+  decision: excludeFromArray(fullConnections, ['decision']),
+  delay: excludeFromArray(fullConnections, ['delay']),
 };
 
 // <-> 엣지 연결 가능한지 확인
