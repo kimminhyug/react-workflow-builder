@@ -190,6 +190,12 @@ body {
   /* background: #e6ffe6; */
 }
 
+.neon-node .label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* 노드선택  */
 .neon-node.selected {
   border-color: rgb(0, 119, 255);

@@ -1,10 +1,12 @@
 import type { Edge } from '@xyflow/react';
 import { atom } from 'jotai';
+import type { EdgeStatus } from '../components/Workflow/types';
 type unknownRecord = { [key: string]: unknown };
 export interface IEdgeData extends unknownRecord {
   label: string;
   taskName?: string;
   expression?: string;
+  status?: EdgeStatus;
 }
 
 export type EdgeType = 'default';

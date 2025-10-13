@@ -1,7 +1,9 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { useNodeStatus } from '../../../hooks/useNodeStatus';
-import type { CustomNode } from '../types';
+import { nodeIconMap } from '../constants/workflow.constants';
+import type { TaskNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
+import { NodeLabel } from './NodeLabel';
 
 // const statusColorMap: Record<NodeStatus, string> = {
 //   waiting: '#ccc',
@@ -10,7 +12,8 @@ import { createHandleId } from '../utils/workflowIdUtils';
 //   startWaiting: '#e7e7e7',
 // };
 
-export const TaskNode = ({ data, id }: NodeProps<CustomNode>) => {
+export const TaskNode = ({ data, id }: NodeProps<TaskNodeType>) => {
+  // console.log(data.label, data.status);
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (
@@ -18,11 +21,8 @@ export const TaskNode = ({ data, id }: NodeProps<CustomNode>) => {
       className={`${nodeClass} task-node`}
       style={{ padding: 10, borderWidth: 2, background: '#222' }}
     >
+      <NodeLabel label={data.label ?? '작업'} iconName={nodeIconMap.task} />
       <Handle type="target" position={Position.Top} id={createHandleId(id, 'in')} />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span>⚙</span>
-        <span>{data.label ?? 'Task'}</span>
-      </div>
       <Handle type="source" position={Position.Bottom} id={createHandleId(id, 'out')} />
     </div>
   );

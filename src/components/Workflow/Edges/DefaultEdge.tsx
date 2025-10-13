@@ -1,9 +1,8 @@
 import { EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { edgesAtom, type CustomEdge } from '../../../state/edges';
 
-import { nodesAtom } from '../../../state/nodes';
 import { getEdgeColor } from '../constants/workflow.constants';
 
 import { edgeStyles, neonTextFieldStyles } from '../../common/styles';
@@ -12,7 +11,7 @@ import { Stack } from '../../common/UI/Layout/Stack';
 
 const DefaultEdge = ({
   id,
-  source,
+
   sourceX,
   sourceY,
   targetX,
@@ -26,10 +25,9 @@ const DefaultEdge = ({
   const [editingEdgeId, setEditingEdgeId] = useState<string | null>(null);
   const [labelInput, setLabelInput] = useState('');
   const [, setEdges] = useAtom(edgesAtom);
-  const nodes = useAtomValue(nodesAtom);
 
-  const sourceNode = nodes.find((n) => n.id === source);
-  const strokeColor = getEdgeColor(data, sourceNode);
+  const strokeColor = getEdgeColor(data);
+
   // 직선?
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
