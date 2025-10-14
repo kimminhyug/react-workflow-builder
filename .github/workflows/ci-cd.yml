@@ -1,0 +1,76 @@
+name: CI + Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. GitHub Actions 내장 액션으로 깃 체크 아웃 이라고 함
+      - uses: actions/checkout@v4
+
+      # 2. Node.js 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      # 3. 의존성 캐싱, 작업하면 의존성 라이브러리들 캐싱됨
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # 4. 의존성 설치(--frozen-lockfile을 이용하여 yarn.lock 버전을 fix하며 무조건 동일한 환경으로 처리하게 만듬)
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # 5. 빌드
+      - name: Build
+        run: yarn build
+
+      # 6. 빌드 결과물 재사용 할 수 있게 업로드 처리
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    needs: build-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      # 위 build와 유사
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      # CI 에서 빌드한 결과물을 다운받도록 설정
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
