@@ -1,0 +1,54 @@
+{
+  "runSimulation": "Run Simulation",
+  "stopSimulation": "Stop Simulation",
+  "pauseSimulation": "Pause Simulation",
+  "resumeSimulation": "Resume Simulation",
+  "exportWorkflow": "Export Workflow",
+  "widgets": {
+    "task": "Add Task Node",
+    "start": "Add Start Node",
+    "end": "Add End Node",
+    "decision": "Add Decision Node",
+    "merge": "Add Merge Node",
+    "switch": "Add Case Node",
+    "delay": "Add Delay Node",
+    "api": "Add API Node"
+  },
+  "tabs": {
+    "addItem": "Add Item",
+    "property": "Property / Settings",
+    "style": "Style",
+    "log": " Execution Log"
+  },
+
+  "node": {
+    "remove": "Remove Node",
+    "task": "New Task",
+    "start": "Start",
+    "end": "End",
+    "switch": "Switch",
+    "merge": "Merge",
+    "decision": "Decision"
+  },
+  "panel": {
+    "open": "Open Panel",
+    "close": "Close Panel"
+  },
+  "editor": {
+    "title": "Settings Editor"
+  },
+  "condition": {
+    "label": "Label",
+    "type": "Type",
+    "conditionType": "Condition Type",
+    "dataAccessKey": "Data Path",
+    "pattern": "Pattern",
+    "actions": "Actions",
+    "newLabel": "New Label",
+    "name": "Name",
+    "taskName": "Task Name",
+    "add": "Add Condition",
+    "viewDetails": "View Details",
+    "details": "Condition Details"
+  }
+}

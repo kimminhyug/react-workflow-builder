@@ -1,0 +1,53 @@
+{
+  "runSimulation": "시뮬레이션 실행",
+  "stopSimulation": "시뮬레이션 정지",
+  "pauseSimulation": "시뮬레이션 일시정지",
+  "resumeSimulation": "시뮬레이션 재개",
+  "exportWorkflow": "워크플로우 내보내기",
+  "widgets": {
+    "task": "작업 노드 추가",
+    "start": "시작 노드 추가",
+    "end": "종료 노드 추가",
+    "decision": "조건 노드 추가",
+    "merge": "병합 노드 추가",
+    "switch": "케이스 노드 추가",
+    "delay": "딜레이 노드 추가",
+    "api": "API 노드 추가"
+  },
+  "tabs": {
+    "addItem": "항목 추가",
+    "property": "속성 / 설정",
+    "style": "스타일",
+    "log": "동작 로그"
+  },
+  "node": {
+    "remove": "노드 삭제",
+    "task": "새로운 작업",
+    "start": "시작",
+    "end": "종료",
+    "switch": "케이스",
+    "merge": "병합",
+    "decision": "조건"
+  },
+  "panel": {
+    "open": "패널 열기",
+    "close": "패널 닫기"
+  },
+  "editor": {
+    "title": "설정 편집기"
+  },
+  "condition": {
+    "label": "라벨",
+    "type": "타입",
+    "conditionType": "조건 타입",
+    "dataAccessKey": "데이터 경로",
+    "pattern": "패턴",
+    "actions": "액션",
+    "newLabel": "새 라벨",
+    "name": "이름",
+    "taskName": "작업 이름",
+    "add": "조건 추가",
+    "viewDetails": "조건 상세 보기",
+    "details": "조건 상세 보기"
+  }
+}

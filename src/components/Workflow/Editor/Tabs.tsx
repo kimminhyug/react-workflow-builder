@@ -1,8 +1,10 @@
 import { Icon, Label } from '@fluentui/react';
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWorkflow } from '../../../hooks/useWorkflow';
 import { selectedNodeAtom } from '../../../state/selectedNode';
+import { tCommon } from '../../../utils/i18nUtils';
 import { SidePanelTabs, type IPivotProps, type ISidePanelTabItem } from '../../common/UI';
 import { WidgetGrid, type IWidget } from '../../common/WidgetGrid/WidgetGrid';
 import { nodeIconMap } from '../constants/workflow.constants';
@@ -13,67 +15,65 @@ export const Tabs = () => {
   const { addTaskNode, addSwitchNode, addMergeNode, addDecisionNode, addEndNode, addStartNode } =
     useWorkflow();
   const selectedNode = useAtomValue(selectedNodeAtom);
-  const [widgets] = useState<IWidget[]>([
-    // 기존 작업 노드
-    {
-      id: 1,
-      label: '작업 노드 추가',
-      icon: <Icon iconName={nodeIconMap.decision} />,
-      onClick: addTaskNode,
-    },
-
-    {
-      id: 2,
-      label: '시작 노드 추가',
-      icon: <Icon iconName={nodeIconMap.start} />,
-      onClick: addStartNode,
-    },
-
-    {
-      id: 3,
-      label: '종료 노드 추가',
-      icon: <Icon iconName={nodeIconMap.end} />,
-      onClick: addEndNode,
-    },
-
-    {
-      id: 4,
-      label: '조건 노드 추가',
-      icon: <Icon iconName={nodeIconMap.decision} />,
-      onClick: addDecisionNode,
-    },
-    {
-      id: 5,
-      label: '병합 노드 추가',
-      icon: <Icon iconName={nodeIconMap.merge} />,
-      onClick: addMergeNode,
-    },
-    {
-      id: 6,
-      label: '케이스 노드 추가',
-      icon: <Icon iconName={nodeIconMap.switch} />,
-      onClick: addSwitchNode,
-    },
-
-    {
-      id: 7,
-      label: '딜레이 노드 추가',
-      icon: <Icon iconName={nodeIconMap.delay} />,
-      onClick: () => alert('준비중'),
-    },
-
-    {
-      id: 8,
-      label: 'API 노드 추가',
-      onClick: () => alert('준비중'),
-    },
-  ]);
+  const { i18n } = useTranslation();
+  const widgets = useMemo<IWidget[]>(
+    () => [
+      {
+        id: 1,
+        label: tCommon('widgets.task'),
+        icon: <Icon iconName={nodeIconMap.decision} />,
+        onClick: addTaskNode,
+      },
+      {
+        id: 2,
+        label: tCommon('widgets.start'),
+        icon: <Icon iconName={nodeIconMap.start} />,
+        onClick: addStartNode,
+      },
+      {
+        id: 3,
+        label: tCommon('widgets.end'),
+        icon: <Icon iconName={nodeIconMap.end} />,
+        onClick: addEndNode,
+      },
+      {
+        id: 4,
+        label: tCommon('widgets.decision'),
+        icon: <Icon iconName={nodeIconMap.decision} />,
+        onClick: addDecisionNode,
+      },
+      {
+        id: 5,
+        label: tCommon('widgets.merge'),
+        icon: <Icon iconName={nodeIconMap.merge} />,
+        onClick: addMergeNode,
+      },
+      {
+        id: 6,
+        label: tCommon('widgets.switch'),
+        icon: <Icon iconName={nodeIconMap.switch} />,
+        onClick: addSwitchNode,
+      },
+      {
+        id: 7,
+        label: tCommon('widgets.delay'),
+        icon: <Icon iconName={nodeIconMap.delay} />,
+        onClick: () => alert('준비중'),
+      },
+      {
+        id: 8,
+        label: tCommon('widgets.api'),
+        onClick: () => alert('준비중'),
+      },
+    ],
+    [i18n.language]
+  );
 
   const items: ISidePanelTabItem[] = useMemo(
     () => [
       {
         key: 'widgetGrid',
-        headerText: '항목 추가',
+        headerText: tCommon('tabs.addItem'),
         content: (
           <NodeContentWrapper requireNode={false}>
             <WidgetGrid widgets={widgets}></WidgetGrid>
@@ -82,7 +82,7 @@ export const Tabs = () => {
       },
       {
         key: 'properties',
-        headerText: '속성 / 설정',
+        headerText: tCommon('tabs.property'),
         content: (
           <NodeContentWrapper>
             <ConditionEditor />
@@ -98,7 +98,7 @@ export const Tabs = () => {
       {
         key: 'style',
 
-        headerText: '스타일',
+        headerText: tCommon('tabs.style'),
         content: (
           <NodeContentWrapper>
             <Label> #3</Label>
@@ -107,7 +107,7 @@ export const Tabs = () => {
       },
       {
         key: 'logs',
-        headerText: '임시(노드 동작 로그?)',
+        headerText: tCommon('tabs.log'),
         content: (
           <NodeContentWrapper>
             <Label> #4</Label>
@@ -115,7 +115,7 @@ export const Tabs = () => {
         ),
       },
     ],
-    []
+    [i18n.language]
   );
   const [selectedTab, setSelectedTab] = useState('widgetGrid');
 

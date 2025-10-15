@@ -4,6 +4,7 @@
   height: 100%;
   width: 100%;
   /* gap: 20px; */
+  overflow: hidden;
   flex-direction: row;
 }
 

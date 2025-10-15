@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
+import { tCommon } from '../../../../utils/i18nUtils';
 import {
   neonModalButtonStyles,
   neonModalStyles,
@@ -15,8 +16,6 @@ import { Button, IconButton, Modal, Stack, TextField } from '../../../common/UI'
 import type { ICondition } from '../../types';
 import { ConditionModal } from './ConditionModal';
 
-// conditions props 변경 필요 싱크 불일치
-
 export const ConditionList = () => {
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
 
@@ -29,31 +28,30 @@ export const ConditionList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConditionModalOpen, setIsConditionModalOpen] = useState(false);
 
-  const onDismiss = () => {
-    setIsOpen(false);
-  };
+  const onDismiss = () => setIsOpen(false);
+
   const columns: ColumnDef<ICondition>[] = [
-    { accessorKey: 'label', header: '라벨' },
-    { accessorKey: 'type', header: 'type' },
-    { accessorKey: 'conditionType', header: '조건 타입' },
-    { accessorKey: 'dataAccessKey', header: 'dataAccessKey' },
-    { accessorKey: 'pattern', header: '패턴' },
+    { accessorKey: 'label', header: tCommon('condition.label') },
+    { accessorKey: 'type', header: tCommon('condition.type') },
+    { accessorKey: 'conditionType', header: tCommon('condition.conditionType') },
+    { accessorKey: 'dataAccessKey', header: tCommon('condition.dataAccessKey') },
+    { accessorKey: 'pattern', header: tCommon('condition.pattern') },
     {
       id: 'actions',
-      header: '액션',
+      header: tCommon('condition.actions'),
       cell: ({ row }) => (
         <TableActionButtons
           onEdit={() => {
             setIsConditionModalOpen(true);
             setSelectedConditionId(row.original.label);
-            update(row.original.label, { label: '새 라벨' });
+            update(row.original.label, { label: tCommon('condition.newLabel') });
           }}
           onDelete={() => remove(row.original.label)}
         />
       ),
     },
-    // { accessorKey: 'expression', header: 'expression',  },
   ];
+
   const { data, update, remove } = useTableController<ICondition>({
     api: {},
     data: conditions,
@@ -64,7 +62,7 @@ export const ConditionList = () => {
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
       <TextField
-        label="이름"
+        label={tCommon('condition.name')}
         styles={neonTextFieldStyles}
         value={selectedNode.data.label || ''}
         onChange={(_e, newValue) =>
@@ -77,7 +75,7 @@ export const ConditionList = () => {
 
       {selectedNode.type === 'task' && (
         <TextField
-          label="작업 이름"
+          label={tCommon('condition.taskName')}
           styles={neonTextFieldStyles}
           value={selectedNode.data.taskName || ''}
           onChange={(_e, newValue) =>
@@ -88,8 +86,10 @@ export const ConditionList = () => {
           }
         />
       )}
-      <Button text="조건 추가" onClick={() => setIsConditionModalOpen(true)} />
-      <Button onClick={() => setIsOpen(true)} text="조건 상세 보기(돋보기 아이콘 변경)" />
+
+      <Button text={tCommon('condition.add')} onClick={() => setIsConditionModalOpen(true)} />
+      <Button text={tCommon('condition.viewDetails')} onClick={() => setIsOpen(true)} />
+
       {data.map((condition, idx) => (
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }} key={idx}>
           <span style={{ flex: 1 }}>
@@ -108,10 +108,11 @@ export const ConditionList = () => {
         onDismiss={() => setIsConditionModalOpen(false)}
         id={selectedConditionId}
       />
+
       <Modal isOpen={isOpen} onDismiss={onDismiss} isBlocking={false} styles={neonModalStyles}>
         <Stack tokens={{ childrenGap: 15, padding: 5 }}>
           <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-            <h3 style={neonModalTitle}>조건 상세 보기</h3>
+            <h3 style={neonModalTitle}>{tCommon('condition.details')}</h3>
             <Button
               iconProps={{ iconName: 'Cancel' }}
               onClick={onDismiss}

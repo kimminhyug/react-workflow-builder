@@ -1,51 +1,3 @@
-/*폼? 영역*/
-.neon-panel {
-  padding: 20px;
-  z-index: var(--z-flow-panel);
-
-  background-color: #0a192f;
-  border: 1px solid #2381fc;
-  box-shadow: 0 0 15px #2381fc;
-  border-radius: 8px;
-  color: #ffffff;
-  transition: transform 0.2s ease-in-out;
-}
-
-.neon-panel.closed {
-  transform: translateX(calc(80% - 50px));
-}
-
-.neon-panel.open {
-  transform: translateX(0);
-}
-
-.neon-panel-side {
-  position: relative;
-  top: calc(50% - 1em);
-  /* padding - half font-size */
-  left: calc(-20px + -0.7rem);
-  width: fit-content;
-  height: 1rem;
-}
-.neon-panel-side-button {
-  cursor: pointer;
-  background: #2571d4;
-  box-shadow: 0 0 2px 1px #2571d4;
-  border-radius: 3px;
-  padding: 0.2rem 0.25rem;
-  i {
-    vertical-align: middle;
-  }
-  /* aspect-ratio: 1/1; */
-}
-.neon-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 16px;
-  color: #61a0f3;
-  text-shadow: 0 0 5px #61a0f3;
-}
-
 .neon-form-group {
   margin-bottom: 16px;
 }
@@ -60,30 +12,85 @@
 .neon-input {
   width: 100%;
   padding: 8px;
-
   border-radius: 4px;
-
   color: #ffffff;
-
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .neon-delete-button {
   margin-top: 20px;
   width: 100%;
-
   color: #fff;
   border: none;
   padding: 10px;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-
   transition: background-color 0.2s ease;
 }
 
+.neon-panel {
+  position: relative;
+  background-color: #0a192f;
+  border: 1px solid #2381fc;
+  box-shadow: 0 0 15px #2381fc;
+  border-radius: 8px;
+  color: #ffffff;
+  transition: width 0.3s ease;
+  width: 480px;
+  height: 100%;
+}
+
+.neon-panel.closed {
+  width: 20px;
+
+  .neon-panel-content {
+    opacity: 0;
+  }
+}
+.neon-panel.open {
+  transform: translateX(0);
+  .neon-panel-content {
+    opacity: 1;
+  }
+}
+
+.neon-panel-toggle {
+  position: absolute;
+  top: 50%;
+  left: calc(-1rem + 0.15rem);
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: #2571d4;
+  padding: 0.3rem;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 1px #2571d4;
+
+  /* z-index: 10000000; */
+
+  i {
+    vertical-align: middle;
+  }
+}
+
+/* 패널 내부 콘텐츠 */
+.neon-panel-content {
+  padding: 20px;
+  transition:
+    opacity 0.8s,
+    transition 0.4s;
+}
+
+/* 제목 */
+.neon-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #61a0f3;
+  text-shadow: 0 0 5px #61a0f3;
+}
+
 @media (max-width: 768px) {
-  /* ui 컴포넌트를 모바일에선 다른걸 써야할듯 */
   .neon-panel {
     width: 70%;
     max-width: 280px;
@@ -93,9 +100,8 @@
   .neon-panel.closed {
     transform: translateX(calc(80% - 20px));
   }
-}
-@media (max-width: 768px) {
+
   .neon-panel-side {
-    /* left: -1.2rem; */
+    /* 모바일에서 버튼 위치 조정 가능 */
   }
 }

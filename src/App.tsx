@@ -6,6 +6,7 @@ import { Home } from './pages/Home';
 import { WorkflowCanvas } from './pages/WorkflowCanvas';
 
 initializeIcons();
+
 function App() {
   return (
     <div style={{ height: '100%', width: '100%', padding: 5, boxSizing: 'border-box' }}>

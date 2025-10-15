@@ -2,6 +2,7 @@ import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
+import { tCommon } from '../../../../utils/i18nUtils';
 import {
   neonButtonStyles,
   neonDropdownStyles,
@@ -114,7 +115,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
     <Modal isOpen={isOpen} onDismiss={onDismiss} isBlocking={false} styles={neonModalStyles}>
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-          <h3 style={neonModalTitle}>조건 추가</h3>
+          <h3 style={neonModalTitle}>{tCommon('condition.add')}</h3>
           <Button
             iconProps={{ iconName: 'Cancel' }}
             onClick={onDismiss}

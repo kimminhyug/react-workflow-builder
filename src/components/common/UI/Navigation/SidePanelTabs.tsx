@@ -7,7 +7,7 @@ export const SidePanelTabs = ({
 }: {
   items: ISidePanelTabItem[];
 } & IPivotProps) => (
-  <Pivot linkFormat="tabs" {...pivotProps}>
+  <Pivot className="side-panel-tabs" linkFormat="tabs" {...pivotProps}>
     {items.map(({ key, headerText, content }) => (
       //PivotItemProps는 필요시 추가
       <PivotItem key={key} itemKey={key} headerText={headerText}>

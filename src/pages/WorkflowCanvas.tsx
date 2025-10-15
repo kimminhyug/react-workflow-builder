@@ -26,6 +26,7 @@ import { WorkflowFAB } from '../components/Workflow/WorkflowFAB/WorkflowFAB';
 import { useUpdateNode } from '../hooks/useNodeUpdater';
 import { edgesAtom, type CustomEdge } from '../state/edges';
 import { selectedNodeAtom } from '../state/selectedNode';
+import { tWarning } from '../utils/i18nUtils';
 
 export const WorkflowCanvas = () => {
   // const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>([
@@ -80,7 +81,7 @@ export const WorkflowCanvas = () => {
   );
   /**
    * 엣지 연결 validation 추가
-   * @param connection 연결된 엣지들?
+   * @param connection 연결된 엣지들
    * @returns
    */
   const onConnect = (connection: Connection) => {
@@ -88,7 +89,7 @@ export const WorkflowCanvas = () => {
 
     // 순환참조 자기 자신 금지
     if (source === target) {
-      alert('같은 노드끼리는 연결할 수 없습니다 .');
+      alert(tWarning('node.selfConnect'));
       return;
     }
 
@@ -100,7 +101,10 @@ export const WorkflowCanvas = () => {
 
     // 연결 허용 여부 체크
     if (!canConnect(sourceNode.type, targetNode.type)) {
-      alert(`${sourceNode.type} 노드에서 ${targetNode.type} 노드로의 연결은 허용되지 않습니다. `);
+      console.log(1);
+      alert(
+        tWarning('node.invalidConnection', { source: sourceNode.type, target: targetNode.type })
+      );
       return;
     }
 
@@ -116,7 +120,7 @@ export const WorkflowCanvas = () => {
       ...connection,
       id: uuid(),
       type: 'default',
-      label: '기본 엣지',
+      label: '',
       ...defaultEdgeOptions,
     };
 
@@ -138,7 +142,7 @@ export const WorkflowCanvas = () => {
    */
   const onEdgeClick = (event: React.MouseEvent, edge: CustomEdge) => {
     event.stopPropagation();
-    console.debug(`soruce:${edge.source} target: ${edge.target} `);
+    console.debug(`source:${edge.source} target: ${edge.target} `);
   };
 
   // const importWorkflowJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
