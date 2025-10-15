@@ -1,0 +1,8 @@
+{
+  "node": {
+    "selfConnect": "Cannot connect a node to it self.",
+    "invalidConnection": "Connection from {{source}} node to {{target}} node is not allowed.",
+    "selectStart": "Please select a start node.",
+    "select": "Please select a node"
+  }
+}

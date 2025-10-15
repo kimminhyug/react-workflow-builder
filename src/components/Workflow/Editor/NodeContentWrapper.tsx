@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-
 import React from 'react';
 import { edgesAtom } from '../../../state/edges';
 import { nodesAtom } from '../../../state/nodes';
 import { selectedNodeAtom } from '../../../state/selectedNode';
+import { tCommon, tWarning } from '../../../utils/i18nUtils';
 import { Button, Label, Stack } from '../../common/UI';
 import { neonButtonStyles, neonLabelBase } from '../../common/styles';
 
@@ -36,13 +36,17 @@ export const NodeContentWrapper: React.FC<INodeContentWrapperProps> = ({
     setSelectedNode(null);
   };
   if (requireNode && !node) {
-    return <Label styles={{ root: neonLabelBase }}>노드를 선택해주세요</Label>;
+    return <Label styles={{ root: neonLabelBase }}>{tWarning('node.select')}</Label>;
   }
 
   return (
     <Stack tokens={{ childrenGap: 8, padding: '15px 0px' }}>
       {children}
-      <Button text="노드 삭제" onClick={deleteSelectedNode} styles={neonButtonStyles} />
+      <Button
+        text={tCommon('node.remove')}
+        onClick={deleteSelectedNode}
+        styles={neonButtonStyles}
+      />
     </Stack>
   );
 };

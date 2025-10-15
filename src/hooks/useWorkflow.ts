@@ -30,9 +30,11 @@ import {
   nodesAtom,
 } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
+import { tCommon } from '../utils/i18nUtils';
 import { useUpdateNode } from './useNodeUpdater';
 
 export const useWorkflow = () => {
+  const execStopRef = useRef(false);
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges, setEdges] = useAtom(edgesAtom);
   //  애니메이션색칠용
@@ -76,17 +78,28 @@ export const useWorkflow = () => {
    * @param nodeId
    * @param status NodeStatus
    */
-
   const updateNodeStatus = (nodeId: string, status: NodeStatus) => {
     const node = nodes.find((n) => n.id === nodeId);
     if (!node) return;
     updateNode(node.id, { ...node.data, status });
   };
-
+  /**
+   * 애니메이션에서 사용하는 상태값 변경
+   * @param edgeId
+   * @param status EdgeStatus
+   */
+  const updateEdgeStatus = (edgeId: string, status: EdgeStatus) => {
+    setEdges((eds) =>
+      eds.map((e) =>
+        e.id === edgeId ? { ...e, data: { ...e.data, status, label: e?.data?.label ?? '' } } : e
+      )
+    );
+  };
   const simulateExecution = async (startId: string, context?: IFlowContext) => {
+    if (execStopRef.current) return;
     const visited = new Set<string>();
     const execId = ++executionId.current;
-
+    setExecutionState('running');
     context ??= { nodeResults: {}, globals: {}, edgeStatusMap: {} };
     nodes.forEach((n) => (n.data.status = 'waiting'));
     setEdges((eds) =>
@@ -96,25 +109,17 @@ export const useWorkflow = () => {
       }))
     );
 
-    const updateEdgeStatus = (edgeId: string, status: EdgeStatus) => {
-      setEdges((eds) =>
-        eds.map((e) =>
-          e.id === edgeId ? { ...e, data: { ...e.data, status, label: e?.data?.label ?? '' } } : e
-        )
-      );
-    };
-
     const getOutgoingEdges = (nodeId: string) => edges.filter((e) => e.source === nodeId); // 최신 edgesAtom 상태 사용
 
     const walk = async (nodeId: string) => {
-      if (execId !== executionId.current) return;
+      if (execId !== executionId.current || execStopRef.current) return;
       if (visited.has(nodeId)) return;
       visited.add(nodeId);
 
       const node = nodes.find((n) => n.id === nodeId);
       if (!node) return;
 
-      node.data.status = 'running';
+      updateNodeStatus(node.id, 'running');
       setActiveNodeId(nodeId);
 
       let outgoingEdges = getOutgoingEdges(node.id);
@@ -174,8 +179,9 @@ export const useWorkflow = () => {
       } catch (err) {
         console.error(`Execution error on ${node.id}:`, err);
       }
-      //음 이거 바꿔야하나
-      node.data.status = 'done';
+      //정지 발생시 상태 업데이트 중단
+      if (execStopRef.current) return;
+      updateNodeStatus(node.id, 'done');
 
       // edge done 처리
       await Promise.all(outgoingEdges.map((e) => updateEdgeStatus(e.id, 'done')));
@@ -185,6 +191,7 @@ export const useWorkflow = () => {
     };
 
     await walk(startId);
+    setExecutionState('idle');
   };
 
   /**
@@ -193,6 +200,13 @@ export const useWorkflow = () => {
   const resetSimulation = () => {
     nodes.forEach((n) => updateNodeStatus(n.id, 'waiting'));
     setExecutionState('idle');
+  };
+  /**
+   * 시물레이션 시작
+   */
+  const runSimulation = (startNodeId: string) => {
+    execStopRef.current = false;
+    simulateExecution(startNodeId);
   };
   /**
    * 시물레이션 멈춤
@@ -212,10 +226,12 @@ export const useWorkflow = () => {
    * 시물레이션 중지
    */
   const stopExecution = () => {
+    execStopRef.current = true;
     setExecutionState('idle');
     setActiveNodeId(null);
     executionId.current += 1; // 현재 실행 중인 시뮬레이션 중단 신호
     nodes.forEach((n) => updateNodeStatus(n.id, 'waiting')); // 상태 초기화
+    edges.forEach((e) => updateEdgeStatus(e.id, 'waiting'));
   };
   /**
    * input 노드 추가
@@ -239,7 +255,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'task',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: '새로운 작업' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.task') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -253,7 +269,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'start',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: 'Start' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.start') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -267,7 +283,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'end',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: 'End' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.end') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -281,7 +297,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'switch',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: 'Switch' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.switch') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -295,7 +311,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'merge',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: 'Merge' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.merge') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -309,7 +325,7 @@ export const useWorkflow = () => {
       id: uuid(),
       type: 'decision',
       position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: 'Decision' },
+      data: { ...nodeInitializeProperties, label: tCommon('node.decision') },
     };
 
     setNodes((nds) => [...nds, newTaskNode]);
@@ -388,7 +404,8 @@ export const useWorkflow = () => {
     copyNode,
     deleteNode,
     executionState,
-    simulateExecution,
+    runSimulation,
+
     resetSimulation,
     pauseExecution,
     resumeExecution,
