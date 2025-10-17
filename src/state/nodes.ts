@@ -159,7 +159,7 @@ export const nodesAtom = atom<CustomNode[]>([
       taskName: 'Fetch User',
       execute: async (context) => {
         const res = await fetch('https://jsonplaceholder.typicode.com/users/1');
-        // console.log(res);
+
         const data = await res.json();
         context.nodeResults['task-1'] = data;
         context.globals['user'] = data;
@@ -231,7 +231,6 @@ export const updateStartNode = (
   node: StartNodeType,
   data: Partial<StartNodeType['data']>
 ): StartNodeType => {
-  console.log(node.data.status, data.status, { ...node, data: { ...node.data, ...data } });
   return { ...node, data: { ...node.data, ...data } };
 };
 

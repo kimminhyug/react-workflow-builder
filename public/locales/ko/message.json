@@ -1,1 +1,29 @@
-{}
+{
+  "validation": {
+    "common": {
+      "labelRequired": "노드 이름은 필수입니다."
+    },
+    "task": {
+      "taskNameRequired": "작업 이름은 필수입니다.",
+      "taskTypeRequired": "작업 유형 선택이 필요합니다."
+    },
+    "decision": {
+      "decisionNameRequired": "결정 노드 이름은 필수입니다.",
+      "operatorRequired": "연산자를 선택해주세요.",
+      "thresholdRequired": "임계값은 필수입니다.",
+      "thresholdNumber": "숫자 값을 입력해야 합니다."
+    },
+    "switch": {
+      "switchNameRequired": "스위치 이름은 필수입니다.",
+      "conditionTypeRequired": "조건 타입을 선택해주세요.",
+      "expressionRequired": "조건식을 입력해주세요."
+    },
+    "merge": {
+      "mergeNameRequired": "병합 노드 이름은 필수입니다.",
+      "inputsRequired": "하나 이상의 입력 노드를 선택해야 합니다."
+    },
+    "input": {
+      "inputKeyRequired": "입력 키는 필수입니다."
+    }
+  }
+}

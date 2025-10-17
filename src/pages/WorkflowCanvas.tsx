@@ -13,7 +13,6 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
 import DefaultEdge from '../components/Workflow/Edges/DefaultEdge';
-import { NodeEditor } from '../components/Workflow/NodeEditor';
 import { DecisionNode } from '../components/Workflow/Nodes/DecisionNode';
 import { EndNode } from '../components/Workflow/Nodes/EndNode';
 import { MergeNode } from '../components/Workflow/Nodes/MergeNode';
@@ -22,19 +21,16 @@ import { SwitchNode } from '../components/Workflow/Nodes/SwitchNode';
 import { TaskNode } from '../components/Workflow/Nodes/TaskNode';
 import type { CustomNode } from '../components/Workflow/types';
 import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
-import { WorkflowFAB } from '../components/Workflow/WorkflowFAB/WorkflowFAB';
 import { useUpdateNode } from '../hooks/useNodeUpdater';
+import { useSyncNodeData } from '../hooks/useSyncNodeData';
 import { edgesAtom, type CustomEdge } from '../state/edges';
 import { selectedNodeAtom } from '../state/selectedNode';
 import { tWarning } from '../utils/i18nUtils';
 
 export const WorkflowCanvas = () => {
-  // const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>([
-  //   { id: '1', type: 'input',position: { x: 250, y: 5 } },
-  // ]);
-  // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [, setSelectedNode] = useAtom(selectedNodeAtom);
-
+  //node data 변경 시 자동 업데이트
+  useSyncNodeData();
   const [edges, setEdges] = useAtom(edgesAtom);
   const { nodes, setNodes } = useUpdateNode();
 
@@ -101,7 +97,6 @@ export const WorkflowCanvas = () => {
 
     // 연결 허용 여부 체크
     if (!canConnect(sourceNode.type, targetNode.type)) {
-      console.log(1);
       alert(
         tWarning('node.invalidConnection', { source: sourceNode.type, target: targetNode.type })
       );
@@ -169,30 +164,24 @@ export const WorkflowCanvas = () => {
   // };
 
   return (
-    <div className={'flow-container'}>
-      <div className={'flow-wrapper'}>
-        <WorkflowFAB />
-        <div className={'reactflow-wrapper'} ref={flowWrapperRef}>
-          <ReactFlow
-            proOptions={{ hideAttribution: true }}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onEdgeClick={onEdgeClick}
-            fitView
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-          >
-            {/* <MiniMap /> */}
-            {/* <Controls /> */}
-            <Background />
-          </ReactFlow>
-        </div>
-      </div>
-      <NodeEditor />
+    <div className={'reactflow-wrapper'} ref={flowWrapperRef}>
+      <ReactFlow
+        proOptions={{ hideAttribution: true }}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
+        fitView
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+      >
+        {/* <MiniMap /> */}
+        {/* <Controls /> */}
+        <Background />
+      </ReactFlow>
     </div>
   );
 };

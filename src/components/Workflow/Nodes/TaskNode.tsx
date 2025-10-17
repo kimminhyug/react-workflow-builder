@@ -5,15 +5,7 @@ import type { TaskNodeType } from '../types';
 import { createHandleId } from '../utils/workflowIdUtils';
 import { NodeLabel } from './NodeLabel';
 
-// const statusColorMap: Record<NodeStatus, string> = {
-//   waiting: '#ccc',
-//   running: '#4caf50',
-//   done: '#2196f3',
-//   startWaiting: '#e7e7e7',
-// };
-
 export const TaskNode = ({ data, id }: NodeProps<TaskNodeType>) => {
-  // console.log(data.label, data.status);
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (

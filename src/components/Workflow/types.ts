@@ -164,6 +164,15 @@ export type ObjectNodeType = Node<IBaseNodeData, 'object'>;
 export type SwitchNodeType = Node<ISwitchNodeData, 'switch'>;
 export type MergeNodeType = Node<IMergeNodeData, 'merge'>;
 export type DecisionNodeType = Node<IDecisionNodeData, 'decision'>;
+export type NodeDataType =
+  | ITaskNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | ISwitchNodeData
+  | IMergeNodeData
+  | IDecisionNodeData;
 
 export type CustomNode =
   | TaskNodeType

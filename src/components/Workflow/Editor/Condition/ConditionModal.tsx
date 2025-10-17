@@ -3,15 +3,9 @@ import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
 import { tCommon } from '../../../../utils/i18nUtils';
-import {
-  neonButtonStyles,
-  neonDropdownStyles,
-  neonModalButtonStyles,
-  neonModalStyles,
-  neonModalTitle,
-  neonTextFieldStyles,
-} from '../../../common/styles';
+import { neonButtonStyles, neonModalStyles, neonModalTitle } from '../../../common/styles';
 import { Button, Dropdown, Modal, Stack, TextField } from '../../../common/UI';
+import { TextFieldController } from '../../../Form/TextFieldController';
 import type { ConditionType, ICondition } from '../../types';
 import { conditionTypeOptions } from '../Editor.constants';
 interface IConditionModalProps {
@@ -119,28 +113,29 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
           <Button
             iconProps={{ iconName: 'Cancel' }}
             onClick={onDismiss}
-            styles={neonModalButtonStyles}
+            // styles={neonModalButtonStyles}
           />
         </Stack>
 
-        <TextField
+        <TextFieldController
           label="Label"
           value={item.label}
           onChange={(_, v) => setLabel(v || '')}
-          styles={neonTextFieldStyles}
+          // styles={neonTextFieldStyles}
+          name={'label'}
         />
         <TextField
           label="Data AccessKey"
           value={item.dataAccessKey}
           onChange={(_, v) => setDataAccessKey(v || '')}
-          styles={neonTextFieldStyles}
+          // styles={neonTextFieldStyles}
         />
         <Dropdown
           label="Condition Type"
           options={conditionTypeOptions}
           selectedKey={conditionType}
           onChange={(_, option) => setConditionType(option?.key as any)}
-          styles={neonDropdownStyles}
+          // styles={neonDropdownStyles}
         />
 
         {item.conditionType === 'regex' && (
@@ -149,7 +144,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
               label="Pattern"
               value={item.pattern}
               onChange={(_, v) => setPattern(v || '')}
-              styles={neonTextFieldStyles}
+              // styles={neonTextFieldStyles}
             />
           </>
         )}
@@ -159,7 +154,7 @@ export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModa
             label="Expression"
             value={item.expression}
             onChange={(_, v) => setExpression(v || '')}
-            styles={neonTextFieldStyles}
+            // styles={neonTextFieldStyles}
             multiline
           />
         )}

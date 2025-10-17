@@ -12,12 +12,13 @@ import {
 import { useTableController } from '../../../common/Table/hook/useTableController';
 import { Table } from '../../../common/Table/Table';
 import { TableActionButtons } from '../../../common/Table/TableActionButtons';
-import { Button, IconButton, Modal, Stack, TextField } from '../../../common/UI';
+import { Button, IconButton, Modal, Stack } from '../../../common/UI';
+import { TextFieldController } from '../../../Form/TextFieldController';
 import type { ICondition } from '../../types';
 import { ConditionModal } from './ConditionModal';
 
 export const ConditionList = () => {
-  const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
+  const [selectedNode] = useAtom(selectedNodeAtom);
 
   const [selectedConditionId, setSelectedConditionId] = useState('');
   const conditions: ICondition[] = useMemo(
@@ -61,29 +62,31 @@ export const ConditionList = () => {
 
   return (
     <Stack styles={{ root: { fontSize: 14 } }} tokens={{ childrenGap: 8 }}>
-      <TextField
+      <TextFieldController
+        name="label"
         label={tCommon('condition.name')}
         styles={neonTextFieldStyles}
         value={selectedNode.data.label || ''}
-        onChange={(_e, newValue) =>
-          setSelectedNode({
-            ...selectedNode,
-            data: { ...selectedNode.data, label: newValue || '' },
-          })
-        }
+        // onChange={(_e, newValue) =>
+        //   setSelectedNode({
+        //     ...selectedNode,
+        //     data: { ...selectedNode.data, label: newValue || '' },
+        //   })
+        // }
       />
 
       {selectedNode.type === 'task' && (
-        <TextField
+        <TextFieldController
+          name="taskName"
           label={tCommon('condition.taskName')}
           styles={neonTextFieldStyles}
           value={selectedNode.data.taskName || ''}
-          onChange={(_e, newValue) =>
-            setSelectedNode({
-              ...selectedNode,
-              data: { ...selectedNode.data, taskName: newValue || '' },
-            })
-          }
+          // onChange={(_e, newValue) =>
+          //   setSelectedNode({
+          //     ...selectedNode,
+          //     data: { ...selectedNode.data, taskName: newValue || '' },
+          //   })
+          // }
         />
       )}
 

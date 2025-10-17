@@ -34,6 +34,10 @@ export const neonLabelBase = {
   textShadow: `0 0 3px ${neon_colors.labelText}`,
 };
 
+export const neonLabelStyles = {
+  root: neonLabelBase,
+};
+
 /** 공통 호버 스타일 */
 export const hoverFocusActiveMixin = {
   ':hover': {
