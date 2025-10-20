@@ -40,6 +40,8 @@
   "condition": {
     "label": "라벨",
     "type": "타입",
+    "id": "ID",
+    "expression": "조건식",
     "conditionType": "조건 타입",
     "dataAccessKey": "데이터 경로",
     "pattern": "패턴",
@@ -49,7 +51,9 @@
     "taskName": "작업 이름",
     "add": "조건 추가",
     "viewDetails": "조건 상세 보기",
-    "details": "조건 상세 보기"
+    "details": "조건 상세 보기",
+    "targetNode": "타겟 노드",
+    "staticValue": "정적 값"
   },
   "config": {
     "common": {
@@ -67,6 +71,7 @@
       "threshold": "임계값",
       "thresholdPlaceholder": "10"
     },
+
     "input": {
       "inputKey": "입력 키",
       "inputKeyPlaceholder": "response.body",

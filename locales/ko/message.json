@@ -5,22 +5,27 @@
     },
     "task": {
       "taskNameRequired": "작업 이름은 필수입니다.",
-      "taskTypeRequired": "작업 유형 선택이 필요합니다."
+      "taskTypeRequired": "작업 유형을 선택해주세요."
     },
     "decision": {
-      "decisionNameRequired": "결정 노드 이름은 필수입니다.",
+      "decisionNameRequired": "의사결정 노드 이름은 필수입니다.",
       "operatorRequired": "연산자를 선택해주세요.",
       "thresholdRequired": "임계값은 필수입니다.",
-      "thresholdNumber": "숫자 값을 입력해야 합니다."
+      "thresholdNumber": "임계값은 숫자여야 합니다."
+    },
+    "condition": {
+      "conditionIdRequired": "조건 ID는 필수입니다.",
+      "conditionLabelRequired": "조건 라벨은 필수입니다."
     },
     "switch": {
       "switchNameRequired": "스위치 이름은 필수입니다.",
-      "conditionTypeRequired": "조건 타입을 선택해주세요.",
-      "expressionRequired": "조건식을 입력해주세요."
+      "conditionTypeRequired": "조건 유형을 선택해주세요.",
+      "expressionRequired": "조건 표현식은 필수입니다.",
+      "patternRequired": "패턴은 필수입니다."
     },
     "merge": {
       "mergeNameRequired": "병합 노드 이름은 필수입니다.",
-      "inputsRequired": "하나 이상의 입력 노드를 선택해야 합니다."
+      "inputsRequired": "최소 하나의 입력 노드를 선택해야 합니다."
     },
     "input": {
       "inputKeyRequired": "입력 키는 필수입니다."
