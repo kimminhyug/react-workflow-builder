@@ -30,11 +30,14 @@ import {
   nodesAtom,
 } from '../state/nodes';
 import { selectedNodeAtom } from '../state/selectedNode';
+import { currentWorkflowAtom } from '../state/workflow';
 import { tCommon } from '../utils/i18nUtils';
 import { useUpdateNode } from './useNodeUpdater';
 
 export const useWorkflow = () => {
   const execStopRef = useRef(false);
+  const [currentWorkflow, setWorkflow] = useAtom(currentWorkflowAtom);
+
   const [nodes, setNodes] = useAtom(nodesAtom);
   const [edges, setEdges] = useAtom(edgesAtom);
   //  애니메이션색칠용
@@ -234,18 +237,10 @@ export const useWorkflow = () => {
     edges.forEach((e) => updateEdgeStatus(e.id, 'waiting'));
   };
   /**
-   * input 노드 추가
+   * workflow에 새로운 노드 추가
    */
-  const addNode = () => {
-    // 보류
-    return;
-    const newNode: CustomNode = {
-      id: uuid(),
-      data: { label: `Node` },
-      type: 'object',
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
-    };
-    setNodes((nds) => [...nds, newNode]);
+  const updateWorkflow = (node: CustomNode) => {
+    setWorkflow((prev) => ({ ...prev, nodes: [...prev.nodes, node] }));
   };
   /**
    * 작업 노드 추가
@@ -257,7 +252,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.task') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -271,7 +266,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.start') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -285,7 +280,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.end') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -299,7 +294,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.switch') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -313,7 +308,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.merge') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -327,7 +322,7 @@ export const useWorkflow = () => {
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.decision') },
     };
-
+    updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
   };
 
@@ -335,7 +330,7 @@ export const useWorkflow = () => {
    * JSON EXPORTER
    */
   const exportWorkflowJSON = () => {
-    const dataStr = JSON.stringify({ nodes, edges }, null, 2);
+    const dataStr = JSON.stringify(currentWorkflow, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
@@ -410,7 +405,7 @@ export const useWorkflow = () => {
     pauseExecution,
     resumeExecution,
     stopExecution,
-    addNode,
+    // addNode,
     addStartNode,
     addEndNode,
     addSwitchNode,

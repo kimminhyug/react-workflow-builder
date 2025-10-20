@@ -7,6 +7,9 @@ import {
   type IDropdownStyles,
   type ITextFieldStyles,
 } from '@fluentui/react';
+import type { ITagPickerProps } from './UI';
+
+const defaultHeight = 32;
 
 /** 공통 색상 */
 const neon_colors = {
@@ -26,12 +29,18 @@ export const neonFieldGroupBase = {
   backgroundColor: neon_colors.background,
   color: neon_colors.text,
   boxShadow: `0 0 5px ${neon_colors.shadow}`,
+  height: defaultHeight,
+  lineHeight: defaultHeight - 2,
 };
 
 /** 공통 텍스트 색상  */
 export const neonLabelBase = {
   color: neon_colors.labelText,
   textShadow: `0 0 3px ${neon_colors.labelText}`,
+};
+
+export const neonLabelStyles = {
+  root: neonLabelBase,
 };
 
 /** 공통 호버 스타일 */
@@ -54,17 +63,62 @@ export const hoverFocusActiveMixin = {
   },
 };
 
+/** 태그 피커 */
+export const neonTagPickerStyles: Partial<ITagPickerProps['styles']> = {
+  root: {
+    border: '1px solid ' + neon_colors.border,
+    borderRadius: 8,
+    background: neon_colors.background,
+    boxShadow: `0 0 6px ${neon_colors.shadow}`,
+    padding: 4,
+  },
+  text: {
+    color: neon_colors.text,
+    selectors: { '::after': { background: 'transparent' } },
+  },
+  itemsWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 6,
+    padding: 6,
+    background: neon_colors.activeBg,
+    borderRadius: 6,
+    boxShadow: `inset 0 0 4px ${neon_colors.shadow}`,
+    selectors: {
+      '& > .ms-TagItem': {
+        background: neon_colors.border,
+        color: neon_colors.text,
+        borderRadius: 4,
+        boxShadow: `0 0 4px ${neon_colors.shadow}`,
+        transition: 'all 0.2s ease',
+        selectors: { '&  .ms-TagItem-close': { display: 'none' } },
+      },
+      '& > .ms-TagItem:hover': {
+        background: neon_colors.hoverBg,
+        boxShadow: `0 0 6px ${neon_colors.shadow}`,
+      },
+    },
+  },
+  input: {
+    color: neon_colors.placeholder,
+    background: 'transparent',
+    border: 'none',
+    selectors: {
+      '::placeholder': { color: neon_colors.placeholder },
+    },
+  },
+};
+
 /** 텍스트 필드 */
 export const neonTextFieldStyles: Partial<ITextFieldStyles> = {
   fieldGroup: neonFieldGroupBase,
-
   field: { color: neon_colors.text },
   root: { color: neon_colors.text },
   wrapper: { color: neon_colors.text },
   subComponentStyles: { label: { root: neonLabelBase } },
 };
 
-/** 버튼 */
+/** 삭제 버튼 */
 export const neonButtonStyles = {
   root: {
     marginTop: 20,
@@ -79,10 +133,26 @@ export const neonButtonStyles = {
     boxShadow: '0 0 12px #ff3434',
   },
 };
+/** 저장 버튼 */
+export const neonSaveButtonStyles = {
+  root: {
+    marginTop: 20,
+    backgroundColor: '#28c34d',
+    color: '#ffffff',
+    boxShadow: '0 0 10px #28c34d',
+    borderRadius: '6px',
+    fontWeight: 'bold',
+    width: '100%',
+  },
+  rootHovered: {
+    backgroundColor: '#1fa63b',
+    boxShadow: '0 0 12px #28c34d',
+  },
+};
 
 /** 드롭다운 */
 export const neonDropdownStyles: Partial<IDropdownStyles> = {
-  root: { marginTop: 10 },
+  // root: { marginTop: 10 },
 
   label: neonLabelBase,
   title: {
@@ -167,7 +237,7 @@ export const neonDropdownStyles: Partial<IDropdownStyles> = {
 /** 콤보박스 */
 export const neonComboBoxStyles: Partial<IComboBoxStyles> = {
   root: {
-    marginTop: 10,
+    // marginTop: 10,
 
     ...neonFieldGroupBase,
     selectors: {
@@ -275,7 +345,7 @@ export const edgeStyles = mergeStyles({
 /** 모달  */
 export const neonModalStyles = {
   main: {
-    maxWidth: 800,
+    // maxWidth: 800,
     padding: 20,
     backgroundColor: neon_colors.background,
     border: `1px solid ${neon_colors.border}`,

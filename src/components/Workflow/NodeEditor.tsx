@@ -59,8 +59,8 @@ export const NodeEditor = () => {
           <>{showContents && <Tabs />}</>
         ) : (
           <div>
-            <div>icon </div>
-            <div>icon</div>
+            {/* <div>icon </div>
+            <div>icon</div> */}
           </div>
         )}
       </div>

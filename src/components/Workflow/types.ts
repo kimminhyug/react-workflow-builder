@@ -1,4 +1,18 @@
 import type { Node } from '@xyflow/react';
+import type { CustomEdge } from '../../state/edges';
+export interface IBuilderProps {
+  workflow?: IWorkflow;
+}
+
+export interface IWorkflow {
+  id: string;
+  name?: string;
+  description?: string;
+  regData: number;
+  modDate: number;
+  nodes: CustomNode[];
+  edges: CustomEdge[];
+}
 
 // 시작준비중 | 대기중 | 실행중 | 완료
 export type NodeStatus = 'startWaiting' | 'waiting' | 'running' | 'done' | 'failed';
@@ -28,6 +42,8 @@ export interface ICondition {
   dataAccessKey?: string;
   pattern?: string;
   expression?: string;
+  staticValue?: string;
+  targetNodeId?: string;
 }
 
 type unknownRecord = { [key: string]: unknown };
@@ -164,6 +180,15 @@ export type ObjectNodeType = Node<IBaseNodeData, 'object'>;
 export type SwitchNodeType = Node<ISwitchNodeData, 'switch'>;
 export type MergeNodeType = Node<IMergeNodeData, 'merge'>;
 export type DecisionNodeType = Node<IDecisionNodeData, 'decision'>;
+export type NodeDataType =
+  | ITaskNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | IBaseNodeData
+  | ISwitchNodeData
+  | IMergeNodeData
+  | IDecisionNodeData;
 
 export type CustomNode =
   | TaskNodeType

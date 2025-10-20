@@ -52,7 +52,6 @@ const DefaultEdge = ({
   const activeEdge = () => {
     setEditingEdgeId(id);
     setLabelInput(data?.label ?? '');
-    console.log(isEditing, editingEdgeId, id);
   };
   const isEditing = editingEdgeId === id;
 

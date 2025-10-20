@@ -3,6 +3,7 @@ import React from 'react';
 import { edgesAtom } from '../../../state/edges';
 import { nodesAtom } from '../../../state/nodes';
 import { selectedNodeAtom } from '../../../state/selectedNode';
+import { currentWorkflowAtom } from '../../../state/workflow';
 import { tCommon, tWarning } from '../../../utils/i18nUtils';
 import { Button, Label, Stack } from '../../common/UI';
 import { neonButtonStyles, neonLabelBase } from '../../common/styles';
@@ -19,6 +20,7 @@ export const NodeContentWrapper: React.FC<INodeContentWrapperProps> = ({
 }) => {
   const node = useAtomValue(selectedNodeAtom);
   const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
+  const setWorkflow = useSetAtom(currentWorkflowAtom);
   const setNodes = useSetAtom(nodesAtom);
   const setEdges = useSetAtom(edgesAtom);
   const deleteSelectedNode = () => {
@@ -31,7 +33,15 @@ export const NodeContentWrapper: React.FC<INodeContentWrapperProps> = ({
     setEdges((eds) =>
       eds.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id)
     );
-
+    setWorkflow((prev) => {
+      return {
+        ...prev,
+        nodes: prev.nodes.filter((_node) => _node.id !== selectedNode.id),
+        edges: prev.edges.filter(
+          (_edge) => _edge.source !== selectedNode.id && _edge.target !== selectedNode.id
+        ),
+      };
+    });
     // 선택 해제
     setSelectedNode(null);
   };

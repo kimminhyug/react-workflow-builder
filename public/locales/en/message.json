@@ -1,1 +1,34 @@
-{}
+{
+  "validation": {
+    "common": {
+      "labelRequired": "Node name is required."
+    },
+    "task": {
+      "taskNameRequired": "Task name is required.",
+      "taskTypeRequired": "Task type selection is required."
+    },
+    "decision": {
+      "decisionNameRequired": "Decision node name is required.",
+      "operatorRequired": "Please select an operator.",
+      "thresholdRequired": "Threshold is required.",
+      "thresholdNumber": "Threshold must be a number."
+    },
+    "condition": {
+      "conditionIdRequired": "Condition ID is required.",
+      "conditionLabelRequired": "Condition label is required."
+    },
+    "switch": {
+      "switchNameRequired": "Switch name is required.",
+      "conditionTypeRequired": "Please select a condition type.",
+      "expressionRequired": "Condition expression is required.",
+      "patternRequired": "Pattern is required."
+    },
+    "merge": {
+      "mergeNameRequired": "Merge node name is required.",
+      "inputsRequired": "At least one input node must be selected."
+    },
+    "input": {
+      "inputKeyRequired": "Input key is required."
+    }
+  }
+}

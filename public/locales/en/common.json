@@ -1,4 +1,5 @@
 {
+  "save": "Save",
   "runSimulation": "Run Simulation",
   "stopSimulation": "Stop Simulation",
   "pauseSimulation": "Pause Simulation",
@@ -18,9 +19,8 @@
     "addItem": "Add Item",
     "property": "Property / Settings",
     "style": "Style",
-    "log": " Execution Log"
+    "log": "Execution Log"
   },
-
   "node": {
     "remove": "Remove Node",
     "task": "New Task",
@@ -40,6 +40,8 @@
   "condition": {
     "label": "Label",
     "type": "Type",
+    "id": "ID",
+    "expression": "Expression",
     "conditionType": "Condition Type",
     "dataAccessKey": "Data Path",
     "pattern": "Pattern",
@@ -49,6 +51,53 @@
     "taskName": "Task Name",
     "add": "Add Condition",
     "viewDetails": "View Details",
-    "details": "Condition Details"
+    "details": "Condition Details",
+    "targetNode": "Target Node",
+    "staticValue": "Static Value"
+  },
+  "config": {
+    "common": {
+      "label": "Node Name"
+    },
+    "merge": {
+      "mergeName": "Merge Node Name",
+      "mergeNamePlaceholder": "Name for identification",
+      "inputs": "Nodes to Merge",
+      "inputsPlaceholder": "node-1, node-2"
+    },
+    "decision": {
+      "decisionName": "Decision Node Name",
+      "operator": "Operator",
+      "threshold": "Threshold",
+      "thresholdPlaceholder": "10"
+    },
+    "input": {
+      "inputKey": "Input Key",
+      "inputKeyPlaceholder": "response.body",
+      "defaultValue": "Default Value",
+      "defaultValuePlaceholder": "Used when no input is provided"
+    },
+    "switch": {
+      "switchName": "Switch Name",
+      "conditionType": "Condition Type",
+      "expression": "Expression",
+      "expressionPlaceholder": "value === 'success'",
+      "conditionTypeOptions": {
+        "equals": "Equals",
+        "contains": "Contains",
+        "regex": "Regex"
+      }
+    },
+    "task": {
+      "taskName": "Task Name",
+      "taskType": "Task Type",
+      "inputSource": "Input Source",
+      "inputSourcePlaceholder": "context.key or external reference",
+      "taskTypeOptions": {
+        "http": "Request HTTP",
+        "db": "DataBase",
+        "script": "Execute Script"
+      }
+    }
   }
 }
