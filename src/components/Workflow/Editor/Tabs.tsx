@@ -8,7 +8,7 @@ import { tCommon } from '../../../utils/i18nUtils';
 import { SidePanelTabs, type IPivotProps, type ISidePanelTabItem } from '../../common/UI';
 import { WidgetGrid, type IWidget } from '../../common/WidgetGrid/WidgetGrid';
 import { nodeIconMap } from '../constants/workflow.constants';
-import { ConditionEditor } from './Condition/ConditionEditor';
+import { ConditionEditor } from './Config/ConfigEditor';
 import { NodeContentWrapper } from './NodeContentWrapper';
 
 export const Tabs = () => {

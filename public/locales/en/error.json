@@ -1,1 +1,5 @@
-{}
+{
+  "modal": {
+    "cannotCloseModal": "Cannot close the modal when there are errors."
+  }
+}

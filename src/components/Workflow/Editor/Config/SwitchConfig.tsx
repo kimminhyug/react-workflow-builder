@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import { useNodeSaver } from '../../../../hooks/useNodeSaver';
 import { DropdownController } from '../../../Form/DropdownController';
 import { TextFieldController } from '../../../Form/TextFieldController';
+import { SaveButton } from '../../../common/UI';
 
 export const SwitchConfig = () => {
-  const { t } = useTranslation('common'); // common.json 사용
-
+  const { t } = useTranslation('common');
+  const saveNodeData = useNodeSaver();
   return (
     <div>
       <TextFieldController name="label" label={t('config.common.label')} />
@@ -23,6 +25,7 @@ export const SwitchConfig = () => {
         label={t('config.switch.expression')}
         placeholder={t('config.switch.expressionPlaceholder')}
       />
+      <SaveButton onClick={saveNodeData} />
     </div>
   );
 };

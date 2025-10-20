@@ -273,7 +273,7 @@ body {
   background: rgba(15, 42, 72, 0.6);
   border: 0.2vw solid #61a0f3;
   border-radius: 1rem;
-  box-shadow: 0 0 1vw 0.2vw rgba(35, 129, 252, 0.7);
+  box-shadow: 0 0 5px 3px rgba(35, 129, 252, 0.7);
   color: #ffffff;
   overflow: hidden;
 }

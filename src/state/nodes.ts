@@ -29,17 +29,16 @@ export const DEFAULT_TASK_TYPE: 'http' | 'db' | 'script' = 'http';
  * - id: UUID 자동 생성
  */
 export const createCondition = (
-  label: string,
-
-  conditionType: ConditionType,
+  label?: string,
+  conditionType?: ConditionType,
   options?: Omit<Partial<ICondition>, 'id'>
 ): ICondition => {
   return {
     //내부용 id
     id: uuidv4(),
-    label,
+    label: label || '',
 
-    conditionType,
+    conditionType: conditionType || 'static',
     //기타
     ...options,
   };
@@ -133,87 +132,90 @@ export const createDecisionNode = (options: {
 };
 
 /** nodesAtom 초기값 */
-export const nodesAtom = atom<CustomNode[]>([
-  createStartNode({
-    id: 'start-1-6adb6a',
-    position: { x: 240, y: -50 },
-    data: {
-      label: 'Start',
-      condition: [
-        createCondition('서버 1 상태 체크', 'static'),
-        createCondition('1_fallback', 'static'),
-        createCondition('예비 서버', 'static'),
-      ],
-    },
-  }),
+export const nodesAtom = atom<CustomNode[]>(
+  []
+  //   [
+  //   createStartNode({
+  //     id: 'start-1-6adb6a',
+  //     position: { x: 240, y: -50 },
+  //     data: {
+  //       label: 'Start',
+  //       condition: [
+  //         createCondition('서버 1 상태 체크', 'static'),
+  //         createCondition('1_fallback', 'static'),
+  //         createCondition('예비 서버', 'static'),
+  //       ],
+  //     },
+  //   }),
 
-  createTaskNode({
-    id: 'task-1-4b6daa',
-    position: { x: 205, y: 95 },
-    // data: {
-    //   label: '서버 1',
-    //   condition: [createCondition('1서버 조회 완료',  'static')],
-    // },
-    data: {
-      label: 'API 호출',
-      taskName: 'Fetch User',
-      execute: async (context) => {
-        const res = await fetch('https://jsonplaceholder.typicode.com/users/1');
+  //   createTaskNode({
+  //     id: 'task-1-4b6daa',
+  //     position: { x: 205, y: 95 },
+  //     // data: {
+  //     //   label: '서버 1',
+  //     //   condition: [createCondition('1서버 조회 완료',  'static')],
+  //     // },
+  //     data: {
+  //       label: 'API 호출',
+  //       taskName: 'Fetch User',
+  //       execute: async (context) => {
+  //         const res = await fetch('https://jsonplaceholder.typicode.com/users/1');
 
-        const data = await res.json();
-        context.nodeResults['task-1'] = data;
-        context.globals['user'] = data;
-      },
-    },
-  }),
+  //         const data = await res.json();
+  //         context.nodeResults['task-1'] = data;
+  //         context.globals['user'] = data;
+  //       },
+  //     },
+  //   }),
 
-  createTaskNode({
-    id: 'task-1-ae63c7',
-    position: { x: -55, y: 95 },
-    data: {
-      label: '서버 1-2',
-      condition: [createCondition('1-2서버 조회 완료', 'static')],
-    },
-  }),
+  //   createTaskNode({
+  //     id: 'task-1-ae63c7',
+  //     position: { x: -55, y: 95 },
+  //     data: {
+  //       label: '서버 1-2',
+  //       condition: [createCondition('1-2서버 조회 완료', 'static')],
+  //     },
+  //   }),
 
-  createDecisionNode({
-    id: 'task-1-89e470',
-    position: { x: 110, y: 252 },
-    data: {
-      label: '데이터 조회',
-      taskType: 'db',
-      condition: [
-        createCondition('데이터 조회 시간: 00:00:00', 'regex', {
-          dataAccessKey: 'data.timestamp',
-          pattern: '^00:00:00$',
-        }),
-      ],
-    },
-  }),
+  //   createDecisionNode({
+  //     id: 'task-1-89e470',
+  //     position: { x: 110, y: 252 },
+  //     data: {
+  //       label: '데이터 조회',
+  //       taskType: 'db',
+  //       condition: [
+  //         createCondition('데이터 조회 시간: 00:00:00', 'regex', {
+  //           dataAccessKey: 'data.timestamp',
+  //           pattern: '^00:00:00$',
+  //         }),
+  //       ],
+  //     },
+  //   }),
 
-  createTaskNode({
-    id: 'task-1-dfa760',
-    position: { x: 97, y: 372 },
-    data: {
-      label: '데이터 업데이트',
-      taskType: 'script',
-      condition: [
-        createCondition('commit;', 'expression', {
-          expression: 'response.lastCommit === true',
-        }),
-      ],
-    },
-  }),
+  //   createTaskNode({
+  //     id: 'task-1-dfa760',
+  //     position: { x: 97, y: 372 },
+  //     data: {
+  //       label: '데이터 업데이트',
+  //       taskType: 'script',
+  //       condition: [
+  //         createCondition('commit;', 'expression', {
+  //           expression: 'response.lastCommit === true',
+  //         }),
+  //       ],
+  //     },
+  //   }),
 
-  createTaskNode({
-    id: 'task-1-53b8c1',
-    position: { x: 123, y: 500 },
-    data: {
-      label: '세션 종료',
-      taskName: '서비스 불러오기',
-    },
-  }),
-]);
+  //   createTaskNode({
+  //     id: 'task-1-53b8c1',
+  //     position: { x: 123, y: 500 },
+  //     data: {
+  //       label: '세션 종료',
+  //       taskName: '서비스 불러오기',
+  //     },
+  //   }),
+  // ]
+);
 
 /** 현재 선택된 Node ID */
 export const activeNodeIdAtom = atom<string | null>(null);

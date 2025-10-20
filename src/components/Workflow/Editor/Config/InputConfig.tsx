@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next';
+import { useNodeSaver } from '../../../../hooks/useNodeSaver';
+import { SaveButton } from '../../../common/UI';
 import { TextFieldController } from '../../../Form/TextFieldController';
 
 export const InputConfig = () => {
   const { t } = useTranslation('common');
+  const saveNodeData = useNodeSaver();
 
   return (
     <div>
@@ -17,6 +20,7 @@ export const InputConfig = () => {
         label={t('config.input.defaultValue')}
         placeholder={t('config.input.defaultValuePlaceholder')}
       />
+      <SaveButton onClick={saveNodeData} />
     </div>
   );
 };

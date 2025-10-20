@@ -13,10 +13,15 @@
       "thresholdRequired": "Threshold is required.",
       "thresholdNumber": "Threshold must be a number."
     },
+    "condition": {
+      "conditionIdRequired": "Condition ID is required.",
+      "conditionLabelRequired": "Condition label is required."
+    },
     "switch": {
       "switchNameRequired": "Switch name is required.",
       "conditionTypeRequired": "Please select a condition type.",
-      "expressionRequired": "Condition expression is required."
+      "expressionRequired": "Condition expression is required.",
+      "patternRequired": "Pattern is required."
     },
     "merge": {
       "mergeNameRequired": "Merge node name is required.",

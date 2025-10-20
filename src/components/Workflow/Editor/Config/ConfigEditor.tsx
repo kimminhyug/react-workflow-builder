@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Stack } from '../../../common/UI';
-import { DecisionConfig } from '../Config/DecisionConfig';
-import { InputConfig } from '../Config/InputConfig';
-import { MergeConfig } from '../Config/MergeConfig';
-import { SwitchConfig } from '../Config/SwitchConfig';
-import { ConditionModal } from './ConditionModal';
+import { ConditionModal } from '../Condition/ConditionModal';
+import { DecisionConfig } from './DecisionConfig';
+import { InputConfig } from './InputConfig';
+import { MergeConfig } from './MergeConfig';
+import { SwitchConfig } from './SwitchConfig';
 
 import { useAtomValue } from 'jotai';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
-import { TaskConfig } from '../Config/TaskConfig';
+import { TaskConfig } from './TaskConfig';
 
 export const ConditionEditor = () => {
   const selectedNode = useAtomValue(selectedNodeAtom);

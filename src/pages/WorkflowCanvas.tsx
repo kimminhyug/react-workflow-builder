@@ -7,8 +7,9 @@ import {
   type Connection,
   type EdgeChange,
   type NodeChange,
+  type OnNodeDrag,
 } from '@xyflow/react';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { defaultEdgeOptions } from '../components/Workflow/constants/workflow.constants';
@@ -25,9 +26,11 @@ import { useUpdateNode } from '../hooks/useNodeUpdater';
 import { useSyncNodeData } from '../hooks/useSyncNodeData';
 import { edgesAtom, type CustomEdge } from '../state/edges';
 import { selectedNodeAtom } from '../state/selectedNode';
+import { currentWorkflowAtom } from '../state/workflow';
 import { tWarning } from '../utils/i18nUtils';
 
 export const WorkflowCanvas = () => {
+  const setWorkflow = useSetAtom(currentWorkflowAtom);
   const [, setSelectedNode] = useAtom(selectedNodeAtom);
   //node data 변경 시 자동 업데이트
   useSyncNodeData();
@@ -120,6 +123,7 @@ export const WorkflowCanvas = () => {
     };
 
     setEdges((eds) => [...eds, newDefaultEdge]);
+    setWorkflow((prev) => ({ ...prev, edges: [...prev.edges, newDefaultEdge] }));
   };
 
   /**
@@ -138,6 +142,15 @@ export const WorkflowCanvas = () => {
   const onEdgeClick = (event: React.MouseEvent, edge: CustomEdge) => {
     event.stopPropagation();
     console.debug(`source:${edge.source} target: ${edge.target} `);
+  };
+
+  const onNodeDragStop: OnNodeDrag<CustomNode> = (_event, node) => {
+    setWorkflow((prev) => {
+      return {
+        ...prev,
+        nodes: prev.nodes.map((n) => (n.id === node.id ? { ...n, position: node.position } : n)),
+      };
+    });
   };
 
   // const importWorkflowJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,6 +182,7 @@ export const WorkflowCanvas = () => {
         proOptions={{ hideAttribution: true }}
         nodes={nodes}
         edges={edges}
+        onNodeDragStop={onNodeDragStop}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}

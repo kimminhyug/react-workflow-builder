@@ -36,24 +36,27 @@ export const getNodeValidationSchemas = (t: (key: string) => string) => {
     description: yup.string().optional(),
   });
 
+  const conditionSchema = yup
+    .array()
+    .of(
+      yup.object({
+        id: yup.string().required(t('validation.condition.conditionIdRequired')),
+        label: yup.string().required(t('validation.condition.conditionLabelRequired')),
+        conditionType: yup
+          .mixed<'static' | 'regex' | 'expression'>()
+          .required(t('validation.condition.conditionTypeRequired')),
+        priority: yup.number().optional(),
+        dataAccessKey: yup.string().optional(),
+        pattern: yup.string().optional(),
+        expression: yup.string().optional(),
+        targetNodeId: yup.string().optional(),
+        staticValue: yup.string().optional(),
+      })
+    )
+    .optional();
   // DecisionNode 스키마
   const decisionSchema: yup.ObjectSchema<Omit<IDecisionNodeData, 'execute'>> = yup.object({
-    condition: yup
-      .array()
-      .of(
-        yup.object({
-          id: yup.string().required(t('validation.decision.conditionIdRequired')),
-          label: yup.string().required(t('validation.decision.conditionLabelRequired')),
-          conditionType: yup
-            .mixed<'static' | 'regex' | 'expression'>()
-            .required(t('validation.decision.conditionTypeRequired')),
-          priority: yup.number().optional(),
-          dataAccessKey: yup.string().optional(),
-          pattern: yup.string().optional(),
-          expression: yup.string().optional(),
-        })
-      )
-      .optional(),
+    condition: conditionSchema,
     fallbackTarget: yup.string().optional(),
     label: yup.string().optional(),
     description: yup.string().optional(),

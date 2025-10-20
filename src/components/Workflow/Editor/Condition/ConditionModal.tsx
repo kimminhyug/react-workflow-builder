@@ -1,165 +1,156 @@
-import { useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { selectedNodeAtom } from '../../../../state/selectedNode';
-import { tCommon } from '../../../../utils/i18nUtils';
-import { neonButtonStyles, neonModalStyles, neonModalTitle } from '../../../common/styles';
-import { Button, Dropdown, Modal, Stack, TextField } from '../../../common/UI';
+import type { ColumnDef } from '@tanstack/react-table';
+import { isEmpty } from 'lodash';
+import { useMemo } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { createCondition } from '../../../../state/nodes';
+import { tCommon, tError } from '../../../../utils/i18nUtils';
+import { neonModalStyles, neonModalTitle } from '../../../common/styles';
+import { Table } from '../../../common/Table/Table';
+import { Button, IconButton, Modal, Stack } from '../../../common/UI';
+import { DropdownController } from '../../../Form/DropdownController';
+import { TargetNodeDropdownController } from '../../../Form/TargetNodeDropdownController';
 import { TextFieldController } from '../../../Form/TextFieldController';
-import type { ConditionType, ICondition } from '../../types';
-import { conditionTypeOptions } from '../Editor.constants';
+import type { ICondition } from '../../types';
+
 interface IConditionModalProps {
-  isOpen: boolean; // 모달 열림
-  onDismiss: () => void; // 모달 닫기
-  id?: string;
-  // eslint-disable-next-line no-unused-vars
-  onSave?: (condition: ICondition) => void; // 저장 시 호출되는 콜백, (condition 타입)
+  isOpen: boolean;
+  onDismiss: () => void;
 }
 
-const initData: ICondition = {
-  conditionType: 'static',
-  label: '',
-  pattern: '',
-  expression: '',
-  dataAccessKey: '',
-  id: uuidv4(),
-};
+interface IConditionGeneric {
+  condition: ICondition[];
+}
+export const ConditionModal = ({ isOpen, onDismiss }: IConditionModalProps) => {
+  const { control, watch, formState, trigger } = useFormContext<IConditionGeneric>();
+  const { fields, append, remove } = useFieldArray<IConditionGeneric>({
+    control,
+    name: 'condition',
+  });
+  const watchedConditions = watch('condition');
+  const { t, i18n } = useTranslation();
 
-export const ConditionModal = ({ isOpen, onDismiss, onSave, id }: IConditionModalProps) => {
-  const [node, setNode] = useAtom(selectedNodeAtom);
-  const conditionList: ICondition[] = (node?.data?.conditionList as ICondition[]) || [];
-  // const item = conditionList.find((condition) => condition.label === id);
-  const [item, setItem] = useState(initData);
-  const { conditionType, label, dataAccessKey, pattern, expression, id: originId } = item;
+  const columns: ColumnDef<ICondition, any>[] = useMemo(
+    () => [
+      {
+        header: t('condition.label'),
+        accessorKey: 'label',
+        id: 'label',
+        cell: ({ row }) => <TextFieldController name={`condition.${row.index}.label`} />,
+      },
+      {
+        header: t('condition.targetNode'),
+        accessorKey: 'targetNodeId',
+        id: 'targetNodeId',
+        cell: ({ row }) => (
+          <TargetNodeDropdownController
+            name={`condition.${row.index}.targetNodeId`}
+            placeholder={t('condition.targetNode')}
+          />
+        ),
+      },
 
-  useEffect(() => {
-    if (conditionList.length >= 1 && id) {
-      const selectedItem = conditionList.find((condition) => condition.label === id);
-      if (selectedItem) setItem(selectedItem);
-    }
-  }, [id]);
-
-  const addCondition = (condition: ICondition) => {
-    if (!condition.label.trim()) return;
-    setNode((prev) => {
-      if (!prev) return prev;
-
-      const conditionList: ICondition[] = (prev.data?.conditionList as ICondition[]) || [];
-      const index = conditionList.findIndex((c) => c.label === condition.label);
-      let newList;
-      if (index >= 0) {
-        // 기존 조건 수정
-        newList = [...conditionList];
-        newList[index] = condition;
-      } else {
-        // add용
-        newList = [...conditionList, condition];
-      }
-
-      return {
-        ...prev,
-        data: {
-          ...prev.data,
-          conditionList: newList,
+      {
+        header: t('condition.conditionType'),
+        accessorKey: 'conditionType',
+        id: 'conditionType',
+        cell: ({ row }) => {
+          return (
+            <DropdownController
+              name={`condition.${row.index}.conditionType`}
+              options={[
+                { key: 'static', text: 'Static' },
+                { key: 'regex', text: 'Regex' },
+                { key: 'expression', text: 'Expression' },
+              ]}
+            />
+          );
         },
-      };
-    });
-  };
+      },
+      {
+        header: t('condition.expression'),
+        accessorKey: 'expression',
+        id: 'expression',
+        cell: ({ row }) => {
+          const type = watchedConditions[row.index]?.conditionType;
 
-  const setLabel = (label: string) => {
-    setItem((prev) => ({ ...prev, label }));
-  };
-  const setDataAccessKey = (dataAccessKey: string) => {
-    setItem((prev) => ({ ...prev, dataAccessKey }));
-  };
-  const setConditionType = (conditionType: ConditionType) => {
-    setItem((prev) => ({ ...prev, conditionType }));
-  };
-  const setPattern = (pattern: string) => {
-    setItem((prev) => ({ ...prev, pattern }));
-  };
-  const setExpression = (expression: string) => {
-    setItem((prev) => ({ ...prev, expression }));
-  };
+          if (type !== 'expression') return null;
+          return <TextFieldController name={`condition.${row.index}.expression`} />;
+        },
+      },
+      {
+        header: t('condition.pattern'),
+        accessorKey: 'pattern',
+        id: 'pattern',
+        cell: ({ row }) => {
+          const type = watchedConditions[row.index]?.conditionType;
+          if (type !== 'regex') return <>미지원</>;
+          return <TextFieldController name={`condition.${row.index}.pattern`} />;
+        },
+      },
+      {
+        header: t('condition.staticValue'),
+        accessorKey: 'staticValue',
+        id: 'staticValue',
+        cell: ({ row }) => {
+          const type = watchedConditions[row.index]?.conditionType;
+          if (type !== 'static') return <>미지원</>;
+          return <TextFieldController name={`condition.${row.index}.staticValue`} />;
+        },
+      },
+      {
+        header: '',
+        id: 'action',
+        cell: ({ row }) => (
+          <IconButton
+            onClick={() => remove(row.index)}
+            title={t('delete')}
+            icon={'Delete'}
+          ></IconButton>
+        ),
+      },
+    ],
+    [watchedConditions, i18n.language]
+  );
 
-  const handleSave = () => {
-    const base: ICondition = {
-      label,
-
-      conditionType,
-      dataAccessKey,
-      id: id || originId,
-    };
-    //정규식
-    if (conditionType === 'regex') {
-      addCondition({ ...base, pattern });
-      onSave && onSave({ ...base, pattern });
-      //코드형인데 eval은 보안상 좀 그렇고 검토 필요
-    } else if (conditionType === 'expression') {
-      addCondition({ ...base, expression });
-      onSave && onSave({ ...base, expression });
-    } else {
-      addCondition({ ...base, pattern });
-      onSave && onSave(base);
+  const onCancel = () => {
+    trigger();
+    if (!isEmpty(formState.errors)) {
+      toast.error(tError('modal.cannotCloseModal'));
+      return;
     }
     onDismiss();
   };
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} isBlocking={false} styles={neonModalStyles}>
-      <Stack tokens={{ childrenGap: 15 }}>
+    <Modal
+      isOpen={isOpen}
+      onDismiss={onCancel}
+      isBlocking={false}
+      isModeless
+      className="custom-modal"
+      styles={neonModalStyles}
+    >
+      <Stack tokens={{ childrenGap: 15, padding: 3 }}>
         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
           <h3 style={neonModalTitle}>{tCommon('condition.add')}</h3>
-          <Button
-            iconProps={{ iconName: 'Cancel' }}
-            onClick={onDismiss}
-            // styles={neonModalButtonStyles}
-          />
+          <Button iconProps={{ iconName: 'Cancel' }} onClick={onCancel} />
         </Stack>
 
-        <TextFieldController
-          label="Label"
-          value={item.label}
-          onChange={(_, v) => setLabel(v || '')}
-          // styles={neonTextFieldStyles}
-          name={'label'}
-        />
-        <TextField
-          label="Data AccessKey"
-          value={item.dataAccessKey}
-          onChange={(_, v) => setDataAccessKey(v || '')}
-          // styles={neonTextFieldStyles}
-        />
-        <Dropdown
-          label="Condition Type"
-          options={conditionTypeOptions}
-          selectedKey={conditionType}
-          onChange={(_, option) => setConditionType(option?.key as any)}
-          // styles={neonDropdownStyles}
-        />
+        <Table columns={columns} data={fields} enableRowCheckbox />
 
-        {item.conditionType === 'regex' && (
-          <>
-            <TextField
-              label="Pattern"
-              value={item.pattern}
-              onChange={(_, v) => setPattern(v || '')}
-              // styles={neonTextFieldStyles}
-            />
-          </>
-        )}
-
-        {item.conditionType === 'expression' && (
-          <TextField
-            label="Expression"
-            value={item.expression}
-            onChange={(_, v) => setExpression(v || '')}
-            // styles={neonTextFieldStyles}
-            multiline
+        <Stack horizontal tokens={{ childrenGap: 8 }}>
+          <Button
+            text={tCommon('condition.add')}
+            onClick={() => {
+              append({
+                ...createCondition(),
+              });
+              trigger();
+            }}
           />
-        )}
-
-        <Button text="저장" onClick={handleSave} styles={neonButtonStyles} />
+        </Stack>
       </Stack>
     </Modal>
   );

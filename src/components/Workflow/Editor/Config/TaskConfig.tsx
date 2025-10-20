@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import { useNodeSaver } from '../../../../hooks/useNodeSaver';
+import { SaveButton } from '../../../common/UI';
 import { DropdownController } from '../../../Form/DropdownController';
 import { TextFieldController } from '../../../Form/TextFieldController';
 
 export const TaskConfig = () => {
-  const { t } = useTranslation('common'); // common.json 사용
+  const { t } = useTranslation('common');
+  const saveNodeData = useNodeSaver();
 
   return (
     <div>
@@ -23,6 +26,7 @@ export const TaskConfig = () => {
         label={t('config.task.inputSource')}
         placeholder={t('config.task.inputSourcePlaceholder')}
       />
+      <SaveButton onClick={saveNodeData} />
     </div>
   );
 };
