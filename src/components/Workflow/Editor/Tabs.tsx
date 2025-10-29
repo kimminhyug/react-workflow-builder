@@ -1,19 +1,23 @@
-import { Icon, Label } from '@fluentui/react';
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWorkflow } from '../../../hooks/useWorkflow';
 import { selectedNodeAtom } from '../../../state/selectedNode';
 import { tCommon } from '../../../utils/i18nUtils';
-import { SidePanelTabs, type IPivotProps, type ISidePanelTabItem } from '../../common/UI';
+import {
+  Icon,
+  Label,
+  SidePanelTabs,
+  type IPivotProps,
+  type ISidePanelTabItem,
+} from '../../common/UI';
 import { WidgetGrid, type IWidget } from '../../common/WidgetGrid/WidgetGrid';
 import { nodeIconMap } from '../constants/workflow.constants';
 import { ConditionEditor } from './Config/ConfigEditor';
 import { NodeContentWrapper } from './NodeContentWrapper';
 
 export const Tabs = () => {
-  const { addTaskNode, addSwitchNode, addMergeNode, addDecisionNode, addEndNode, addStartNode } =
-    useWorkflow();
+  const { addTaskNode, addMergeNode, addDecisionNode, addEndNode, addStartNode } = useWorkflow();
   const selectedNode = useAtomValue(selectedNodeAtom);
   const { i18n } = useTranslation();
   const widgets = useMemo<IWidget[]>(
@@ -47,12 +51,6 @@ export const Tabs = () => {
         label: tCommon('widgets.merge'),
         icon: <Icon iconName={nodeIconMap.merge} />,
         onClick: addMergeNode,
-      },
-      {
-        id: 6,
-        label: tCommon('widgets.switch'),
-        icon: <Icon iconName={nodeIconMap.switch} />,
-        onClick: addSwitchNode,
       },
       {
         id: 7,

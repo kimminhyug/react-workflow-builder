@@ -12,7 +12,7 @@ export const StartNode = ({ data, id }: NodeProps<CustomNode>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
 
   return (
-    <div className={`${nodeClass} start-node`} style={{ padding: 10, borderWidth: 2 }}>
+    <div className={`${nodeClass} start-node`} style={{ borderWidth: 2 }}>
       <NodeLabel label={data.label ?? '시작'} iconName={nodeIconMap.start} />
       <Handle type="source" position={Position.Bottom} id={createHandleId(id, 'out')} />
     </div>

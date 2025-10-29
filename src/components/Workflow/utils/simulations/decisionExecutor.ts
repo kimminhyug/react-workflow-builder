@@ -5,14 +5,15 @@ export const executeDecisionNode = async (
   node: DecisionNodeType,
   context: IFlowContext,
   edges: CustomEdge[],
-  walk: (id: string) => Promise<void>
+  walk: (id: string, completedNodeId: string) => Promise<void>
 ) => {
   const data = node.data as IDecisionNodeData;
   const conditions = data.condition || [];
 
   // 조건 우선순위대로 탐색
   let nextEdge = null;
-
+  const prevId = context?.current?.prevNodeId as string;
+  const prevResult = context.nodeResults[prevId];
   for (const cond of conditions) {
     try {
       let result = false;
@@ -20,12 +21,13 @@ export const executeDecisionNode = async (
       switch (cond.conditionType) {
         case 'expression':
           if (cond.expression) {
-            result = new Function('context', `return ${cond.expression}`)(context);
+            const func = new Function('prev', `return prev?.${cond.expression}`);
+            result = func(prevResult);
           }
           break;
 
         case 'static':
-          result = !!cond.staticValue;
+          result = prevResult === cond.staticValue;
           break;
 
         case 'regex':
@@ -44,6 +46,7 @@ export const executeDecisionNode = async (
       }
     } catch (err) {
       console.error(`DecisionNode expression error in ${node.id} [condition ${cond.id}]:`, err);
+      throw err;
     }
   }
 
@@ -53,8 +56,9 @@ export const executeDecisionNode = async (
   }
 
   if (nextEdge) {
-    await walk(nextEdge.target);
+    await walk(nextEdge.target, node.id);
   } else {
     console.warn(`DecisionNode ${node.id} has no valid next node.`);
+    throw Error('매치되는 조건이 없습니다');
   }
 };

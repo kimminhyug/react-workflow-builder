@@ -23,5 +23,17 @@ export const useUpdateNode = () => {
     );
   };
 
-  return { nodes, setNodes, updateNode, updateNodeById };
+  const matchNodesById = (nodeIds: string[], dataProperties?: string): CustomNode[] | string[] => {
+    const matchArray = nodeIds?.map((id) => nodes.find((n) => n.id === id));
+    if (!matchArray || matchArray.length === 0) return [];
+    if (dataProperties) {
+      return (
+        (matchArray as CustomNode[])?.map((node) => node?.data?.[dataProperties] as string) || []
+      );
+    }
+
+    return [];
+  };
+
+  return { nodes, setNodes, updateNode, updateNodeById, matchNodesById };
 };

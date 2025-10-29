@@ -25,7 +25,7 @@ export type ConditionType = 'static' | 'regex' | 'expression';
  */
 export interface IFlowContext {
   /** 각 노드 ID별 실행 결과 저장 */
-  nodeResults: Record<string, unknown>;
+  nodeResults: Record<string, any>;
   /** 전역 데이터 (input 값, 변환된 object 등) */
   globals: Record<string, unknown>;
   /** 현재 실행중인 노드에 전달할 데이터 */
@@ -48,13 +48,15 @@ export interface ICondition {
 
 type unknownRecord = { [key: string]: unknown };
 /**  시뮬레이션 실행시 호출하는 사용자 정의 함수 */
-type nodeExecute = (context: IFlowContext) => Promise<void> | void;
+
+export type NodeExecute = (context: IFlowContext, node: CustomNode) => Promise<void> | void;
 export interface IBaseNodeData extends unknownRecord {
   label?: string;
   description?: string;
   status?: NodeStatus;
   edgeStatus?: EdgeStatus;
-  execute?: nodeExecute;
+  execute?: NodeExecute;
+  context?: IFlowContext;
 }
 /**
  * **TaskNode (task)**
@@ -84,34 +86,6 @@ export interface ITaskNodeData extends IBaseNodeData {
   taskName?: string;
   taskType?: 'http' | 'db' | 'script';
   inputSource?: string;
-}
-
-/**
- * **SwitchNode**
- *
- * 분기 처리를 담당하는 노드입니다.
- * 단일 expression 또는 변수 기준으로 다음 Edge를 선택합니다.
- *
- * ---
- * **역할**
- * - 조건 기반의 분기 로직 수행
- *
- * **주요 기능**
- * - 주어진 expression을 평가하여 해당 분기로 이동
- * - 조건 불일치 시 `fallbackTarget`으로 이동 가능
- *
- * ---
- * **데이터**
- * @property {string[]} [cases] - 가능한 분기 라벨 목록
- * @property {string} [fallbackTarget] - 모든 조건 실패 시 이동할 노드 ID
- *
- * ---
- * **추가 설명**
- * - expression, fallbackTarget 등의 추가 필드는 상위(Base) 데이터에서 상속 가능
- */
-export interface ISwitchNodeData extends IBaseNodeData {
-  cases?: string[];
-  fallbackTarget?: string;
 }
 
 /**
@@ -167,7 +141,6 @@ export type NodeType =
   | 'start'
   | 'end'
   | 'input'
-  | 'switch'
   | 'merge'
   | 'delay'
   | 'decision';
@@ -177,18 +150,10 @@ export type StartNodeType = Node<IBaseNodeData, 'start'>;
 export type EndNodeType = Node<IBaseNodeData, 'end'>;
 export type InputNodeType = Node<IBaseNodeData, 'input'>;
 export type ObjectNodeType = Node<IBaseNodeData, 'object'>;
-export type SwitchNodeType = Node<ISwitchNodeData, 'switch'>;
+
 export type MergeNodeType = Node<IMergeNodeData, 'merge'>;
 export type DecisionNodeType = Node<IDecisionNodeData, 'decision'>;
-export type NodeDataType =
-  | ITaskNodeData
-  | IBaseNodeData
-  | IBaseNodeData
-  | IBaseNodeData
-  | IBaseNodeData
-  | ISwitchNodeData
-  | IMergeNodeData
-  | IDecisionNodeData;
+export type NodeDataType = ITaskNodeData | IBaseNodeData | IMergeNodeData | IDecisionNodeData;
 
 export type CustomNode =
   | TaskNodeType
@@ -196,6 +161,5 @@ export type CustomNode =
   | EndNodeType
   | InputNodeType
   | ObjectNodeType
-  | SwitchNodeType
   | MergeNodeType
   | DecisionNodeType;

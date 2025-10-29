@@ -1,4 +1,3 @@
-import { Icon } from '@fluentui/react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { delay } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { nodesAtom } from '../../state/nodes';
 import { selectedNodeAtom } from '../../state/selectedNode';
 import { tCommon } from '../../utils/i18nUtils';
+import { Icon } from '../common/UI';
 import { Tabs } from './Editor/Tabs';
 import type { CustomNode } from './types';
 

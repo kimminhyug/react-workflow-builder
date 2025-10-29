@@ -3,6 +3,7 @@
 export * from './Buttons';
 export * from './Dialogs';
 export * from './Forms';
+export * from './Icon';
 export * from './Layout';
 export * from './Navigation';
 export * from './types';

@@ -36,7 +36,6 @@ export const Builder: React.FC<IBuilderProps> = ({ workflow = dummyWorkflow }) =
   const schemaSet = useMemo(() => getNodeValidationSchemas(t), [i18n.language]);
   const schema = useMemo(() => {
     if (selectedNode?.type === 'task') return schemaSet.task;
-    else if (selectedNode?.type === 'switch') return schemaSet.switch;
     else if (selectedNode?.type === 'decision') return schemaSet.decision;
     else if (selectedNode?.type === 'merge') return schemaSet.merge;
     else return undefined;
