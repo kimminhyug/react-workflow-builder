@@ -4,7 +4,6 @@ import { ConditionModal } from '../Condition/ConditionModal';
 import { DecisionConfig } from './DecisionConfig';
 import { InputConfig } from './InputConfig';
 import { MergeConfig } from './MergeConfig';
-import { SwitchConfig } from './SwitchConfig';
 
 import { useAtomValue } from 'jotai';
 import { selectedNodeAtom } from '../../../../state/selectedNode';
@@ -17,7 +16,6 @@ export const ConditionEditor = () => {
   // nodeType별 폼 매핑
   const nodeTypeToFormMap: Record<string, React.FC | undefined> = useMemo(
     () => ({
-      switch: SwitchConfig,
       merge: MergeConfig,
       decision: DecisionConfig,
       input: InputConfig,

@@ -2,7 +2,6 @@ import * as yup from 'yup';
 import type {
   IDecisionNodeData,
   IMergeNodeData,
-  ISwitchNodeData,
   ITaskNodeData,
 } from '../components/Workflow/types';
 
@@ -21,17 +20,6 @@ export const getNodeValidationSchemas = (t: (key: string) => string) => {
     taskName: yup.string().required(t('validation.task.taskNameRequired')),
     taskType: yup.mixed<'http' | 'db' | 'script'>().required(t('validation.task.taskTypeRequired')),
     inputSource: yup.string().optional(),
-    label: yup.string().optional(),
-    description: yup.string().optional(),
-  });
-
-  // SwitchNode 스키마
-  const switchSchema: yup.ObjectSchema<Omit<ISwitchNodeData, 'execute'>> = yup.object({
-    cases: yup
-      .array()
-      .of(yup.string().required(t('validation.switch.caseRequired')))
-      .min(1, t('validation.switch.minCases')),
-    fallbackTarget: yup.string().optional(),
     label: yup.string().optional(),
     description: yup.string().optional(),
   });
@@ -77,7 +65,6 @@ export const getNodeValidationSchemas = (t: (key: string) => string) => {
   return {
     task: taskSchema,
     decision: decisionSchema,
-    switch: switchSchema,
     merge: mergeSchema,
     // input: inputSchema,
   };

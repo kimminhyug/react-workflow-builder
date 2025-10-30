@@ -15,7 +15,6 @@ import type {
   NodeStatus,
   ObjectNodeType,
   StartNodeType,
-  SwitchNodeType,
   TaskNodeType,
 } from '../components/Workflow/types';
 
@@ -260,11 +259,6 @@ export const updateObjectNodeType = (
   return { ...node, data: { ...node.data, ...data } };
 };
 
-/** Switch Node 업데이트 */
-export const updateSwitchNode = (node: SwitchNodeType, data: Partial<SwitchNodeType['data']>) => {
-  return { ...node, data: { ...node.data, ...data } };
-};
-
 /** Merge Node 업데이트 */
 export const updateMergeNode = (node: MergeNodeType, data: Partial<MergeNodeType['data']>) => {
   return { ...node, data: { ...node.data, ...data } };
@@ -298,10 +292,7 @@ export const isInputNodeType = (node: CustomNode): node is InputNodeType => {
 export const isObjectNodeType = (node: CustomNode): node is ObjectNodeType => {
   return node.type === 'object';
 };
-/** Switch Node */
-export const isSwitchNode = (node: CustomNode): node is SwitchNodeType => {
-  return node.type === 'switch';
-};
+
 /** Merge Node */
 export const isMergeNode = (node: CustomNode): node is MergeNodeType => {
   return node.type === 'merge';
@@ -328,9 +319,7 @@ export const applyNodeUpdate = (node: CustomNode, updatedNode: CustomNode): Cust
   if (node.type === 'object' && updatedNode.type === 'object') {
     return updateObjectNodeType(node, updatedNode.data);
   }
-  if (node.type === 'switch' && updatedNode.type === 'switch') {
-    return updateSwitchNode(node, updatedNode.data);
-  }
+
   if (node.type === 'merge' && updatedNode.type === 'merge') {
     return updateMergeNode(node, updatedNode.data);
   }

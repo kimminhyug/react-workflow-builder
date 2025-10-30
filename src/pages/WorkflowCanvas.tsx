@@ -18,7 +18,7 @@ import { DecisionNode } from '../components/Workflow/Nodes/DecisionNode';
 import { EndNode } from '../components/Workflow/Nodes/EndNode';
 import { MergeNode } from '../components/Workflow/Nodes/MergeNode';
 import { StartNode } from '../components/Workflow/Nodes/StartNode';
-import { SwitchNode } from '../components/Workflow/Nodes/SwitchNode';
+
 import { TaskNode } from '../components/Workflow/Nodes/TaskNode';
 import type { CustomNode } from '../components/Workflow/types';
 import { canConnect } from '../components/Workflow/utils/edgeConnectionValidator';
@@ -57,7 +57,6 @@ export const WorkflowCanvas = () => {
     end: EndNode,
     decision: DecisionNode,
     merge: MergeNode,
-    switch: SwitchNode,
   };
 
   /**

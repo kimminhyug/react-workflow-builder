@@ -1,4 +1,4 @@
-import { Icon } from '@fluentui/react';
+import { Icon } from '../../common/UI';
 
 interface INodeLabelProps {
   label: string;

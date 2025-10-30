@@ -11,10 +11,7 @@ import { NodeLabel } from './NodeLabel';
 export const EndNode = ({ data, id }: NodeProps<EndNodeType>) => {
   const { nodeClass } = useNodeStatus(id, data.status);
   return (
-    <div
-      className={`${nodeClass} end-node`}
-      style={{ padding: 10, borderWidth: 2, background: '#a00', color: '#fff' }}
-    >
+    <div className={`${nodeClass} end-node`} style={{ borderWidth: 2 }}>
       <Handle type="target" position={Position.Top} id={createHandleId(id, 'in')} />
       <NodeLabel label={data.label ?? '끝'} iconName={nodeIconMap.end} />
     </div>

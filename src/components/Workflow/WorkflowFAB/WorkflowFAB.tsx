@@ -23,6 +23,7 @@ export const WorkflowFAB = () => {
     stopExecution,
     exportWorkflowJSON,
   } = useWorkflow();
+
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const selectedNode = useAtomValue(selectedNodeAtom);

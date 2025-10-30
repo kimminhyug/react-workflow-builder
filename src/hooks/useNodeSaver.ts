@@ -39,5 +39,8 @@ export const useNodeSaver = (props?: IUseNodeSaverProps) => {
     }
   };
 
-  return () => methods.handleSubmit(save);
+  return () => {
+    const submit = methods.handleSubmit((data) => save(data));
+    submit();
+  };
 };

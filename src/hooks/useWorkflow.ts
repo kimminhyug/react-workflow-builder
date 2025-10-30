@@ -1,18 +1,22 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { cloneDeep } from 'lodash';
 import { useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import { nodeInitializeProperties } from '../components/Workflow/constants/workflow.constants';
 import type {
   CustomNode,
+  DecisionNodeType,
   EdgeStatus,
   IFlowContext,
+  MergeNodeType,
+  NodeExecute,
   NodeStatus,
+  TaskNodeType,
 } from '../components/Workflow/types';
 import { executeDecisionNode } from '../components/Workflow/utils/simulations/decisionExecutor';
 import { executeDefaultNode } from '../components/Workflow/utils/simulations/defaultExecutor';
 import { executeMergeNode } from '../components/Workflow/utils/simulations/mergeExecutor';
-import { executeSwitchNode } from '../components/Workflow/utils/simulations/switchExecutor';
 import { executeTaskNode } from '../components/Workflow/utils/simulations/taskExecutor';
 import {
   createEdgeId,
@@ -25,7 +29,6 @@ import {
   activeNodeIdAtom,
   isDecisionNode,
   isMergeNode,
-  isSwitchNode,
   isTaskNode,
   nodesAtom,
 } from '../state/nodes';
@@ -98,8 +101,19 @@ export const useWorkflow = () => {
       )
     );
   };
+  /**
+   * 애니메이션에서 사용하는 context 업데이트
+   * @param nodeId
+   * @param status NodeStatus
+   */
+  const updateNodeContext = (nodeId: string, context: IFlowContext) => {
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    updateNode(node.id, { ...node.data, context });
+  };
   const simulateExecution = async (startId: string, context?: IFlowContext) => {
     if (execStopRef.current) return;
+    attachExecuteHandlers(nodes);
     const visited = new Set<string>();
     const execId = ++executionId.current;
     setExecutionState('running');
@@ -114,10 +128,13 @@ export const useWorkflow = () => {
 
     const getOutgoingEdges = (nodeId: string) => edges.filter((e) => e.source === nodeId); // 최신 edgesAtom 상태 사용
 
-    const walk = async (nodeId: string) => {
+    const walk = async (nodeId: string, prevNodeId?: string) => {
       if (execId !== executionId.current || execStopRef.current) return;
       if (visited.has(nodeId)) return;
       visited.add(nodeId);
+      context.current = {
+        prevNodeId,
+      };
 
       const node = nodes.find((n) => n.id === nodeId);
       if (!node) return;
@@ -125,42 +142,7 @@ export const useWorkflow = () => {
       updateNodeStatus(node.id, 'running');
       setActiveNodeId(nodeId);
 
-      let outgoingEdges = getOutgoingEdges(node.id);
-
-      // DecisionNode: 선택된 edge만
-      if (isDecisionNode(node)) {
-        const conditionList = node.data.condition || [];
-        const matchedCondition = conditionList.find((cond) => {
-          if (!cond.expression) return false;
-          try {
-            return new Function('context', `return ${cond.expression}`)(context);
-          } catch {
-            return false;
-          }
-        });
-        const selectedEdgeId = matchedCondition
-          ? outgoingEdges.find((e) => e.data?.label === matchedCondition.label)?.id
-          : node.data.fallbackTarget;
-        outgoingEdges = outgoingEdges.filter((e) => e.id === selectedEdgeId);
-      }
-
-      // SwitchNode: 선택된 edge만
-      if (isSwitchNode(node) && node.data.expression) {
-        let value: any;
-        try {
-          value = new Function('context', `return ${node.data.expression}`)(context);
-        } catch {
-          value = undefined;
-        }
-        const selectedEdgeId = outgoingEdges.find(
-          (e) => e.data?.label?.toLowerCase() === String(value)?.toLowerCase()
-        )?.id;
-        outgoingEdges = outgoingEdges.filter((e) => e.id === (selectedEdgeId || ''));
-        // fallbackTarget edge 포함 가능
-        if (outgoingEdges.length === 0 && node.data.fallbackTarget) {
-          outgoingEdges = outgoingEdges.filter((e) => e.target === node.data.fallbackTarget);
-        }
-      }
+      const outgoingEdges = getOutgoingEdges(node.id);
 
       // edge running 처리
       outgoingEdges.forEach((e) => updateEdgeStatus(e.id, 'running'));
@@ -169,32 +151,157 @@ export const useWorkflow = () => {
 
       try {
         if (isTaskNode(node)) {
-          await executeTaskNode(node, context, edges, walk);
+          await executeTaskNode(node, context, edges, walk, updateNodeStatus, updateEdgeStatus);
         } else if (isDecisionNode(node)) {
-          await executeDecisionNode(node, context, edges, walk);
-        } else if (isSwitchNode(node)) {
-          await executeSwitchNode(node, context, edges, walk);
+          await executeDecisionNode(node, context, edges, walk, updateNodeStatus, updateEdgeStatus);
         } else if (isMergeNode(node)) {
-          await executeMergeNode(node, context, edges, walk, nodes);
+          await executeMergeNode(
+            node,
+            context,
+            edges,
+            walk,
+            nodes,
+            updateNodeStatus,
+            updateEdgeStatus
+          );
         } else {
-          await executeDefaultNode(node, edges, walk);
+          await executeDefaultNode(node, edges, walk, updateNodeStatus, updateEdgeStatus);
         }
       } catch (err) {
-        console.error(`Execution error on ${node.id}:`, err);
+        throw err;
       }
       //정지 발생시 상태 업데이트 중단
       if (execStopRef.current) return;
-      updateNodeStatus(node.id, 'done');
-
-      // edge done 처리
-      await Promise.all(outgoingEdges.map((e) => updateEdgeStatus(e.id, 'done')));
-
-      // 병렬로 다음 node 처리 (StartNode, MergeNode 등)
-      await Promise.all(outgoingEdges.map((e) => walk(e.target)));
     };
 
     await walk(startId);
     setExecutionState('idle');
+    setActiveNodeId(null);
+  };
+
+  const createExecuteTask = (node: TaskNodeType): NodeExecute => {
+    return async (context) => {
+      const inputKey = node.data.inputSource;
+      const input = inputKey
+        ? (context.nodeResults[inputKey] ?? context.globals[inputKey])
+        : undefined;
+
+      const url = inputKey;
+      let result: any;
+      switch (node.data.taskType) {
+        case 'http':
+          if (url) {
+            try {
+              const res = await fetch(url);
+              result = await res.json();
+            } catch (err) {
+              toast.error(`HTTP 실패 ${url}: ${err}`);
+              result = { error: err };
+              context.nodeResults[node.id] = result;
+              updateNodeContext(node.id, context);
+              throw err;
+            }
+          } else {
+            result = { error: 'url 없음' };
+            context.nodeResults[node.id] = result;
+            updateNodeContext(node.id, context);
+          }
+          break;
+        case 'db':
+          result = { rows: [{ id: 1, name: '테스트  row' }] };
+          context.nodeResults[node.id] = result;
+          updateNodeContext(node.id, context);
+          break;
+        case 'script':
+          try {
+            // input을 context와 함께 전달, JS 코드로 처리 가능
+            if (
+              typeof input === 'string' ||
+              typeof input === 'number' ||
+              typeof input === 'object'
+            ) {
+              // 단순 eval 예시 (실제 사용 시 sandbox 필요)
+              result = new Function('input', 'context', `return ${input}`)(input, context);
+            } else {
+            }
+          } catch (err) {
+            console.error(`스크립트 실패:`, err);
+            result = { error: err };
+            context.nodeResults[node.id] = result;
+            updateNodeContext(node.id, context);
+            throw err;
+          }
+          break;
+        default:
+          result = input;
+      }
+
+      // nodeResults에 저장
+      context.nodeResults[node.id] = result;
+    };
+  };
+
+  const createExecuteDecision = (node: DecisionNodeType): NodeExecute => {
+    return async (context) => {
+      const conditions = node.data.condition || [];
+      let selectedEdgeLabel: string | undefined;
+
+      for (const cond of conditions) {
+        if (!cond.expression) continue;
+        try {
+          const match = new Function('context', `return ${cond.expression}`)(context);
+          if (match) {
+            selectedEdgeLabel = cond.label;
+            break;
+          }
+        } catch (err) {
+          throw err;
+        }
+      }
+
+      if (!selectedEdgeLabel) {
+        selectedEdgeLabel = node.data.fallbackTarget;
+      }
+
+      if (context.edgeStatusMap) {
+        context.edgeStatusMap[node.id] = selectedEdgeLabel ? 'running' : 'waiting';
+      }
+    };
+  };
+
+  const createExecuteMerge = (node: MergeNodeType): NodeExecute => {
+    return async (context) => {
+      const incomingResults = node.data.inputs?.map((id) => context.nodeResults[id]) ?? [];
+      context.nodeResults[node.id] = incomingResults.flat();
+    };
+  };
+
+  const createExecuteDefault = (node: CustomNode): NodeExecute => {
+    return async (context) => {
+      context.nodeResults[node.id] = { status: 'passed' };
+    };
+  };
+
+  // ============================
+  // 2️⃣ attachExecuteHandlers
+  // ============================
+
+  const attachExecuteHandlers = (nodes: CustomNode[]) => {
+    for (const node of nodes) {
+      switch (node.type) {
+        case 'task':
+          node.data.execute = createExecuteTask(node as TaskNodeType);
+          break;
+        case 'decision':
+          node.data.execute = createExecuteDecision(node as DecisionNodeType);
+          break;
+        case 'merge':
+          node.data.execute = createExecuteMerge(node as MergeNodeType);
+          break;
+        default:
+          node.data.execute = createExecuteDefault(node);
+      }
+    }
   };
 
   /**
@@ -279,20 +386,6 @@ export const useWorkflow = () => {
       type: 'end',
       position: { x: 250, y: 250 }, // 원하는 위치
       data: { ...nodeInitializeProperties, label: tCommon('node.end') },
-    };
-    updateWorkflow(newTaskNode);
-    setNodes((nds) => [...nds, newTaskNode]);
-  };
-
-  /**
-   * 스위치  노드 추가
-   */
-  const addSwitchNode = () => {
-    const newTaskNode: CustomNode = {
-      id: uuid(),
-      type: 'switch',
-      position: { x: 250, y: 250 }, // 원하는 위치
-      data: { ...nodeInitializeProperties, label: tCommon('node.switch') },
     };
     updateWorkflow(newTaskNode);
     setNodes((nds) => [...nds, newTaskNode]);
@@ -408,7 +501,6 @@ export const useWorkflow = () => {
     // addNode,
     addStartNode,
     addEndNode,
-    addSwitchNode,
     addMergeNode,
     addDecisionNode,
     addTaskNode,
