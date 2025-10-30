@@ -496,3 +496,6 @@ export const getConnectedTargetOptions = (
     text: n.data?.label || n.id,
   }));
 };
+
+export const getOutgoingEdges = (nodeId: string, edges: CustomEdge[]) =>
+  edges.filter((e) => e.source === nodeId);

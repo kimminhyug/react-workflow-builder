@@ -26,11 +26,23 @@ const ConditionTag = ({ condition }: { condition: ICondition[] }) => {
 
       switch (currentCondition.conditionType) {
         case 'expression':
-          return <span key={idx}>Expression({currentCondition.expression})</span>;
+          return (
+            <span key={idx}>
+              {currentCondition.label} Expression({currentCondition.expression})
+            </span>
+          );
         case 'regex':
-          return <span key={idx}>Regex({currentCondition.pattern})</span>;
+          return (
+            <span key={idx}>
+              {currentCondition.label} Regex({currentCondition.pattern})
+            </span>
+          );
         case 'static':
-          return <span key={idx}>Static({currentCondition.staticValue})</span>;
+          return (
+            <span key={idx}>
+              {currentCondition.label} Static({currentCondition.staticValue})
+            </span>
+          );
         default:
           return <React.Fragment key={idx} />;
       }

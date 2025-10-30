@@ -1,64 +1,54 @@
 import type { CustomEdge } from '../../../../state/edges';
-import type { DecisionNodeType, IDecisionNodeData, IFlowContext } from '../../types';
+import { getOutgoingEdges } from '../../constants/workflow.constants';
+import type { DecisionNodeType, IDecisionNodeData, IFlowContext, NodeStatus } from '../../types';
 
 export const executeDecisionNode = async (
   node: DecisionNodeType,
   context: IFlowContext,
   edges: CustomEdge[],
-  walk: (id: string, completedNodeId: string) => Promise<void>
+  walk: (id: string, completedNodeId: string) => Promise<void>,
+  updateNodeStatus: (id: string, status: NodeStatus) => void,
+  updateEdgeStatus: (id: string, status: NodeStatus) => void
 ) => {
   const data = node.data as IDecisionNodeData;
   const conditions = data.condition || [];
+  const outgoingEdges = getOutgoingEdges(node.id, edges);
 
-  // 조건 우선순위대로 탐색
-  let nextEdge = null;
-  const prevId = context?.current?.prevNodeId as string;
-  const prevResult = context.nodeResults[prevId];
-  for (const cond of conditions) {
-    try {
-      let result = false;
+  let nextEdge: CustomEdge | null = null;
 
-      switch (cond.conditionType) {
-        case 'expression':
-          if (cond.expression) {
-            const func = new Function('prev', `return prev?.${cond.expression}`);
-            result = func(prevResult);
-          }
-          break;
+  try {
+    // 이전 노드 결과
+    const prevId = context?.current?.prevNodeId as string;
+    const prevResult = context.nodeResults[prevId];
 
-        case 'static':
-          result = prevResult === cond.staticValue;
-          break;
-
-        case 'regex':
-          if (cond.pattern && cond.dataAccessKey) {
-            const value = context.current?.[cond.dataAccessKey] ?? '';
-            const regex = new RegExp(cond.pattern);
-            result = regex.test(String(value));
-          }
-          break;
+    const matchedCondition = conditions.find((cond) => {
+      if (!cond.expression) return false;
+      try {
+        const matchFn = new Function('context', `return context?.${cond.expression}`);
+        return matchFn(prevResult);
+      } catch {
+        return false;
       }
+    });
 
-      if (result && cond.targetNodeId) {
-        // 조건이 참이면 해당 targetNodeId를 가지는 edge 선택
-        nextEdge = edges.find((e) => e.source === node.id && e.target === cond.targetNodeId);
-        break;
-      }
-    } catch (err) {
-      console.error(`DecisionNode expression error in ${node.id} [condition ${cond.id}]:`, err);
-      throw err;
+    if (matchedCondition) {
+      nextEdge = outgoingEdges.find((e) => e.target === matchedCondition.targetNodeId) || null;
+    } else if (data.fallbackTarget) {
+      nextEdge = outgoingEdges.find((e) => e.target === data.fallbackTarget) || null;
     }
-  }
-
-  // 모든 조건이 false면 fallbackTarget edge 사용
-  if (!nextEdge && data.fallbackTarget) {
-    nextEdge = edges.find((e) => e.source === node.id && e.target === data.fallbackTarget);
+  } catch (err) {
+    console.error(`예상치 못한 에러 ${node.id}:`, err);
+    updateNodeStatus(node.id, 'failed');
+    outgoingEdges.forEach((e) => updateEdgeStatus(e.id, 'failed'));
+    throw err;
   }
 
   if (nextEdge) {
+    updateNodeStatus(node.id, 'done');
+    outgoingEdges.forEach((e) => updateEdgeStatus(e.id, 'waiting'));
+    updateEdgeStatus(nextEdge.id, 'done');
     await walk(nextEdge.target, node.id);
   } else {
-    console.warn(`DecisionNode ${node.id} has no valid next node.`);
     throw Error('매치되는 조건이 없습니다');
   }
 };

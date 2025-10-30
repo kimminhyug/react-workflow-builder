@@ -142,35 +142,7 @@ export const useWorkflow = () => {
       updateNodeStatus(node.id, 'running');
       setActiveNodeId(nodeId);
 
-      let outgoingEdges = getOutgoingEdges(node.id);
-
-      // DecisionNode: 선택된 edge만
-      if (isDecisionNode(node)) {
-        const conditionList = node.data.condition || [];
-        const matchedCondition = conditionList.find((cond) => {
-          if (!cond.expression) return false;
-          try {
-            const match = new Function('context', `return context?.${cond.expression}`);
-            const prevId = context?.current?.prevNodeId as string;
-            const prevResult = context.nodeResults[prevId];
-            return match(prevResult);
-          } catch {
-            return false;
-          }
-        });
-        let selectedEdge: CustomEdge | undefined;
-        if (matchedCondition) {
-          selectedEdge = outgoingEdges.find((e) => e.target === matchedCondition.targetNodeId);
-        } else if (node.data.fallbackTarget) {
-          selectedEdge = outgoingEdges.find((e) => e.target === node.data.fallbackTarget);
-        }
-
-        if (selectedEdge) {
-          outgoingEdges = [selectedEdge];
-        } else {
-          outgoingEdges = [];
-        }
-      }
+      const outgoingEdges = getOutgoingEdges(node.id);
 
       // edge running 처리
       outgoingEdges.forEach((e) => updateEdgeStatus(e.id, 'running'));
@@ -179,31 +151,32 @@ export const useWorkflow = () => {
 
       try {
         if (isTaskNode(node)) {
-          await executeTaskNode(node, context, edges, walk);
+          await executeTaskNode(node, context, edges, walk, updateNodeStatus, updateEdgeStatus);
         } else if (isDecisionNode(node)) {
-          await executeDecisionNode(node, context, edges, walk);
+          await executeDecisionNode(node, context, edges, walk, updateNodeStatus, updateEdgeStatus);
         } else if (isMergeNode(node)) {
-          await executeMergeNode(node, context, edges, walk, nodes);
+          await executeMergeNode(
+            node,
+            context,
+            edges,
+            walk,
+            nodes,
+            updateNodeStatus,
+            updateEdgeStatus
+          );
         } else {
-          await executeDefaultNode(node, edges, walk);
+          await executeDefaultNode(node, edges, walk, updateNodeStatus, updateEdgeStatus);
         }
       } catch (err) {
-        updateNodeStatus(node.id, 'failed');
         throw err;
       }
       //정지 발생시 상태 업데이트 중단
       if (execStopRef.current) return;
-      updateNodeStatus(node.id, 'done');
-
-      // edge done 처리
-      await Promise.all(outgoingEdges.map((e) => updateEdgeStatus(e.id, 'done')));
-
-      // 병렬로 다음 node 처리 (StartNode, MergeNode 등)
-      await Promise.all(outgoingEdges.map((e) => walk(e.target, nodeId)));
     };
 
     await walk(startId);
     setExecutionState('idle');
+    setActiveNodeId(null);
   };
 
   const createExecuteTask = (node: TaskNodeType): NodeExecute => {
