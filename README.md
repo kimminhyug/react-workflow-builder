@@ -24,6 +24,22 @@ React Flow 라이브러리를 이용한 시각적 워크플로우 빌더 개발 
   - <img width="1904" height="878" alt="Image" src="https://github.com/user-attachments/assets/d243c65b-850c-47d4-884d-e717384cbebe" />
 - 워크플로우 실행 시뮬레이션 및 상태 표시
   - ![Image](https://github.com/user-attachments/assets/e63f0b62-3f46-4b06-850d-fc2df8854390)
+- 상태에 따른 화면
+  - Default
+   <img width="301" height="141" alt="Image" src="https://github.com/user-attachments/assets/a20a6ce7-0680-40d5-89e4-55e8cba62eea" />
+
+  - Running
+   <img width="325" height="157" alt="Image" src="https://github.com/user-attachments/assets/3cfa19a7-6a65-4169-90ab-e1f8cc33f850" />
+
+  - Error
+   <img width="362" height="181" alt="Image" src="https://github.com/user-attachments/assets/d40be53a-16d4-4ce8-b622-4b10b7b0fe31" />
+
+  - Done
+   <img width="358" height="143" alt="Image" src="https://github.com/user-attachments/assets/a99e72d6-9354-4644-a243-c434dafed5ed" />
+
+  - Selected
+   <img width="341" height="152" alt="Image" src="https://github.com/user-attachments/assets/fa3e7707-5cb6-456e-8f16-f78ec292fa21" />
+
 - 작업 실행 이력 관리 (필터, 페이징 포함)
 - 테마(라이트/다크 모드) 지원
 - 다국어 적용
