@@ -44,6 +44,7 @@
   - [10.3 빌드](#103-빌드)
   - [10.4 빌드 결과 확인](#104-빌드-결과-확인)
   - [10.5 GitHub Pages 배포](#105-github-pages-배포)
+- [관리 규칙 (코드 규칙 / 주의사항)](#관리-규칙-코드-규칙--주의사항)
 
 
 ## 진행 상황
@@ -98,7 +99,53 @@
 
 ### 7. 다국어(i18n)
 - **설명**: i18next 기반 언어 전환
-- **예시**:
+  - i18next와 react-i18next를 활용하여 다국어를 지원합니다.
+  - **View 영역에 직접 문자열 작성, 다국어 함수 호출 금지, 유지보수 용이하도록 별도 변수/헬퍼를 통해 관리합니다.**
+    - View가 복잡해 지는 경우 다국어를 한눈에 파악하기 어려우며 중복 호출이 발생 할 수 있습니다.
+    - 한곳에서 관리하여 현재 컴포넌트에서 어떤 다국어를 가지고 있는지 파악 할 수 있게 합니다.
+  - 네임스페이스(common, error, message, warning)별로 JSON 파일을 분리하여 관리합니다.
+  - LANGUAGE 객체와 toEn(), toKo() 함수를 통해 UI 전체 언어 전환이 가능합니다.
+  - tCommon, tError, tWarning, tMessage 헬퍼를 이용해 각 네임스페이스에 맞는 번역 키를 간단히 호출할 수 있습니다.
+- **사용 예시**:
+```ts
+  // 다국어는 유지 보수 하기 쉽도록 View 영역에 작성하지 않고, 별도의 변수로 관리합니다
+  const labels = useMemo(
+    () => ({
+      title: tCommon('editor.title'),
+      close: tCommon('panel.close'),
+      open: tCommon('panel.open'),
+    }),
+    [i18n.language]
+  );
+return (
+      <div className="neon-panel-toggle" onClick={togglePanel}>
+        <Icon
+          iconName={isOpen ? 'OpenPaneMirrored' : 'OpenPane'}
+          title={isOpen ? labels.close : labels.open}
+        />
+      </div>
+```
+- **JSON 예시**
+```json
+  "config": {
+    "common": {
+      "label": "노드 이름"
+    },
+    "merge": {
+      "mergeName": "병합 노드 이름",
+      "mergeNamePlaceholder": "노드 식별용 이름",
+      "inputs": "병합할 노드 ID들",
+      "inputsPlaceholder": "node-1, node-2"
+    },
+    "decision": {
+      "decisionName": "조건 노드 이름",
+      "operator": "조건 연산자",
+      "threshold": "임계값",
+      "thresholdPlaceholder": "10"
+    },
+  }
+```
+- **예시**
 <img src="https://github.com/user-attachments/assets/3dfa8b90-3d29-4f15-9306-e04313dda0c4" width="600"/>
 
 ---
@@ -449,3 +496,43 @@ npm run preview || yarn preview
 npm run deploy
 ```
 배포 완료 후 Live Demo 에서 확인 가능
+
+### 관리 규칙 (코드 규칙 / 주의사항)
+
+#### 컴포넌트 파일 및 디렉토리
+- **컴포넌트 디렉토리는 첫 글자 대문자**로 작성 (예: `Buttons/`, `Forms/`, `Editor/`)  
+- `components/common/UI`  
+  - 오로지 UI 전용, 도메인/비즈니스 로직 없음  
+  - 다국어 처리 허용  
+  - 공통 export 관리:
+    ```ts
+    export * from './Buttons';
+    export * from './Dialogs';
+    export * from './Forms';
+    export * from './Icon';
+    export * from './Layout';
+    export * from './Navigation';
+    export * from './types';
+    ```
+- `components/Workflow`  
+  - 워크플로우 노드/엣지/에디터 전용  
+  - 시뮬레이션 및 실행 흐름 로직 포함  
+
+#### View 작성 관련
+- **View 영역에 직접 문자열 작성 금지**  
+  - 다국어 함수 호출도 View 영역에 직접 사용하지 않음  
+  - 유지보수와 중복 호출 방지를 위해 **별도의 변수/헬퍼로 관리**
+  - 예: `const labels = useMemo(() => ({ title: tCommon('editor.title') }), [i18n.language]);`
+
+#### 상태 관리
+- 전역 상태는 `state/` (jotai)에서 관리  
+- 컴포넌트 내부 상태는 가능한 **로컬 상태만 사용**  
+
+#### 훅 사용
+- 커스텀 훅은 `hooks/` 디렉토리에 작성  
+- UI 관련 로직이 아닌 상태, 데이터, 워크플로우 실행 관련 기능만 포함  
+
+#### 기타 주의사항
+- 시뮬레이션/실행 로직은 `components/Workflow`에서 처리  
+- 공통 유틸, ID 생성, i18n 등은 `utils/` 디렉토리 사용  
+- 입력 폼 검증은 `validation/` 디렉토리 사용 (React Hook Form + yup)
