@@ -1,9 +1,3 @@
-import { MainIntro } from '../components/MainIntro';
-
 export const Home = () => {
-  return (
-    <div>
-      <MainIntro />
-    </div>
-  );
+    return <div>Home 입니다</div>;
 };
